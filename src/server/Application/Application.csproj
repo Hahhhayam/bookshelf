@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Shared" />
+    <Using Include="Domain.Catalog" />
+    <Using Include="Domain.Inventory" />
+    <Using Include="Domain.Sales" />
+    <Using Include="Domain.Orders" />
+    <Using Include="Domain.Purchasing" />
+    <Using Include="Domain.Crm" />
+    <Using Include="Domain.Administration" />
+    <Using Include="Application.Common" />
+    <Using Include="Application.Catalog" />
+    <Using Include="Application.Inventory" />
+    <Using Include="Application.Sales" />
+    <Using Include="Application.Orders" />
+    <Using Include="Application.Purchasing" />
+    <Using Include="Application.Crm" />
+    <Using Include="Application.Administration" />
+    <Using Include="Application.Reporting" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

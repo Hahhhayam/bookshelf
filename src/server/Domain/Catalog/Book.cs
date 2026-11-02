@@ -11,6 +11,7 @@ public sealed class Book : AggregateRoot<BookId>
     public Barcode Barcode { get; private set; }
     public ItemType ItemType { get; }
     public SaleStatus Status { get; private set; } = SaleStatus.Active;
+    public bool IsActive => Status == SaleStatus.Active;
     public PublisherId? PublisherId { get; private set; }
     public CategoryId CategoryId { get; private set; }
     public IReadOnlyList<AuthorId> Authors => _authors;

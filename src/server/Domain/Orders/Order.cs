@@ -20,27 +20,33 @@ public sealed class Order : AggregateRoot<OrderId>
     public CustomerId CustomerId { get; }
     public OrderType Type { get; }
     public FulfilmentMethod Fulfilment { get; }
+
+    /// <summary>The location whose stock is reserved for this order; for pickup it is the pickup store.</summary>
+    public LocationId StockLocation { get; }
+
     public PickupCode PickupCode { get; }
     public OrderStatus Status { get; private set; } = OrderStatus.New;
     public IReadOnlyList<OrderLine> Lines => _lines;
     public IReadOnlyList<StatusChange> History => _history;
 
-    private Order(OrderId id, CustomerId customerId, OrderType type, FulfilmentMethod fulfilment, PickupCode code)
-        : base(id)
+    private Order(OrderId id, CustomerId customerId, OrderType type, FulfilmentMethod fulfilment,
+        LocationId stockLocation, PickupCode code) : base(id)
     {
         CustomerId = customerId;
         Type = type;
         Fulfilment = fulfilment;
+        StockLocation = stockLocation;
         PickupCode = code;
     }
 
     public Money Total => Money.Sum(_lines.Select(l => l.Total), _lines[0].UnitPrice.Currency);
 
     /// <summary>Placing an order makes Inventory reserve the stock.</summary>
-    public static Order Place(CustomerId customerId, OrderType type, FulfilmentMethod fulfilment, PickupCode code,
+    public static Order Place(CustomerId customerId, OrderType type, FulfilmentMethod fulfilment,
+        LocationId stockLocation, PickupCode code,
         IEnumerable<(BookId BookId, Quantity Quantity, Money UnitPrice)> lines, DateTimeOffset now)
     {
-        var order = new Order(OrderId.New(), customerId, type, fulfilment, code);
+        var order = new Order(OrderId.New(), customerId, type, fulfilment, stockLocation, code);
         foreach (var (bookId, quantity, unitPrice) in lines)
             order.AddLine(bookId, quantity, unitPrice);
         Guard.That(order._lines.Count > 0, "An order needs at least one line.");
