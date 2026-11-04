@@ -5,6 +5,26 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="Shared" />
+    <Using Include="Application.Common" />
+    <Using Include="Application.Administration" />
+    <Using Include="Application.Catalog" />
+    <Using Include="Application.Crm" />
+    <Using Include="Application.Inventory" />
+    <Using Include="Application.Orders" />
+    <Using Include="Application.Purchasing" />
+    <Using Include="Application.Sales" />
+    <Using Include="Application.Reporting" />
+    <Using Include="Domain.Administration" />
+    <Using Include="Domain.Catalog" />
+    <Using Include="Domain.Crm" />
+    <Using Include="Domain.Inventory" />
+    <Using Include="Domain.Orders" />
+    <Using Include="Domain.Purchasing" />
+    <Using Include="Domain.Sales" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <LangVersion>14</LangVersion>
