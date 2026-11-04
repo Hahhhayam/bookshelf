@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Application;
 using Infrastructure;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Errors;
 
@@ -15,6 +16,12 @@ builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 
 var app = builder.Build();
+if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
+{
+    using var scope = app.Services.CreateScope();
+    scope.ServiceProvider.GetRequiredService<BookstoreDbContext>().Database.Migrate();
+}
+
 app.UseExceptionHandler();
 app.MapControllers();
 app.Run();
