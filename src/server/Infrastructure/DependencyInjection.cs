@@ -1,6 +1,8 @@
 using Application.Common;
 using Infrastructure.Persistence;
+using Application.Administration;
 using Infrastructure.Persistence.Queries.Reporting;
+using Infrastructure.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -21,6 +23,7 @@ public static class DependencyInjection
         services.AddDbContext<BookstoreDbContext>(configureDatabase);
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.TryAddSingleton<IClock, SystemClock>();
+        services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
         services.AddSingleton(reporting ?? new ReportingOptions());
         AddPortAdapters(services);
         return services;
