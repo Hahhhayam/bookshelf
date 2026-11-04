@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace Shared;
 
 /// <summary>Consistency boundary: changed only through its root, one transaction per aggregate.</summary>
-public abstract class AggregateRoot<TId>(TId id) : Entity<TId>(id) where TId : notnull
+public abstract class AggregateRoot<TId>(TId id) : Entity<TId>(id), IAggregateRoot where TId : notnull
 {
     private readonly List<IDomainEvent> _domainEvents = [];
 

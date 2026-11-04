@@ -17,13 +17,16 @@ public sealed class Sale : AggregateRoot<SaleId>
     /// <summary>Receipt total after discounts.</summary>
     public Money Total { get; }
 
-    private Sale(SaleId id, LocationId locationId, UserId cashier, CustomerId? customerId, IdempotencyKey key,
+    // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
+    private Sale() : base(default) { }
+
+    private Sale(SaleId id, LocationId locationId, UserId cashier, CustomerId? customerId, IdempotencyKey idempotencyKey,
         DateTimeOffset completedAt, Money total) : base(id)
     {
         LocationId = locationId;
         Cashier = cashier;
         CustomerId = customerId;
-        IdempotencyKey = key;
+        IdempotencyKey = idempotencyKey;
         CompletedAt = completedAt;
         Total = total;
     }

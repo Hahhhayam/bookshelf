@@ -11,6 +11,9 @@ public sealed class Promotion : AggregateRoot<PromotionId>
     /// <summary>When several promotions overlap, the one with the higher priority wins.</summary>
     public int Priority { get; private set; }
 
+    // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
+    private Promotion() : base(default) { Name = null!; Condition = null!; }
+
     private Promotion(PromotionId id, string name, Period period, PromotionCondition condition,
         decimal discountPercent, int priority) : base(id)
     {

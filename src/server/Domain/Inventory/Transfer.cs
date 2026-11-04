@@ -13,6 +13,9 @@ public sealed class Transfer : AggregateRoot<TransferId>
     public IReadOnlyList<TransferLine> Lines => _lines;
     public IReadOnlyList<Discrepancy> Discrepancies => _discrepancies;
 
+    // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
+    private Transfer() : base(default) { }
+
     private Transfer(TransferId id, Route route) : base(id) => Route = route;
 
     public static Transfer Create(Route route, IEnumerable<ItemQuantity> items)

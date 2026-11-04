@@ -7,6 +7,9 @@ public sealed class SaleLine : Entity<Guid>
     public Money UnitPrice { get; }
     public Discount Discount { get; }
 
+    // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
+    private SaleLine() : base(default) { }
+
     public SaleLine(BookId bookId, Quantity quantity, Money unitPrice, Discount discount) : base(Guid.CreateVersion7())
     {
         Guard.That(!quantity.IsZero, "Sale quantity must be positive.");

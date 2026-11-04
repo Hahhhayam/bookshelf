@@ -5,6 +5,9 @@ public sealed class GiftCertificate : AggregateRoot<GiftCertificateId>
     public string Number { get; }
     public Money Balance { get; private set; }
 
+    // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
+    private GiftCertificate() : base(default) { Number = null!; }
+
     private GiftCertificate(GiftCertificateId id, string number, Money balance) : base(id)
     {
         Number = number;

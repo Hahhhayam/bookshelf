@@ -9,6 +9,9 @@ public sealed class Customer : AggregateRoot<CustomerId>
     public CustomerCard Card { get; }
     public IReadOnlyCollection<SegmentId> Segments => _segments;
 
+    // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
+    private Customer() : base(default) { Contact = null!; }
+
     private Customer(CustomerId id, ContactInfo contact, CustomerCard card) : base(id)
     {
         Contact = contact;

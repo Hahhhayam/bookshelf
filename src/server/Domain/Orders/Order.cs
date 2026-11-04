@@ -29,14 +29,17 @@ public sealed class Order : AggregateRoot<OrderId>
     public IReadOnlyList<OrderLine> Lines => _lines;
     public IReadOnlyList<StatusChange> History => _history;
 
+    // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
+    private Order() : base(default) { Fulfilment = null!; }
+
     private Order(OrderId id, CustomerId customerId, OrderType type, FulfilmentMethod fulfilment,
-        LocationId stockLocation, PickupCode code) : base(id)
+        LocationId stockLocation, PickupCode pickupCode) : base(id)
     {
         CustomerId = customerId;
         Type = type;
         Fulfilment = fulfilment;
         StockLocation = stockLocation;
-        PickupCode = code;
+        PickupCode = pickupCode;
     }
 
     public Money Total => Money.Sum(_lines.Select(l => l.Total), _lines[0].UnitPrice.Currency);

@@ -7,6 +7,9 @@ public sealed class PriceEntry : Entity<Guid>
     public DateTimeOffset ValidFrom { get; }
     public UserId SetBy { get; }
 
+    // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
+    private PriceEntry() : base(default) { }
+
     internal PriceEntry(Money price, DateTimeOffset validFrom, UserId setBy) : base(Guid.CreateVersion7())
     {
         Guard.That(!price.IsNegative, "Price cannot be negative.");

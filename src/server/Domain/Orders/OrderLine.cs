@@ -5,7 +5,10 @@ public sealed class OrderLine : Entity<BookId>
     public Quantity Quantity { get; }
     public Money UnitPrice { get; }
 
-    internal OrderLine(BookId bookId, Quantity quantity, Money unitPrice) : base(bookId)
+    // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
+    private OrderLine() : base(default) { }
+
+    internal OrderLine(BookId id, Quantity quantity, Money unitPrice) : base(id)
     {
         Quantity = quantity;
         UnitPrice = unitPrice;
