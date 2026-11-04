@@ -4,6 +4,7 @@ using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Errors;
+using WebApi.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddInfrastructure(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Bookstore")));
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, HttpContextCurrentUser>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 

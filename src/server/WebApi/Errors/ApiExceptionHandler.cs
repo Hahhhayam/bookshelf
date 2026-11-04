@@ -23,6 +23,7 @@ internal sealed class ApiExceptionHandler(IProblemDetailsService problems) : IEx
 
     private static int? StatusFor(Exception exception) => exception switch
     {
+        UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
         NotFoundException => StatusCodes.Status404NotFound,
         ForbiddenException => StatusCodes.Status403Forbidden,
         PaymentDeclinedException => StatusCodes.Status402PaymentRequired,
