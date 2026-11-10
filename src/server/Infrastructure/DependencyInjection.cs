@@ -1,6 +1,9 @@
 using Application.Common;
+using Infrastructure.Notifications;
+using Infrastructure.Payments;
 using Infrastructure.Persistence;
 using Application.Administration;
+using Application.Sales;
 using Infrastructure.Persistence.Queries.Reporting;
 using Infrastructure.Security;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +27,10 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.TryAddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
+        services.AddScoped<ISessionIssuer, SessionIssuer>();
+        services.AddScoped<IPaymentGateway, StubPaymentGateway>();
+        services.AddScoped<INotificationSender, SmtpNotificationSender>();
+        services.AddOptions<SmtpOptions>();
         services.AddSingleton(reporting ?? new ReportingOptions());
         AddPortAdapters(services);
         return services;

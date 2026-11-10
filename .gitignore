@@ -1,0 +1,5 @@
+# JetBrains Rider
+.idea/
+.idea.*/
+*.iml
+*.DotSettings.user
