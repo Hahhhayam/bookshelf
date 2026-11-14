@@ -367,7 +367,7 @@ An immutable record of one critical action: who did it, when, the action type an
 
 ## 9. Reporting
 
-Owns no aggregates. It builds read models (projections and materialized views) from the events of the other contexts, and uses them for sales, margin, average check, turnover, shortage, surplus, ABC analysis and store performance reports. See [FR-16](Specification_Bookstore_IS.md#fr-16) and [report 4.6](Звіт_Книжковий%20магаз.md#46-підтримка-бази-даних).
+Owns no aggregates. It builds read models (projections and materialized views) from the events of the other contexts, and uses them for sales, margin, average check, turnover, shortage, surplus, ABC analysis and store performance reports. For now the reports read the sales, stock and purchase data directly and compute the figures from it; no projections are built yet. See [FR-16](Specification_Bookstore_IS.md#fr-16) and [report 4.6](Звіт_Книжковий%20магаз.md#46-підтримка-бази-даних).
 
 ---
 

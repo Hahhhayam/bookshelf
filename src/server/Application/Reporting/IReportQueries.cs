@@ -1,7 +1,7 @@
 namespace Application.Reporting;
 
-/// <summary>Reads the projections and materialized views that Reporting builds from the other contexts' events.</summary>
+/// <summary>Loads the sales and stock facts in the report's scope; the figures are computed from them in Application.</summary>
 public interface IReportQueries
 {
-    Task<ManagementReport> BuildManagementReportAsync(ReportRequest request, CancellationToken ct);
+    Task<ReportData> LoadAsync(ReportRequest request, CancellationToken ct);
 }

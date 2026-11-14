@@ -324,6 +324,8 @@ An authorized user creates a promotion with validity period, conditions and prio
 A manager can generate reports by period, store, category, book and other available dimensions.
 *Supports:* [BC-03](#bc-03), [BC-04](#bc-04), [BC-07](#bc-07)
 
+*Implementation notes (not in the report):* the management report is filtered by period, stores (none means the whole chain, which needs its own permission), category and book. It shows revenue, margin (against the average purchase price), receipts, average check, days of stock at the period's sales rate (turnover), top books, slow-moving books (surplus), current stock below minimum (shortage), ABC analysis by revenue (A up to 80%, B up to 95%, C the rest), figures per store and per category. The same report can be exported as a CSV file.
+
 <a id="fr-17"></a>
 #### FR-17 Change history
 For critical entities the system stores the user, time, action type and values of key fields before and after the change.
