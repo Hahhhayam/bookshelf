@@ -7,6 +7,8 @@ public sealed record AdjustStockRequest(Guid Location, Guid Book, int NewOnHand,
 
 public sealed record ReserveBookRequest(Guid Location, Guid Book, int Quantity, int HoldMinutes);
 
+public sealed record SetMinimumStockRequest(int Minimum);
+
 public sealed record ItemQuantityDto(Guid Book, int Quantity)
 {
     public ItemQuantity ToItem() => new(new BookId(Book), new Quantity(Quantity));
@@ -33,6 +35,17 @@ public sealed class InventoryController : ControllerBase
         var command = new AdjustStockCommand(
             new LocationId(request.Location), new BookId(request.Book), new Quantity(request.NewOnHand),
             new AdjustmentReason(request.Reason));
+        await useCase.ExecuteAsync(command, ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.StockAdjust)]
+    [HttpPut("locations/{location:guid}/stock/{book:guid}/minimum")]
+    public async Task<IActionResult> SetMinimum(
+        Guid location, Guid book, SetMinimumStockRequest request, [FromServices] SetMinimumStockUseCase useCase,
+        CancellationToken ct)
+    {
+        var command = new SetMinimumStockCommand(new LocationId(location), new BookId(book), new Quantity(request.Minimum));
         await useCase.ExecuteAsync(command, ct);
         return NoContent();
     }

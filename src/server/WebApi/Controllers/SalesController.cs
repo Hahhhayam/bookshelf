@@ -12,6 +12,8 @@ public sealed record CompleteSaleRequest(Guid Location, Guid? Customer, SaleItem
 
 public sealed record CreateReturnRequest(Guid Sale, ItemQuantityDto[] Items, string Reason, ItemCondition Condition);
 
+public sealed record IssueGiftCertificateRequest(string Number, MoneyDto Value);
+
 [ApiController]
 public sealed class SalesController : ControllerBase
 {
@@ -28,6 +30,15 @@ public sealed class SalesController : ControllerBase
             request.Payments.Select(p => new PaymentRequest(p.Method, p.Amount.ToMoney(), p.GiftCertificateNumber)).ToList());
         var id = await useCase.ExecuteAsync(command, ct);
         return Created($"sales/{id.Value}", new { id = id.Value });
+    }
+
+    [RequirePermission(Permissions.SalesCreate)]
+    [HttpPost("gift-certificates")]
+    public async Task<IActionResult> IssueGiftCertificate(
+        IssueGiftCertificateRequest request, [FromServices] IssueGiftCertificateUseCase useCase, CancellationToken ct)
+    {
+        var id = await useCase.ExecuteAsync(request.Number, request.Value.ToMoney(), ct);
+        return Created($"gift-certificates/{id.Value}", new { id = id.Value });
     }
 
     [RequirePermission(Permissions.SalesCancel)]

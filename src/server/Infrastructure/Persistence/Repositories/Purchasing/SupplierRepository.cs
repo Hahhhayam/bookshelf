@@ -6,4 +6,6 @@ internal sealed class SupplierRepository(BookstoreDbContext db) : ISupplierRepos
 {
     public Task<Supplier?> GetAsync(SupplierId id, CancellationToken ct) =>
         db.Set<Supplier>().FirstOrDefaultAsync(s => s.Id == id, ct);
+
+    public void Add(Supplier supplier) => db.Set<Supplier>().Add(supplier);
 }

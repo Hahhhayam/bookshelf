@@ -12,6 +12,8 @@ public sealed record ReceiveDeliveryRequest(Guid Location, Guid? PurchaseOrder, 
 
 public sealed record RecordMissingBookRequest(string Title, string? Author, Guid Location, Guid? Customer);
 
+public sealed record SupplierRequest(string Name, string? ContactInfo);
+
 [ApiController]
 public sealed class PurchasingController : ControllerBase
 {
@@ -59,5 +61,32 @@ public sealed class PurchasingController : ControllerBase
             request.Customer is { } customer ? new CustomerId(customer) : null);
         var id = await useCase.ExecuteAsync(command, ct);
         return Created($"missing-book-requests/{id.Value}", new { id = id.Value });
+    }
+
+    [RequirePermission(Permissions.PurchasingManage)]
+    [HttpPost("suppliers")]
+    public async Task<IActionResult> CreateSupplier(
+        SupplierRequest request, [FromServices] CreateSupplierUseCase useCase, CancellationToken ct)
+    {
+        var id = await useCase.ExecuteAsync(request.Name, request.ContactInfo, ct);
+        return Created($"suppliers/{id.Value}", new { id = id.Value });
+    }
+
+    [RequirePermission(Permissions.PurchasingManage)]
+    [HttpPut("suppliers/{id:guid}")]
+    public async Task<IActionResult> UpdateSupplier(
+        Guid id, SupplierRequest request, [FromServices] UpdateSupplierUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new SupplierId(id), request.Name, request.ContactInfo, ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.PurchasingManage)]
+    [HttpPut("suppliers/{id:guid}/active")]
+    public async Task<IActionResult> SetSupplierActive(
+        Guid id, SetActiveRequest request, [FromServices] SetSupplierActiveUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new SupplierId(id), request.Active, ct);
+        return NoContent();
     }
 }

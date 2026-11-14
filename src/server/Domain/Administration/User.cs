@@ -54,5 +54,11 @@ public sealed class User : AggregateRoot<UserId>
 
     public void RevokeRole(RoleId role) => _roles.Remove(role);
 
+    public void ChangeRoles(IEnumerable<RoleId> roles)
+    {
+        _roles.Clear();
+        _roles.UnionWith(roles);
+    }
+
     public void ChangeAccess(LocationAccess access) => Access = access;
 }

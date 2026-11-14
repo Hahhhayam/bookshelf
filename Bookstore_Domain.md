@@ -191,6 +191,7 @@ A gift certificate that is sold and then spent. It tracks its remaining balance 
 - **Value objects**
   - **CertificateBalance** — the remaining value of the certificate.
 - **Rules**
+  - A certificate is issued under the number printed on it, which must be unique, with a positive value. The customer pays for it like any other payment at the till.
   - A purchase cannot spend more than the remaining balance.
 
 ---

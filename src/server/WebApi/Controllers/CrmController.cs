@@ -11,6 +11,10 @@ public sealed record CreatePromotionRequest(
     string Name, DateTimeOffset From, DateTimeOffset To, PromotionConditionDto Condition, decimal DiscountPercent,
     int Priority);
 
+public sealed record SegmentRequest(string Name, string? Description);
+
+public sealed record ChangeCustomerSegmentsRequest(Guid[] Segments);
+
 [ApiController]
 public sealed class CrmController : ControllerBase
 {
@@ -37,5 +41,33 @@ public sealed class CrmController : ControllerBase
             request.Name, new Period(request.From, request.To), condition, request.DiscountPercent, request.Priority);
         var id = await useCase.ExecuteAsync(command, ct);
         return Created($"promotions/{id.Value}", new { id = id.Value });
+    }
+
+    [RequirePermission(Permissions.CrmManage)]
+    [HttpPost("segments")]
+    public async Task<IActionResult> CreateSegment(
+        SegmentRequest request, [FromServices] CreateSegmentUseCase useCase, CancellationToken ct)
+    {
+        var id = await useCase.ExecuteAsync(request.Name, request.Description, ct);
+        return Created($"segments/{id.Value}", new { id = id.Value });
+    }
+
+    [RequirePermission(Permissions.CrmManage)]
+    [HttpPut("segments/{id:guid}")]
+    public async Task<IActionResult> UpdateSegment(
+        Guid id, SegmentRequest request, [FromServices] UpdateSegmentUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new SegmentId(id), request.Name, request.Description, ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.CrmManage)]
+    [HttpPut("customers/{id:guid}/segments")]
+    public async Task<IActionResult> ChangeSegments(
+        Guid id, ChangeCustomerSegmentsRequest request, [FromServices] ChangeCustomerSegmentsUseCase useCase,
+        CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new CustomerId(id), request.Segments.Select(s => new SegmentId(s)).ToHashSet(), ct);
+        return NoContent();
     }
 }

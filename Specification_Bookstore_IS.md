@@ -247,7 +247,7 @@ The system must allow login with an account and determine user rights according 
 #### FR-02 Book catalog
 An authorized user can add, edit and deactivate books. ISBN uniqueness must be checked.
 
-*Implementation notes (not in the report):* an item keeps only its current price, and a price change applies at once. Earlier prices are kept in a separate append-only history that is written from the price-change event in the same transaction. Scheduled (future-dated) prices are not supported.
+*Implementation notes (not in the report):* editing an item's details removes its cached card at once. Authors, publishers and suppliers are deactivated instead of deleted and can be reactivated; categories can only be renamed. An item keeps only its current price, and a price change applies at once. Earlier prices are kept in a separate append-only history that is written from the price-change event in the same transaction. Scheduled (future-dated) prices are not supported.
 
 <a id="fr-03"></a>
 #### FR-03 Search
@@ -337,6 +337,8 @@ The system creates notifications about order readiness, low stock, overdue deliv
 <a id="fr-19"></a>
 #### FR-19 Users
 An administrator can create, block and restore users, assign roles and access to locations.
+
+*Implementation notes (not in the report):* a user's roles and location access are replaced as a whole, and a role's name and permissions likewise. Both are access-rights changes and are audited with the values before and after. Locations are created, edited and deactivated as data; integrations are registered one row per connection and can be enabled or disabled.
 
 <a id="fr-20"></a>
 #### FR-20 Integrations

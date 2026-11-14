@@ -21,6 +21,8 @@ public static class Permissions
     public const string CrmManage = "crm.manage";
     public const string PromotionsManage = "promotions.manage";
     public const string UsersManage = "users.manage";
+    public const string LocationsManage = "locations.manage";
+    public const string IntegrationsManage = "integrations.manage";
     public const string AuditView = "audit.view";
     public const string ReportsView = "reports.view";
     public const string ReportsChainWide = "reports.chain";

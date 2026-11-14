@@ -29,5 +29,11 @@ public sealed class Role : AggregateRoot<RoleId>
 
     public void Revoke(Permission permission) => _permissions.Remove(permission);
 
+    public void ChangePermissions(IEnumerable<Permission> permissions)
+    {
+        _permissions.Clear();
+        _permissions.UnionWith(permissions);
+    }
+
     public bool Has(Permission permission) => _permissions.Contains(permission);
 }

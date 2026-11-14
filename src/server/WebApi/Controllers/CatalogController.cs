@@ -11,6 +11,8 @@ public sealed record AddBookRequest(
 
 public sealed record ChangeBookPriceRequest(MoneyDto NewPrice);
 
+public sealed record UpdateBookDetailsRequest(string Title, string Barcode, Guid Category, Guid[] Authors, Guid? Publisher);
+
 [ApiController]
 public sealed class CatalogController : ControllerBase
 {
@@ -72,4 +74,89 @@ public sealed class CatalogController : ControllerBase
     [HttpDelete("books/{id:guid}")]
     public async Task<IActionResult> Remove(Guid id, [FromServices] RemoveBookUseCase useCase, CancellationToken ct) =>
         Ok(new { mode = await useCase.ExecuteAsync(new BookId(id), ct) });
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPut("books/{id:guid}")]
+    public async Task<IActionResult> UpdateDetails(
+        Guid id, UpdateBookDetailsRequest request, [FromServices] UpdateBookDetailsUseCase useCase, CancellationToken ct)
+    {
+        var command = new UpdateBookDetailsCommand(
+            new BookId(id), request.Title, new Barcode(request.Barcode), new CategoryId(request.Category),
+            request.Authors.Select(a => new AuthorId(a)).ToList(),
+            request.Publisher is { } p ? new PublisherId(p) : null);
+        await useCase.ExecuteAsync(command, ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPost("authors")]
+    public async Task<IActionResult> CreateAuthor(
+        NameRequest request, [FromServices] CreateAuthorUseCase useCase, CancellationToken ct)
+    {
+        var id = await useCase.ExecuteAsync(request.Name, ct);
+        return Created($"authors/{id.Value}", new { id = id.Value });
+    }
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPut("authors/{id:guid}")]
+    public async Task<IActionResult> RenameAuthor(
+        Guid id, NameRequest request, [FromServices] RenameAuthorUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new AuthorId(id), request.Name, ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPut("authors/{id:guid}/active")]
+    public async Task<IActionResult> SetAuthorActive(
+        Guid id, SetActiveRequest request, [FromServices] SetAuthorActiveUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new AuthorId(id), request.Active, ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPost("publishers")]
+    public async Task<IActionResult> CreatePublisher(
+        NameRequest request, [FromServices] CreatePublisherUseCase useCase, CancellationToken ct)
+    {
+        var id = await useCase.ExecuteAsync(request.Name, ct);
+        return Created($"publishers/{id.Value}", new { id = id.Value });
+    }
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPut("publishers/{id:guid}")]
+    public async Task<IActionResult> RenamePublisher(
+        Guid id, NameRequest request, [FromServices] RenamePublisherUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new PublisherId(id), request.Name, ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPut("publishers/{id:guid}/active")]
+    public async Task<IActionResult> SetPublisherActive(
+        Guid id, SetActiveRequest request, [FromServices] SetPublisherActiveUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new PublisherId(id), request.Active, ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPost("categories")]
+    public async Task<IActionResult> CreateCategory(
+        NameRequest request, [FromServices] CreateCategoryUseCase useCase, CancellationToken ct)
+    {
+        var id = await useCase.ExecuteAsync(request.Name, ct);
+        return Created($"categories/{id.Value}", new { id = id.Value });
+    }
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPut("categories/{id:guid}")]
+    public async Task<IActionResult> RenameCategory(
+        Guid id, NameRequest request, [FromServices] RenameCategoryUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new CategoryId(id), request.Name, ct);
+        return NoContent();
+    }
 }
