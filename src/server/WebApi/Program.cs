@@ -7,6 +7,7 @@ using Infrastructure.Persistence;
 using Infrastructure.Scheduling;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Errors;
+using WebApi.OpenApi;
 using WebApi.Security;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,7 @@ AddDistributedCache(builder);
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddBookstoreSecurity();
+builder.Services.AddBookstoreSwagger();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 
@@ -32,6 +34,10 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 }
 
 app.UseExceptionHandler();
+app.UseBookstoreSwagger();
+if (!app.Environment.IsDevelopment())
+    app.UseHsts();
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
