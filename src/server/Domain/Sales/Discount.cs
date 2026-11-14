@@ -8,5 +8,5 @@ public readonly record struct Discount(Money Amount, DiscountSource Source)
     {
     }
 
-    public static Discount None(string currency) => new(Money.Zero(currency), DiscountSource.None);
+    public static Discount None(CurrencyCode currency) => new(Money.Zero(currency), DiscountSource.None);
 }

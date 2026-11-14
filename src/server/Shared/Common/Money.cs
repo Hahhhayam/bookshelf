@@ -4,22 +4,20 @@ namespace Shared;
 public readonly record struct Money : IComparable<Money>
 {
     public decimal Amount { get; }
-    public string Currency { get; }
+    public CurrencyCode Currency { get; }
 
-    public Money(decimal amount, string currency)
+    public Money(decimal amount, CurrencyCode currency)
     {
-        Guard.That(currency is { Length: > 0 } && currency.Trim().Length == 3,
-            "Currency must be a three-letter ISO code.");
         Amount = decimal.Round(amount, 2, MidpointRounding.AwayFromZero);
-        Currency = currency.Trim().ToUpperInvariant();
+        Currency = currency;
     }
 
-    public static Money Zero(string currency) => new(0m, currency);
+    public static Money Zero(CurrencyCode currency) => new(0m, currency);
 
     public bool IsZero => Amount == 0m;
     public bool IsNegative => Amount < 0m;
 
-    public static Money Sum(IEnumerable<Money> values, string currency) =>
+    public static Money Sum(IEnumerable<Money> values, CurrencyCode currency) =>
         values.Aggregate(Zero(currency), (acc, m) => acc + m);
 
     public static Money operator +(Money a, Money b)

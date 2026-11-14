@@ -1,4 +1,7 @@
 using Application.Common;
+using Application.Crm;
+using Infrastructure.Bonuses;
+using Infrastructure.Exchange;
 using Infrastructure.Notifications;
 using Infrastructure.Payments;
 using Infrastructure.Persistence;
@@ -29,8 +32,11 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
         services.AddScoped<ISessionIssuer, SessionIssuer>();
         services.AddScoped<IPaymentGateway, StubPaymentGateway>();
+        services.AddSingleton<ICurrencyConverter, StubCurrencyConverter>();
         services.AddScoped<INotificationSender, SmtpNotificationSender>();
         services.AddOptions<SmtpOptions>();
+        services.AddOptions<BonusOptions>();
+        services.AddScoped<IBonusPolicy, ConfiguredBonusPolicy>();
         services.AddSingleton(reporting ?? new ReportingOptions());
         AddPortAdapters(services);
         return services;

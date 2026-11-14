@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Application;
 using Infrastructure;
+using Infrastructure.Bonuses;
 using Infrastructure.Notifications;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,10 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Bookstore")));
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+builder.Services.Configure<BonusOptions>(builder.Configuration.GetSection("Bonuses"));
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUser, HttpContextCurrentUser>();
+builder.Services.AddHttpContextAccessor();builder.Services.AddScoped<ICurrentUser, HttpContextCurrentUser>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 

@@ -17,9 +17,9 @@ internal sealed class ReportQueries(BookstoreDbContext db, ReportingOptions opti
     {
         var totals = await SaleTotalsAsync(request, ct);
         var lines = await SoldLinesAsync(request, ct);
-        var currency = totals.FirstOrDefault().Currency ?? options.FallbackCurrency;
+        var currency = totals.Count > 0 ? totals[0].Currency : new CurrencyCode(options.FallbackCurrency);
 
-        var revenue = Money.Sum(totals.Select(t => new Money(t.Amount, t.Currency)), currency);
+        var revenue = Money.Sum(totals, currency);
         var cost = await PurchaseCostAsync(lines, currency, ct);
         return new ManagementReport(
             revenue,
@@ -37,10 +37,8 @@ internal sealed class ReportQueries(BookstoreDbContext db, ReportingOptions opti
         return request.Locations.Count == 0 ? sales : sales.Where(s => request.Locations.Contains(s.LocationId));
     }
 
-    private async Task<List<(decimal Amount, string Currency)>> SaleTotalsAsync(ReportRequest request, CancellationToken ct) =>
-        (await CompletedSales(request).Select(s => new { s.Total.Amount, s.Total.Currency }).ToListAsync(ct))
-        .Select(t => (t.Amount, t.Currency))
-        .ToList();
+    private Task<List<Money>> SaleTotalsAsync(ReportRequest request, CancellationToken ct) =>
+        CompletedSales(request).Select(s => s.Total).ToListAsync(ct);
 
     private async Task<List<SoldLine>> SoldLinesAsync(ReportRequest request, CancellationToken ct)
     {
@@ -50,19 +48,15 @@ internal sealed class ReportQueries(BookstoreDbContext db, ReportingOptions opti
             {
                 Book = l.BookId,
                 l.Quantity,
-                Unit = l.UnitPrice.Amount,
-                l.UnitPrice.Currency,
-                Discount = l.Discount.Amount.Amount,
+                Unit = l.UnitPrice,
+                Discount = l.Discount.Amount,
             })
             .ToListAsync(ct);
 
-        return rows
-            .Select(r => new SoldLine(
-                r.Book, r.Quantity, new Money(r.Unit, r.Currency) * r.Quantity - new Money(r.Discount, r.Currency)))
-            .ToList();
+        return rows.Select(r => new SoldLine(r.Book, r.Quantity, r.Unit * r.Quantity - r.Discount)).ToList();
     }
 
-    private async Task<Money> PurchaseCostAsync(IReadOnlyList<SoldLine> lines, string currency, CancellationToken ct)
+    private async Task<Money> PurchaseCostAsync(IReadOnlyList<SoldLine> lines, CurrencyCode currency, CancellationToken ct)
     {
         var books = lines.Select(l => l.Book).Distinct().ToList();
         var prices = await db.Set<PurchaseOrder>().AsNoTracking()
@@ -77,7 +71,7 @@ internal sealed class ReportQueries(BookstoreDbContext db, ReportingOptions opti
             lines.Select(l => new Money(average.GetValueOrDefault(l.Book), currency) * l.Quantity), currency);
     }
 
-    private static List<BookSalesFigure> TopBooks(IReadOnlyList<SoldLine> lines, string currency) =>
+    private static List<BookSalesFigure> TopBooks(IReadOnlyList<SoldLine> lines, CurrencyCode currency) =>
         lines
             .GroupBy(l => l.Book)
             .Select(g => new BookSalesFigure(
