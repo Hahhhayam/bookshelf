@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
+using WebApi.Security;
 
 namespace WebApi.Controllers;
 
@@ -12,6 +14,7 @@ public sealed record ChangeBookPriceRequest(MoneyDto NewPrice);
 [ApiController]
 public sealed class CatalogController : ControllerBase
 {
+    [AllowAnonymous]
     [HttpGet("books")]
     public async Task<IActionResult> Search(
         string? text, string? isbn, Guid? author, Guid? publisher, Guid? category, Guid? availableAt,
@@ -29,6 +32,7 @@ public sealed class CatalogController : ControllerBase
         }));
     }
 
+    [AllowAnonymous]
     [HttpGet("books/{id:guid}")]
     public async Task<IActionResult> Get(Guid id, [FromServices] GetBookUseCase useCase, CancellationToken ct)
     {
@@ -42,6 +46,7 @@ public sealed class CatalogController : ControllerBase
         });
     }
 
+    [RequirePermission(Permissions.CatalogEdit)]
     [HttpPost("books")]
     public async Task<IActionResult> Add(AddBookRequest request, [FromServices] AddBookUseCase useCase, CancellationToken ct)
     {
@@ -54,6 +59,7 @@ public sealed class CatalogController : ControllerBase
         return Created($"books/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.PriceChange)]
     [HttpPost("books/{id:guid}/price")]
     public async Task<IActionResult> ChangePrice(
         Guid id, ChangeBookPriceRequest request, [FromServices] ChangeBookPriceUseCase useCase, CancellationToken ct)
@@ -62,6 +68,7 @@ public sealed class CatalogController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.CatalogEdit)]
     [HttpDelete("books/{id:guid}")]
     public async Task<IActionResult> Remove(Guid id, [FromServices] RemoveBookUseCase useCase, CancellationToken ct) =>
         Ok(new { mode = await useCase.ExecuteAsync(new BookId(id), ct) });

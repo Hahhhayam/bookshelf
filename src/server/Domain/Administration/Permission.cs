@@ -7,5 +7,7 @@ public readonly record struct Permission
 
     public Permission(string code) => Code = Guard.NotBlank(code);
 
+    public static implicit operator Permission(string code) => new(code);
+
     public override string ToString() => Code;
 }

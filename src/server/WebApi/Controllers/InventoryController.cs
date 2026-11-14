@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Security;
 
 namespace WebApi.Controllers;
 
@@ -24,6 +25,7 @@ public sealed record CreateWriteOffRequest(Guid Location, string Reason, ItemQua
 [ApiController]
 public sealed class InventoryController : ControllerBase
 {
+    [RequirePermission(Permissions.StockAdjust)]
     [HttpPost("stock/adjustments")]
     public async Task<IActionResult> Adjust(
         AdjustStockRequest request, [FromServices] AdjustStockUseCase useCase, CancellationToken ct)
@@ -35,6 +37,7 @@ public sealed class InventoryController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.SalesCreate)]
     [HttpPost("stock/reservations")]
     public async Task<IActionResult> Reserve(
         ReserveBookRequest request, [FromServices] ReserveBookUseCase useCase, CancellationToken ct)
@@ -46,6 +49,7 @@ public sealed class InventoryController : ControllerBase
         return Ok(new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.SalesCreate)]
     [HttpDelete("locations/{location:guid}/stock/{book:guid}/reservations/{reservation:guid}")]
     public async Task<IActionResult> Release(
         Guid location, Guid book, Guid reservation, [FromServices] ReleaseReservationUseCase useCase, CancellationToken ct)
@@ -54,6 +58,7 @@ public sealed class InventoryController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.TransfersManage)]
     [HttpPost("transfers")]
     public async Task<IActionResult> CreateTransfer(
         CreateTransferRequest request, [FromServices] CreateTransferUseCase useCase, CancellationToken ct)
@@ -63,6 +68,7 @@ public sealed class InventoryController : ControllerBase
         return Created($"transfers/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.TransfersManage)]
     [HttpPost("transfers/{id:guid}/approve")]
     public async Task<IActionResult> ApproveTransfer(Guid id, [FromServices] ApproveTransferUseCase useCase, CancellationToken ct)
     {
@@ -70,6 +76,7 @@ public sealed class InventoryController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.TransfersManage)]
     [HttpPost("transfers/{id:guid}/ship")]
     public async Task<IActionResult> ShipTransfer(Guid id, [FromServices] ShipTransferUseCase useCase, CancellationToken ct)
     {
@@ -77,6 +84,7 @@ public sealed class InventoryController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.TransfersManage)]
     [HttpPost("transfers/{id:guid}/receive")]
     public async Task<IActionResult> ReceiveTransfer(
         Guid id, ReceiveTransferRequest request, [FromServices] ReceiveTransferUseCase useCase, CancellationToken ct)
@@ -85,6 +93,7 @@ public sealed class InventoryController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.InventoryCountManage)]
     [HttpPost("inventory-counts")]
     public async Task<IActionResult> StartCount(
         StartInventoryCountRequest request, [FromServices] StartInventoryCountUseCase useCase, CancellationToken ct)
@@ -93,6 +102,7 @@ public sealed class InventoryController : ControllerBase
         return Created($"inventory-counts/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.InventoryCountManage)]
     [HttpPut("inventory-counts/{id:guid}/lines/{book:guid}")]
     public async Task<IActionResult> RecordCount(
         Guid id, Guid book, RecordCountRequest request, [FromServices] RecordCountedQuantityUseCase useCase, CancellationToken ct)
@@ -101,6 +111,7 @@ public sealed class InventoryController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.InventoryCountManage)]
     [HttpPost("inventory-counts/{id:guid}/complete")]
     public async Task<IActionResult> CompleteCount(
         Guid id, [FromServices] CompleteInventoryCountUseCase useCase, CancellationToken ct)
@@ -109,6 +120,7 @@ public sealed class InventoryController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.InventoryCountApprove)]
     [HttpPost("inventory-counts/{id:guid}/approve")]
     public async Task<IActionResult> ApproveCount(
         Guid id, [FromServices] ApproveInventoryCountUseCase useCase, CancellationToken ct)
@@ -117,6 +129,7 @@ public sealed class InventoryController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.WriteOffCreate)]
     [HttpPost("write-offs")]
     public async Task<IActionResult> CreateWriteOff(
         CreateWriteOffRequest request, [FromServices] CreateWriteOffUseCase useCase, CancellationToken ct)

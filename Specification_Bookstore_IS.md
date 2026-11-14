@@ -238,14 +238,23 @@ Source: [report 2.1.2](Звіт_Книжковий%20магаз.md#212-функ�
 #### FR-01 Authorization
 The system must allow login with an account and determine user rights according to role and store.
 
+*Implementation notes (not in the report):*
+- A successful login issues a random bearer session token valid for 8 hours. Only its hash is stored. Logout revokes the caller's own session at once.
+- A token stops working when it expires, is revoked, or its user is blocked. Roles and location access are read on every request, so a change to them applies immediately.
+- Every endpoint requires a signed-in user. The exceptions are login, catalog search, viewing a single item, and the customer-facing cart and order placement. Each staff operation also requires its named permission, checked at the API boundary before the request is processed and again inside the use case.
+
 <a id="fr-02"></a>
 #### FR-02 Book catalog
 An authorized user can add, edit and deactivate books. ISBN uniqueness must be checked.
+
+*Implementation notes (not in the report):* an item keeps only its current price, and a price change applies at once. Earlier prices are kept in a separate append-only history that is written from the price-change event, so it is eventually consistent. Scheduled (future-dated) prices are not supported.
 
 <a id="fr-03"></a>
 #### FR-03 Search
 A user can find a book by title, ISBN, author, publisher or category and see availability across the chain.
 *Supports:* [BC-02](#bc-02)
+
+*Implementation notes (not in the report):* a single item can also be opened by its identifier, with its availability per location. Search results are cached for 30 seconds per filter combination, and item cards for 15 minutes with removal on price change, so prices and availability in search may lag by that time. Availability on an item card is always read live.
 
 <a id="fr-04"></a>
 #### FR-04 Sale
@@ -356,7 +365,7 @@ Operations that change stock or financial amounts are executed transactionally. 
 
 <a id="nfr-security"></a>
 #### Security
-Data transfer only over HTTPS. Passwords are stored as strong hashes. Access to functions is determined by roles.
+Data transfer only over HTTPS. Passwords are stored as strong hashes. Access to functions is determined by roles, and every endpoint requires authentication unless it is explicitly public (see [FR-01](#fr-01)).
 
 <a id="nfr-audit"></a>
 #### Audit

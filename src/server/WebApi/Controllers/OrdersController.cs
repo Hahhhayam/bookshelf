@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Security;
 
 namespace WebApi.Controllers;
 
@@ -13,6 +15,7 @@ public sealed record ChangeOrderStatusRequest(OrderStatus Status);
 [ApiController]
 public sealed class OrdersController : ControllerBase
 {
+    [AllowAnonymous]
     [HttpPost("customers/{customer:guid}/cart/items")]
     public async Task<IActionResult> AddToCart(
         Guid customer, AddToCartRequest request, [FromServices] AddToCartUseCase useCase, CancellationToken ct)
@@ -21,6 +24,7 @@ public sealed class OrdersController : ControllerBase
         return NoContent();
     }
 
+    [AllowAnonymous]
     [HttpPost("orders")]
     public async Task<IActionResult> Place(
         PlaceOrderRequest request, [FromServices] PlaceOrderUseCase useCase, CancellationToken ct)
@@ -31,6 +35,7 @@ public sealed class OrdersController : ControllerBase
         return Created($"orders/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.OrdersManage)]
     [HttpPost("orders/{id:guid}/status")]
     public async Task<IActionResult> ChangeStatus(
         Guid id, ChangeOrderStatusRequest request, [FromServices] ChangeOrderStatusUseCase useCase, CancellationToken ct)

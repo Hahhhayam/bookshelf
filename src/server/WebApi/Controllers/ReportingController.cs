@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
+using WebApi.Security;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 public sealed class ReportingController : ControllerBase
 {
+    [RequirePermission(Permissions.ReportsView)]
     [HttpGet("reports/management")]
     public async Task<IActionResult> Management(
         DateTimeOffset from, DateTimeOffset to, [FromQuery] Guid[] locations,

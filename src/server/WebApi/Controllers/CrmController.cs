@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Security;
 
 namespace WebApi.Controllers;
 
@@ -13,6 +14,7 @@ public sealed record CreatePromotionRequest(
 [ApiController]
 public sealed class CrmController : ControllerBase
 {
+    [RequirePermission(Permissions.CrmManage, Permissions.SalesCreate)]
     [HttpPost("customers")]
     public async Task<IActionResult> Register(
         RegisterCustomerRequest request, [FromServices] RegisterCustomerUseCase useCase, CancellationToken ct)
@@ -22,6 +24,7 @@ public sealed class CrmController : ControllerBase
         return Created($"customers/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.PromotionsManage)]
     [HttpPost("promotions")]
     public async Task<IActionResult> CreatePromotion(
         CreatePromotionRequest request, [FromServices] CreatePromotionUseCase useCase, CancellationToken ct)

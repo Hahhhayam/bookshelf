@@ -1,4 +1,7 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Security;
 
 namespace WebApi.Controllers;
 
@@ -9,6 +12,7 @@ public sealed record CreateUserRequest(string Login, string Password, Guid[] Loc
 [ApiController]
 public sealed class AdministrationController : ControllerBase
 {
+    [AllowAnonymous]
     [HttpPost("auth/login")]
     public async Task<IActionResult> Login(
         LoginRequest request, [FromServices] LoginUseCase useCase, CancellationToken ct)
@@ -22,6 +26,14 @@ public sealed class AdministrationController : ControllerBase
         };
     }
 
+    [HttpPost("auth/logout")]
+    public async Task<IActionResult> Logout([FromServices] LogoutUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(Guid.Parse(User.FindFirstValue(BookstoreClaims.Session)!), ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.UsersManage)]
     [HttpPost("users")]
     public async Task<IActionResult> CreateUser(
         CreateUserRequest request, [FromServices] CreateUserUseCase useCase, CancellationToken ct)
@@ -34,6 +46,7 @@ public sealed class AdministrationController : ControllerBase
         return Created($"users/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.UsersManage)]
     [HttpPost("users/{id:guid}/block")]
     public async Task<IActionResult> Block(Guid id, [FromServices] BlockUserUseCase useCase, CancellationToken ct)
     {
@@ -41,6 +54,7 @@ public sealed class AdministrationController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.UsersManage)]
     [HttpPost("users/{id:guid}/unblock")]
     public async Task<IActionResult> Unblock(Guid id, [FromServices] UnblockUserUseCase useCase, CancellationToken ct)
     {
@@ -48,6 +62,7 @@ public sealed class AdministrationController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.AuditView)]
     [HttpGet("audit")]
     public async Task<IActionResult> History(
         string? subject, string? action, DateTimeOffset? from, DateTimeOffset? to,

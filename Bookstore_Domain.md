@@ -33,7 +33,8 @@ Sources: [Звіт_Книжковий магаз.md](Звіт_Книжковий
 
 Value objects used by several contexts. Each context refers to aggregates from other contexts only by their identifier, never by direct object reference.
 
-- **Money** — an amount together with its currency. Used for prices, discounts, payments and totals.
+- **Money** — an amount together with its currency, rounded to two decimals. Arithmetic and comparison work only between amounts in the same currency. Used for prices, discounts, payments and totals.
+- **CurrencyCode** — a three-letter ISO 4217 code such as UAH or USD. Both it and Money are value objects, so currencies have no table of their own. Exchange rates are not part of the model; they come from a currency converter port.
 - **Quantity** — a non-negative number of units of an item.
 - **Period** — a time interval with a start and an end. Used for promotion validity, reservation time and report periods.
 - **Identifiers** — typed IDs such as BookId, LocationId, CustomerId, UserId and SupplierId. Contexts use them to refer to each other's aggregates.
@@ -47,11 +48,10 @@ Owns the single catalog shared by physical stores and the online shop: books, no
 
 ### Aggregate: Book (catalog item)
 
-The root is a sellable catalog item. It is usually a book, but it can also be a product without an ISBN, such as stationery or a gift set. It holds descriptive attributes, references to authors, the publisher and the category, the sale status and the price history.
+The root is a sellable catalog item. It is usually a book, but it can also be a product without an ISBN, such as stationery or a gift set. It holds descriptive attributes, references to authors, the publisher and the category, the sale status and the current price. The price history is not part of this aggregate (see PriceEntry below).
 
-- **Entities**
-  - **PriceEntry** — a base price that is valid from a given moment. Old entries are never deleted; they form the price history ([scenario 3.3](Звіт_Книжковий%20магаз.md#33-редагування-ціни)).
 - **Value objects**
+  - **Price** — the current base price, a Money value.
   - **ISBN** — a validated book identifier. It is optional, because non-ISBN goods exist.
   - **Barcode** — the code a cashier scans to find the item.
   - **SaleStatus** — whether the item is active or deactivated.
@@ -59,7 +59,17 @@ The root is a sellable catalog item. It is usually a book, but it can also be a 
 - **Rules**
   - The ISBN must be unique across the catalog.
   - An item is deactivated instead of deleted when it has active orders, reservations or unfulfilled deliveries ([scenario 3.4](Звіт_Книжковий%20магаз.md#34-видалення-або-деактивація-книги)).
-  - Every price change keeps the old value and is audited.
+  - A price cannot be negative. A price change takes effect at once and raises the PriceChanged event with the old and the new value; the old value is kept in the price history ([scenario 3.3](Звіт_Книжковий%20магаз.md#33-редагування-ціни)). Scheduled (future-dated) prices are not supported.
+  - Creating an item raises the BookAdded event with its initial price.
+
+### Aggregate: PriceEntry (price history)
+
+One price a catalog item had from a given moment, with the user who set it. The history of an item is the set of its entries. Keeping it out of the Book aggregate means loading a book for a sale or an order does not load its whole price history.
+
+- **Rules**
+  - Entries are append-only and are never changed or deleted. They stay when the item is deleted.
+  - An entry refers to its item only by BookId, with no database foreign key.
+  - Entries are created by a handler of BookAdded and PriceChanged, not by the Book itself, so the history is eventually consistent with the current price. The entry takes the identifier of the event that caused it, so a redelivered event does not create a second entry.
 
 ### Aggregate: Author
 
@@ -301,6 +311,14 @@ An employee account.
   - A blocked user cannot log in.
   - A failed login is logged without the password.
 
+### Login session (not an aggregate)
+
+A successful login starts a session for the user. It is infrastructure data, not part of the domain model, and it raises no events. It has a random token (only its hash is stored), an issue time, an expiry time and an optional revocation time.
+
+- A session is valid until it expires, is revoked by logout, or its user is blocked.
+- The rights of a request come from the user's roles and location access at that moment, not from values copied into the session.
+- A user can end only their own session.
+
 ### Aggregate: Role
 
 A named set of permissions, such as cashier, store administrator or warehouse keeper, assigned to users (RBAC).
@@ -341,7 +359,8 @@ These events are published through the transactional outbox to RabbitMQ when the
 - **TransferShipped** and **TransferReceived** — update stock at the sending and receiving locations; a mismatch raises a discrepancy for review.
 - **GoodsReceived** — increases stock and updates the purchase order status.
 - **PurchaseOrderOverdue** — leads to an overdue delivery notification.
-- **PriceChanged** — leads to an audit record and a catalog cache refresh.
+- **BookAdded** — leads to the first price history entry.
+- **PriceChanged** — leads to a price history entry, an audit record and a catalog cache refresh.
 - **IntegrationFailed** — leads to a critical error notification for administrators.
 
 ---

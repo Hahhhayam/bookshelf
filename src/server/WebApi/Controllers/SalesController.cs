@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
+using WebApi.Security;
 
 namespace WebApi.Controllers;
 
@@ -14,6 +15,7 @@ public sealed record CreateReturnRequest(Guid Sale, ItemQuantityDto[] Items, str
 [ApiController]
 public sealed class SalesController : ControllerBase
 {
+    [RequirePermission(Permissions.SalesCreate)]
     [HttpPost("sales")]
     public async Task<IActionResult> Complete(
         CompleteSaleRequest request, [FromHeader(Name = "Idempotency-Key")] string idempotencyKey,
@@ -28,6 +30,7 @@ public sealed class SalesController : ControllerBase
         return Created($"sales/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.SalesCancel)]
     [HttpPost("sales/{id:guid}/cancel")]
     public async Task<IActionResult> Cancel(Guid id, [FromServices] CancelSaleUseCase useCase, CancellationToken ct)
     {
@@ -35,6 +38,7 @@ public sealed class SalesController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.SalesCreate)]
     [HttpPost("sales/{id:guid}/payments/{payment:guid}/confirm")]
     public async Task<IActionResult> ConfirmPayment(
         Guid id, Guid payment, [FromServices] ConfirmPendingPaymentUseCase useCase, CancellationToken ct)
@@ -43,6 +47,7 @@ public sealed class SalesController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.ReturnsCreate)]
     [HttpPost("returns")]
     public async Task<IActionResult> CreateReturn(
         CreateReturnRequest request, [FromServices] CreateReturnUseCase useCase, CancellationToken ct)
@@ -54,6 +59,7 @@ public sealed class SalesController : ControllerBase
         return Created($"returns/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.ReturnsConfirm)]
     [HttpPost("returns/{id:guid}/confirm")]
     public async Task<IActionResult> ConfirmReturn(Guid id, [FromServices] ConfirmReturnUseCase useCase, CancellationToken ct)
     {

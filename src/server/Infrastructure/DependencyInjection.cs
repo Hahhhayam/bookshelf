@@ -30,6 +30,8 @@ public static class DependencyInjection
         services.TryAddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
         services.AddScoped<ISessionIssuer, SessionIssuer>();
+        services.AddScoped<ISessionValidator, SessionValidator>();
+        services.AddScoped<ISessionRevoker, SessionRevoker>();
         services.AddScoped<IPaymentGateway, StubPaymentGateway>();
         services.AddSingleton<ICurrencyConverter, StubCurrencyConverter>();
         services.AddScoped<INotificationSender, SmtpNotificationSender>();

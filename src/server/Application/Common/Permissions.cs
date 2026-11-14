@@ -1,27 +1,28 @@
 namespace Application.Common;
 
+/// <summary>Permission codes. Constants, so controllers can use them in attributes; they convert to <see cref="Permission"/> implicitly.</summary>
 public static class Permissions
 {
-    public static readonly Permission CatalogEdit = new("catalog.edit");
-    public static readonly Permission PriceChange = new("catalog.price");
-    public static readonly Permission SalesCreate = new("sales.create");
-    public static readonly Permission SalesDiscount = new("sales.discount");
-    public static readonly Permission SalesCancel = new("sales.cancel");
-    public static readonly Permission ReturnsCreate = new("returns.create");
-    public static readonly Permission ReturnsConfirm = new("returns.confirm");
-    public static readonly Permission StockAdjust = new("stock.adjust");
-    public static readonly Permission TransfersManage = new("transfers.manage");
-    public static readonly Permission InventoryCountManage = new("inventory.count");
-    public static readonly Permission InventoryCountApprove = new("inventory.approve");
-    public static readonly Permission WriteOffCreate = new("writeoff.create");
-    public static readonly Permission OrdersManage = new("orders.manage");
-    public static readonly Permission PurchasingManage = new("purchasing.manage");
-    public static readonly Permission ReceivingConfirm = new("receiving.confirm");
-    public static readonly Permission CrmManage = new("crm.manage");
-    public static readonly Permission PromotionsManage = new("promotions.manage");
-    public static readonly Permission UsersManage = new("users.manage");
-    public static readonly Permission AuditView = new("audit.view");
-    public static readonly Permission ReportsView = new("reports.view");
-    public static readonly Permission ReportsChainWide = new("reports.chain");
-    public static readonly Permission IntegrationsReport = new("integrations.report");
+    public const string CatalogEdit = "catalog.edit";
+    public const string PriceChange = "catalog.price";
+    public const string SalesCreate = "sales.create";
+    public const string SalesDiscount = "sales.discount";
+    public const string SalesCancel = "sales.cancel";
+    public const string ReturnsCreate = "returns.create";
+    public const string ReturnsConfirm = "returns.confirm";
+    public const string StockAdjust = "stock.adjust";
+    public const string TransfersManage = "transfers.manage";
+    public const string InventoryCountManage = "inventory.count";
+    public const string InventoryCountApprove = "inventory.approve";
+    public const string WriteOffCreate = "writeoff.create";
+    public const string OrdersManage = "orders.manage";
+    public const string PurchasingManage = "purchasing.manage";
+    public const string ReceivingConfirm = "receiving.confirm";
+    public const string CrmManage = "crm.manage";
+    public const string PromotionsManage = "promotions.manage";
+    public const string UsersManage = "users.manage";
+    public const string AuditView = "audit.view";
+    public const string ReportsView = "reports.view";
+    public const string ReportsChainWide = "reports.chain";
+    public const string IntegrationsReport = "integrations.report";
 }

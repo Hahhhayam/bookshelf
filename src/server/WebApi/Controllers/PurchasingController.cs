@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
+using WebApi.Security;
 
 namespace WebApi.Controllers;
 
@@ -14,6 +15,7 @@ public sealed record RecordMissingBookRequest(string Title, string? Author, Guid
 [ApiController]
 public sealed class PurchasingController : ControllerBase
 {
+    [RequirePermission(Permissions.PurchasingManage)]
     [HttpPost("purchase-orders")]
     public async Task<IActionResult> CreateOrder(
         CreatePurchaseOrderRequest request, [FromServices] CreatePurchaseOrderUseCase useCase, CancellationToken ct)
@@ -25,6 +27,7 @@ public sealed class PurchasingController : ControllerBase
         return Created($"purchase-orders/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.PurchasingManage)]
     [HttpPost("purchase-orders/{id:guid}/send")]
     public async Task<IActionResult> SendOrder(Guid id, [FromServices] SendPurchaseOrderUseCase useCase, CancellationToken ct)
     {
@@ -32,6 +35,7 @@ public sealed class PurchasingController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.ReceivingConfirm)]
     [HttpPost("deliveries")]
     public async Task<IActionResult> ReceiveDelivery(
         ReceiveDeliveryRequest request, [FromServices] ReceiveDeliveryUseCase useCase, CancellationToken ct)
@@ -45,6 +49,7 @@ public sealed class PurchasingController : ControllerBase
         return Created($"deliveries/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.SalesCreate)]
     [HttpPost("missing-book-requests")]
     public async Task<IActionResult> RecordMissingBook(
         RecordMissingBookRequest request, [FromServices] RecordMissingBookUseCase useCase, CancellationToken ct)

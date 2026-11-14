@@ -4,6 +4,7 @@ namespace WebApi.Security;
 public static class BookstoreClaims
 {
     public const string UserId = "sub";
+    public const string Session = "sid";
     public const string Permission = "permission";
     public const string Location = "location";
 }

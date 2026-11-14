@@ -18,8 +18,7 @@ builder.Services.Configure<BonusOptions>(builder.Configuration.GetSection("Bonus
 AddDistributedCache(builder);
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUser, HttpContextCurrentUser>();
+builder.Services.AddBookstoreSecurity();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 
@@ -31,6 +30,8 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 }
 
 app.UseExceptionHandler();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();
 
