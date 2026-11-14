@@ -1,6 +1,9 @@
 namespace Application.Common;
 
-/// <summary>Delivery from the outbox is at least once, so handlers must tolerate repeated events.</summary>
+/// <summary>
+/// Runs before the raising aggregate is saved, inside the same save, so it must only change tracked state
+/// and never commit. A failing handler aborts the whole save.
+/// </summary>
 public interface IEventHandler<in TEvent> where TEvent : IDomainEvent
 {
     Task HandleAsync(TEvent domainEvent, CancellationToken ct);

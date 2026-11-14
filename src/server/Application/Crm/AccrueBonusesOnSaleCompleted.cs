@@ -1,7 +1,7 @@
 namespace Application.Crm;
 
 public sealed class AccrueBonusesOnSaleCompleted(
-    ICustomerRepository customers, IBonusAccountRepository accounts, IBonusPolicy policy, IUnitOfWork unitOfWork)
+    ICustomerRepository customers, IBonusAccountRepository accounts, IBonusPolicy policy)
     : IEventHandler<SaleCompleted>
 {
     public async Task HandleAsync(SaleCompleted domainEvent, CancellationToken ct)
@@ -14,7 +14,6 @@ public sealed class AccrueBonusesOnSaleCompleted(
         var points = policy.AccrualFor(domainEvent.Total, customer.Tier);
         if (points > 0)
             account.Accrue(points, domainEvent.SaleId, domainEvent.OccurredAt);
-        await unitOfWork.CommitAsync(ct);
     }
 
     private BonusAccount OpenAccount(CustomerId customer)

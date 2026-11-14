@@ -532,7 +532,9 @@ Source: [report 4.4](Звіт_Книжковий%20магаз.md#44-структ
 
 **Synchronous vs asynchronous.** A sale and the stock deduction must complete within one transaction. Sending e-mail, updating secondary analytics or passing information to accounting can run after the main operation through the message queue, so temporary unavailability of an external service does not block the till.
 
-**Transactional outbox.** For events leaving the transaction boundary, the business operation and the event record are saved in one DB transaction; a separate background process publishes the event to RabbitMQ. This reduces the risk that a sale is saved but its message is lost due to a network failure.
+**In-process event handling.** Domain events raised by an aggregate are handled just before it is saved, in the same transaction, so a sale, its bonus accrual and its audit record are saved together or not at all.
+
+**Transactional outbox.** Not yet implemented; it is needed only for events leaving the transaction boundary. In that case, the business operation and the event record are saved in one DB transaction; a separate background process publishes the event to RabbitMQ. This reduces the risk that a sale is saved but its message is lost due to a network failure.
 
 ---
 

@@ -12,10 +12,7 @@ public sealed class BonusAccount : AggregateRoot<BonusAccountId>
 
     public static BonusAccount Open(CustomerId customerId) => new(BonusAccountId.New(), customerId);
 
-    /// <summary>
-    /// Accrues bonuses after a completed sale. Events are delivered at least once,
-    /// so a repeated accrual for the same sale is ignored and reported as false.
-    /// </summary>
+    /// <summary>Accrues bonuses after a completed sale; a repeated accrual for the same sale is ignored and reported as false.</summary>
     public bool Accrue(int points, SaleId saleId, DateTimeOffset now)
     {
         Guard.That(points > 0, "Accrued bonuses must be positive.");

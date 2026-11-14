@@ -25,7 +25,12 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services, Action<DbContextOptionsBuilder> configureDatabase, ReportingOptions? reporting = null)
     {
-        services.AddDbContext<BookstoreDbContext>(configureDatabase);
+        services.AddScoped<DomainEventInterceptor>();
+        services.AddDbContext<BookstoreDbContext>((provider, options) =>
+        {
+            configureDatabase(options);
+            options.AddInterceptors(provider.GetRequiredService<DomainEventInterceptor>());
+        });
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.TryAddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();

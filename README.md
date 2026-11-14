@@ -30,4 +30,4 @@ Manually invalidated entries are refreshed regardless of this rule, because thei
 
 ### Prerequisites
 
-- A general mechanism for eventually consistent jobs (outbox dispatcher plus a job scheduler), with one running instance per job key and a reference to the first job when a duplicate is requested.
+- A general mechanism for eventually consistent jobs (a job scheduler), with one running instance per job key and a reference to the first job when a duplicate is requested.

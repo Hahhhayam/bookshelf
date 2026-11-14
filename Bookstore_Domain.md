@@ -9,7 +9,7 @@ Sources: [Звіт_Книжковий магаз.md](Звіт_Книжковий
 - **Aggregate** — a consistency boundary. It is changed only through its root, and one transaction changes one aggregate. The one exception, required by the report, is that a sale and its stock deduction complete in one transaction.
 - **Entity** — has an identity and a lifecycle inside an aggregate.
 - **Value object** — defined only by its values, immutable, no identity.
-- **Domain event** — a fact that already happened, published through the transactional outbox to other modules ([report 4.4](Звіт_Книжковий%20магаз.md#44-структурні-елементи-та-взаємодія)).
+- **Domain event** — a fact that already happened, handled by other modules in the same transaction that saves the aggregate ([report 4.4](Звіт_Книжковий%20магаз.md#44-структурні-елементи-та-взаємодія)).
 
 ---
 
@@ -349,7 +349,7 @@ Owns no aggregates. It builds read models (projections and materialized views) f
 
 ## 10. Domain Events
 
-These events are published through the transactional outbox to RabbitMQ when the reaction does not need to be immediate and transactional ([report 4.4](Звіт_Книжковий%20магаз.md#44-структурні-елементи-та-взаємодія)).
+Events are handled in-process: when the aggregates are saved, the handlers of their events run first, and whatever they change is saved in the same transaction. A failing handler aborts the save. Reactions that may happen later and outside the transaction, such as publishing to RabbitMQ, would need a transactional outbox, which is not built yet ([report 4.4](Звіт_Книжковий%20магаз.md#44-структурні-елементи-та-взаємодія)).
 
 - **SaleCompleted** — leads to bonus accrual, an analytics update and export to accounting.
 - **ReturnConfirmed** — leads to bonus reversal, an analytics update and export to accounting.

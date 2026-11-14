@@ -1,22 +1,18 @@
 namespace Application.Catalog;
 
-/// <summary>Keeps the price history in step with the book. Events are delivered at least once, so a seen event is skipped.</summary>
-public sealed class RecordPriceHistory(IPriceHistoryRepository history, IUnitOfWork unitOfWork)
+/// <summary>Keeps the price history in step with the book.</summary>
+public sealed class RecordPriceHistory(IPriceHistoryRepository history)
     : IEventHandler<BookAdded>, IEventHandler<PriceChanged>
 {
     public Task HandleAsync(BookAdded domainEvent, CancellationToken ct) =>
-        RecordAsync(domainEvent.EventId, domainEvent.BookId, domainEvent.InitialPrice, domainEvent.OccurredAt, domainEvent.CreatedBy, ct);
+        RecordAsync(domainEvent.EventId, domainEvent.BookId, domainEvent.InitialPrice, domainEvent.OccurredAt, domainEvent.CreatedBy);
 
     public Task HandleAsync(PriceChanged domainEvent, CancellationToken ct) =>
-        RecordAsync(domainEvent.EventId, domainEvent.BookId, domainEvent.NewPrice, domainEvent.OccurredAt, domainEvent.ChangedBy, ct);
+        RecordAsync(domainEvent.EventId, domainEvent.BookId, domainEvent.NewPrice, domainEvent.OccurredAt, domainEvent.ChangedBy);
 
-    private async Task RecordAsync(
-        Guid eventId, BookId book, Money price, DateTimeOffset at, UserId setBy, CancellationToken ct)
+    private Task RecordAsync(Guid eventId, BookId book, Money price, DateTimeOffset at, UserId setBy)
     {
-        if (await history.ExistsAsync(eventId, ct))
-            return;
-
         history.Add(PriceEntry.Record(eventId, book, price, at, setBy));
-        await unitOfWork.CommitAsync(ct);
+        return Task.CompletedTask;
     }
 }

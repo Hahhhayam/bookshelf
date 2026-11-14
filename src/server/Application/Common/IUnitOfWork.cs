@@ -1,8 +1,8 @@
 namespace Application.Common;
 
 /// <summary>
-/// Persists every aggregate loaded or added during the use case in one database transaction
-/// and writes the aggregates' domain events to the transactional outbox in that same transaction.
+/// Persists every aggregate loaded or added during the use case in one database transaction,
+/// after the handlers of the aggregates' domain events have run.
 /// </summary>
 public interface IUnitOfWork
 {
