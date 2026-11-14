@@ -1340,33 +1340,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("SaleLines", "sales");
                 });
 
-            modelBuilder.Entity("Infrastructure.Persistence.Outbox.OutboxMessage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("EventType")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.Property<DateTimeOffset>("OccurredAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Payload")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset?>("ProcessedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProcessedAt");
-
-                    b.ToTable("OutboxMessages", "messaging");
-                });
-
             modelBuilder.Entity("Infrastructure.Persistence.Sessions.UserSession", b =>
                 {
                     b.Property<Guid>("Id")

@@ -32,9 +32,6 @@ namespace Infrastructure.Persistence.Migrations
             migrationBuilder.EnsureSchema(
                 name: "purchasing");
 
-            migrationBuilder.EnsureSchema(
-                name: "messaging");
-
             migrationBuilder.CreateTable(
                 name: "AuditRecords",
                 schema: "administration",
@@ -94,7 +91,9 @@ namespace Infrastructure.Persistence.Migrations
                     Status = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
                     PublisherId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Authors = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Authors = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price_Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Price_Currency = table.Column<string>(type: "nchar(3)", fixedLength: true, maxLength: 3, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -263,19 +262,20 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OutboxMessages",
-                schema: "messaging",
+                name: "PriceEntries",
+                schema: "catalog",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EventType = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OccurredAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    ProcessedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ValidFrom = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    SetBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Price_Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Price_Currency = table.Column<string>(type: "nchar(3)", fixedLength: true, maxLength: 3, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OutboxMessages", x => x.Id);
+                    table.PrimaryKey("PK_PriceEntries", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -395,6 +395,23 @@ namespace Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Sessions",
+                schema: "administration",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TokenHash = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    IssuedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    ExpiresAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    RevokedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sessions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StockItems",
                 schema: "inventory",
                 columns: table => new
@@ -495,30 +512,6 @@ namespace Infrastructure.Persistence.Migrations
                         column: x => x.BonusAccountId,
                         principalSchema: "crm",
                         principalTable: "BonusAccounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PriceEntries",
-                schema: "catalog",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ValidFrom = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    SetBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Price_Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    Price_Currency = table.Column<string>(type: "nchar(3)", fixedLength: true, maxLength: 3, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PriceEntries", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PriceEntries_Books_BookId",
-                        column: x => x.BookId,
-                        principalSchema: "catalog",
-                        principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -948,22 +941,16 @@ namespace Infrastructure.Persistence.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OutboxMessages_ProcessedAt",
-                schema: "messaging",
-                table: "OutboxMessages",
-                column: "ProcessedAt");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Payments_SaleId",
                 schema: "sales",
                 table: "Payments",
                 column: "SaleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PriceEntries_BookId",
+                name: "IX_PriceEntries_BookId_ValidFrom",
                 schema: "catalog",
                 table: "PriceEntries",
-                column: "BookId");
+                columns: new[] { "BookId", "ValidFrom" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_PurchaseOrders_Status",
@@ -1022,6 +1009,19 @@ namespace Infrastructure.Persistence.Migrations
                 columns: new[] { "LocationId", "CompletedAt" });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Sessions_TokenHash",
+                schema: "administration",
+                table: "Sessions",
+                column: "TokenHash",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sessions_UserId",
+                schema: "administration",
+                table: "Sessions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StockItems_LocationId_BookId",
                 schema: "inventory",
                 table: "StockItems",
@@ -1064,6 +1064,10 @@ namespace Infrastructure.Persistence.Migrations
                 schema: "crm");
 
             migrationBuilder.DropTable(
+                name: "Books",
+                schema: "catalog");
+
+            migrationBuilder.DropTable(
                 name: "CartLines",
                 schema: "orders");
 
@@ -1102,10 +1106,6 @@ namespace Infrastructure.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "OrderStatusChanges",
                 schema: "orders");
-
-            migrationBuilder.DropTable(
-                name: "OutboxMessages",
-                schema: "messaging");
 
             migrationBuilder.DropTable(
                 name: "Payments",
@@ -1156,6 +1156,10 @@ namespace Infrastructure.Persistence.Migrations
                 schema: "crm");
 
             migrationBuilder.DropTable(
+                name: "Sessions",
+                schema: "administration");
+
+            migrationBuilder.DropTable(
                 name: "StockMovements",
                 schema: "inventory");
 
@@ -1194,10 +1198,6 @@ namespace Infrastructure.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "Orders",
                 schema: "orders");
-
-            migrationBuilder.DropTable(
-                name: "Books",
-                schema: "catalog");
 
             migrationBuilder.DropTable(
                 name: "PurchaseOrders",

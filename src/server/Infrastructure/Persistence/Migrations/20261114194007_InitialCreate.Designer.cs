@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BookstoreDbContext))]
-    [Migration("20261104182351_InitialCreate")]
+    [Migration("20261114194007_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -236,6 +236,21 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Authors");
 
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Price", "Domain.Catalog.Book.Price#Money", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nchar(3)")
+                                .IsFixedLength();
+                        });
+
                     b.HasKey("Id");
 
                     b.HasIndex("Barcode");
@@ -293,7 +308,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("BookId", "ValidFrom");
 
                     b.ToTable("PriceEntries", "catalog");
                 });
@@ -1328,40 +1343,36 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("SaleLines", "sales");
                 });
 
-            modelBuilder.Entity("Infrastructure.Persistence.Outbox.OutboxMessage", b =>
+            modelBuilder.Entity("Infrastructure.Persistence.Sessions.UserSession", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("EventType")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.Property<DateTimeOffset>("OccurredAt")
+                    b.Property<DateTimeOffset>("ExpiresAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Payload")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset?>("ProcessedAt")
+                    b.Property<DateTimeOffset>("IssuedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("RevokedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProcessedAt");
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
 
-                    b.ToTable("OutboxMessages", "messaging");
-                });
+                    b.HasIndex("UserId");
 
-            modelBuilder.Entity("Domain.Catalog.PriceEntry", b =>
-                {
-                    b.HasOne("Domain.Catalog.Book", null)
-                        .WithMany("PriceHistory")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.ToTable("Sessions", "administration");
                 });
 
             modelBuilder.Entity("Domain.Crm.BonusTransaction", b =>
@@ -1506,11 +1517,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("SaleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Catalog.Book", b =>
-                {
-                    b.Navigation("PriceHistory");
                 });
 
             modelBuilder.Entity("Domain.Crm.BonusAccount", b =>
