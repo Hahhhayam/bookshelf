@@ -12,7 +12,7 @@ internal sealed class DistributedCatalogCache(IDistributedCache cache) : ICatalo
         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15),
     };
 
-    public static string KeyFor(BookId book) => $"catalog:book:{book}";
+    private static string KeyFor(BookId book) => $"catalog:book:{book}";
 
     public async Task<BookDetails?> GetAsync(BookId book, CancellationToken ct)
     {
