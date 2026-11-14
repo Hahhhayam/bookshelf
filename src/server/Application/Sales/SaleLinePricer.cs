@@ -19,8 +19,7 @@ public sealed class SaleLinePricer(IBookRepository books, IPromotionRepository p
         var book = await books.GetAsync(item.Book, ct).OrNotFound("Book");
         Guard.That(book.IsActive, $"'{book.Title}' is not on sale.");
 
-        var unitPrice = book.CurrentPrice(now);
-        return new SaleLine(item.Book, item.Quantity, unitPrice, DiscountFor(item, book, unitPrice, activePromotions, now));
+        return new SaleLine(item.Book, item.Quantity, book.Price, DiscountFor(item, book, book.Price, activePromotions, now));
     }
 
     private Discount DiscountFor(

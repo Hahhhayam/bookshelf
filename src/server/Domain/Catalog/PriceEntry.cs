@@ -1,8 +1,12 @@
 namespace Domain.Catalog;
 
-/// <summary>A base price valid from a given moment. Entries are never deleted: they form the price history.</summary>
-public sealed class PriceEntry : Entity<Guid>
+/// <summary>
+/// One step of a book's price history, written from the book's events. Entries are never changed or deleted;
+/// the entry takes the id of the event it records, so a redelivered event cannot add it twice.
+/// </summary>
+public sealed class PriceEntry : AggregateRoot<Guid>
 {
+    public BookId BookId { get; }
     public Money Price { get; }
     public DateTimeOffset ValidFrom { get; }
     public UserId SetBy { get; }
@@ -10,11 +14,14 @@ public sealed class PriceEntry : Entity<Guid>
     // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
     private PriceEntry() : base(default) { }
 
-    internal PriceEntry(Money price, DateTimeOffset validFrom, UserId setBy) : base(Guid.CreateVersion7())
+    private PriceEntry(Guid id, BookId bookId, Money price, DateTimeOffset validFrom, UserId setBy) : base(id)
     {
-        Guard.That(!price.IsNegative, "Price cannot be negative.");
+        BookId = bookId;
         Price = price;
         ValidFrom = validFrom;
         SetBy = setBy;
     }
+
+    public static PriceEntry Record(Guid eventId, BookId bookId, Money price, DateTimeOffset validFrom, UserId setBy) =>
+        new(eventId, bookId, price, validFrom, setBy);
 }

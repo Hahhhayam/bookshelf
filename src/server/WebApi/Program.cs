@@ -15,9 +15,11 @@ builder.Services.AddInfrastructure(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Bookstore")));
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
 builder.Services.Configure<BonusOptions>(builder.Configuration.GetSection("Bonuses"));
+AddDistributedCache(builder);
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-builder.Services.AddHttpContextAccessor();builder.Services.AddScoped<ICurrentUser, HttpContextCurrentUser>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, HttpContextCurrentUser>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ApiExceptionHandler>();
 
@@ -31,3 +33,16 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 app.UseExceptionHandler();
 app.MapControllers();
 app.Run();
+
+static void AddDistributedCache(WebApplicationBuilder builder)
+{
+    var redis = builder.Configuration.GetConnectionString("Redis");
+    if (string.IsNullOrWhiteSpace(redis))
+        builder.Services.AddDistributedMemoryCache();
+    else
+        builder.Services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = redis;
+            options.InstanceName = "bookstore:";
+        });
+}

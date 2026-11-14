@@ -1,7 +1,9 @@
+using Application.Catalog;
 using Application.Common;
 using Application.Crm;
 using Application.Orders;
 using Infrastructure.Bonuses;
+using Infrastructure.Caching;
 using Infrastructure.Exchange;
 using Infrastructure.Notifications;
 using Infrastructure.Orders;
@@ -19,12 +21,6 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
-    private static readonly string[] AdapterNamespaces =
-    [
-        $"{typeof(BookstoreDbContext).Namespace}.{nameof(Persistence.Repositories)}",
-        $"{typeof(BookstoreDbContext).Namespace}.{nameof(Persistence.Queries)}",
-    ];
-
     /// <param name="configureDatabase">Picks the database provider, e.g. <c>o =&gt; o.UseNpgsql(connectionString)</c>.</param>
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services, Action<DbContextOptionsBuilder> configureDatabase, ReportingOptions? reporting = null)
@@ -42,11 +38,18 @@ public static class DependencyInjection
         services.AddScoped<IBonusPolicy, ConfiguredBonusPolicy>();
         services.AddSingleton<IReturnPolicy, SevenDayReturnPolicy>();
         services.AddSingleton<IPickupCodeGenerator, GuidPickupCodeGenerator>();
+        services.AddSingleton<ICatalogCache, DistributedCatalogCache>();
+        services.AddSingleton<ISearchResultCache, DistributedSearchResultCache>();
         services.AddSingleton(reporting ?? new ReportingOptions());
         AddPortAdapters(services);
         return services;
     }
 
+    private static readonly string[] AdapterNamespaces =
+    [
+        $"{typeof(BookstoreDbContext).Namespace}.{nameof(Persistence.Repositories)}",
+        $"{typeof(BookstoreDbContext).Namespace}.{nameof(Persistence.Queries)}",
+    ];
     private static void AddPortAdapters(IServiceCollection services)
     {
         var applicationAssembly = typeof(IUnitOfWork).Assembly;

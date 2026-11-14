@@ -233,6 +233,21 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Authors");
 
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Price", "Domain.Catalog.Book.Price#Money", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nchar(3)")
+                                .IsFixedLength();
+                        });
+
                     b.HasKey("Id");
 
                     b.HasIndex("Barcode");
@@ -290,7 +305,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("BookId", "ValidFrom");
 
                     b.ToTable("PriceEntries", "catalog");
                 });
@@ -1384,15 +1399,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Sessions", "administration");
                 });
 
-            modelBuilder.Entity("Domain.Catalog.PriceEntry", b =>
-                {
-                    b.HasOne("Domain.Catalog.Book", null)
-                        .WithMany("PriceHistory")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Crm.BonusTransaction", b =>
                 {
                     b.HasOne("Domain.Crm.BonusAccount", null)
@@ -1535,11 +1541,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasForeignKey("SaleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Catalog.Book", b =>
-                {
-                    b.Navigation("PriceHistory");
                 });
 
             modelBuilder.Entity("Domain.Crm.BonusAccount", b =>

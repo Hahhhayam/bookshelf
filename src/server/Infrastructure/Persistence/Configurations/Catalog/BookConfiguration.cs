@@ -1,5 +1,6 @@
 using Domain.Catalog;
 using Infrastructure.Persistence.Conventions;
+using Infrastructure.Persistence.Configurations.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations.Catalog;
 
@@ -7,8 +8,8 @@ internal sealed class BookConfiguration() : AggregateRootConfiguration<Book, Boo
 {
     protected override void ConfigureRoot(EntityTypeBuilder<Book> builder)
     {
-        builder.Navigation(x => x.PriceHistory).AutoInclude();
         builder.Property(x => x.Title).HasMaxLength(500).IsRequired();
+        builder.ComplexProperty(x => x.Price, MoneyMapping.Configure);
         builder.Property(x => x.Isbn).HasMaxLength(13);
         builder.HasIndex(x => x.Isbn).IsUnique();
         builder.Property(x => x.Barcode).HasMaxLength(64);

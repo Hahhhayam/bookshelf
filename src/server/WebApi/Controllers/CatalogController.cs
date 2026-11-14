@@ -7,7 +7,7 @@ public sealed record AddBookRequest(
     string Title, ItemType ItemType, string Barcode, Guid Category, Guid[] Authors, Guid? Publisher, string? Isbn,
     MoneyDto Price);
 
-public sealed record ChangeBookPriceRequest(MoneyDto NewPrice, DateTimeOffset ValidFrom);
+public sealed record ChangeBookPriceRequest(MoneyDto NewPrice);
 
 [ApiController]
 public sealed class CatalogController : ControllerBase
@@ -29,6 +29,19 @@ public sealed class CatalogController : ControllerBase
         }));
     }
 
+    [HttpGet("books/{id:guid}")]
+    public async Task<IActionResult> Get(Guid id, [FromServices] GetBookUseCase useCase, CancellationToken ct)
+    {
+        var (d, availability) = await useCase.ExecuteAsync(new BookId(id), ct);
+        return Ok(new
+        {
+            id = d.Book.Value, d.Title, price = MoneyDto.From(d.Price), isbn = d.Isbn?.Value, barcode = d.Barcode.Value,
+            d.ItemType, d.Status, publisher = d.Publisher?.Value, category = d.Category.Value,
+            authors = d.Authors.Select(a => a.Value),
+            availability = availability.Select(a => new { location = a.Location.Value, available = a.Available.Value }),
+        });
+    }
+
     [HttpPost("books")]
     public async Task<IActionResult> Add(AddBookRequest request, [FromServices] AddBookUseCase useCase, CancellationToken ct)
     {
@@ -45,7 +58,7 @@ public sealed class CatalogController : ControllerBase
     public async Task<IActionResult> ChangePrice(
         Guid id, ChangeBookPriceRequest request, [FromServices] ChangeBookPriceUseCase useCase, CancellationToken ct)
     {
-        await useCase.ExecuteAsync(new ChangeBookPriceCommand(new BookId(id), request.NewPrice.ToMoney(), request.ValidFrom), ct);
+        await useCase.ExecuteAsync(new ChangeBookPriceCommand(new BookId(id), request.NewPrice.ToMoney()), ct);
         return NoContent();
     }
 

@@ -14,7 +14,7 @@ public sealed class PlaceOrderUseCase(
         var cart = await carts.FindByCustomerAsync(command.Customer, ct).OrNotFound("Cart");
         var now = clock.Now;
 
-        var lines = await PriceLinesAsync(cart, now, ct);
+        var lines = await PriceLinesAsync(cart, ct);
         var order = Order.Place(command.Customer, command.Type, command.Fulfilment, command.StockLocation,
             codes.Next(), lines, now);
         await ReserveStockAsync(order, ct);
@@ -25,15 +25,14 @@ public sealed class PlaceOrderUseCase(
         return order.Id;
     }
 
-    private async Task<IReadOnlyList<(BookId, Quantity, Money)>> PriceLinesAsync(
-        Cart cart, DateTimeOffset now, CancellationToken ct)
+    private async Task<IReadOnlyList<(BookId, Quantity, Money)>> PriceLinesAsync(Cart cart, CancellationToken ct)
     {
         var lines = new List<(BookId, Quantity, Money)>();
         foreach (var line in cart.Lines)
         {
             var book = await books.GetAsync(line.Id, ct).OrNotFound("Book");
             Guard.That(book.IsActive, $"'{book.Title}' is not on sale.");
-            lines.Add((line.Id, line.Quantity, book.CurrentPrice(now)));
+            lines.Add((line.Id, line.Quantity, book.Price));
         }
         return lines;
     }

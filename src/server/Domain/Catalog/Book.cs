@@ -4,9 +4,9 @@ namespace Domain.Catalog;
 public sealed class Book : AggregateRoot<BookId>
 {
     private readonly List<AuthorId> _authors = [];
-    private readonly List<PriceEntry> _prices = [];
 
     public string Title { get; private set; }
+    public Money Price { get; private set; }
     public Isbn? Isbn { get; }
     public Barcode Barcode { get; private set; }
     public ItemType ItemType { get; }
@@ -15,7 +15,6 @@ public sealed class Book : AggregateRoot<BookId>
     public PublisherId? PublisherId { get; private set; }
     public CategoryId CategoryId { get; private set; }
     public IReadOnlyList<AuthorId> Authors => _authors;
-    public IReadOnlyList<PriceEntry> PriceHistory => _prices;
 
     private Book(BookId id, string title, Isbn? isbn, Barcode barcode, ItemType itemType,
         PublisherId? publisherId, CategoryId categoryId) : base(id)
@@ -35,26 +34,25 @@ public sealed class Book : AggregateRoot<BookId>
         if (isbn is { } value)
             Guard.That(!isbnRegistry.IsTaken(value), $"ISBN {value} already exists in the catalog.");
 
-        var book = new Book(BookId.New(), Guard.NotBlank(title), isbn, barcode, itemType, publisherId, categoryId);
+        Guard.That(!initialPrice.IsNegative, "Price cannot be negative.");
+
+        var book = new Book(BookId.New(), Guard.NotBlank(title), isbn, barcode, itemType, publisherId, categoryId)
+        {
+            Price = initialPrice,
+        };
         book._authors.AddRange(authors.Distinct());
-        book._prices.Add(new PriceEntry(initialPrice, now, createdBy));
+        book.Raise(new BookAdded(book.Id, initialPrice, createdBy, now));
         return book;
     }
 
-    public Money CurrentPrice(DateTimeOffset at)
+    /// <summary>Takes effect at once. Only the current price is kept here; the history is written from the PriceChanged event.</summary>
+    public void ChangePrice(Money newPrice, UserId changedBy, DateTimeOffset now)
     {
-        var entry = _prices.Where(p => p.ValidFrom <= at).MaxBy(p => p.ValidFrom);
-        return entry?.Price ?? throw new DomainException("The item has no price valid at the given moment.");
-    }
+        Guard.That(!newPrice.IsNegative, "Price cannot be negative.");
 
-    /// <summary>Appends a new price entry; the old value stays in the history and a PriceChanged event is raised for audit.</summary>
-    public void ChangePrice(Money newPrice, DateTimeOffset validFrom, UserId changedBy, DateTimeOffset now)
-    {
-        var latest = _prices.MaxBy(p => p.ValidFrom)!;
-        Guard.That(validFrom > latest.ValidFrom, "A new price must be valid from a later moment than the current one.");
-
-        _prices.Add(new PriceEntry(newPrice, validFrom, changedBy));
-        Raise(new PriceChanged(Id, latest.Price, newPrice, validFrom, changedBy, now));
+        var oldPrice = Price;
+        Price = newPrice;
+        Raise(new PriceChanged(Id, oldPrice, newPrice, changedBy, now));
     }
 
     public void UpdateDetails(string title, Barcode barcode, CategoryId categoryId,

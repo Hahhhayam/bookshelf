@@ -3,15 +3,12 @@ using Infrastructure.Persistence.Configurations.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations.Catalog;
 
-internal sealed class PriceEntryConfiguration : IEntityTypeConfiguration<PriceEntry>
+internal sealed class PriceEntryConfiguration() : AggregateRootConfiguration<PriceEntry, Guid>("catalog", "PriceEntries")
 {
-    public void Configure(EntityTypeBuilder<PriceEntry> builder)
+    protected override void ConfigureRoot(EntityTypeBuilder<PriceEntry> builder)
     {
-        builder.ToTable("PriceEntries", "catalog");
-        builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedNever();
-        builder.Property<BookId>(nameof(BookId));
-        builder.HasOne<Book>().WithMany(b => b.PriceHistory).HasForeignKey(nameof(BookId)).OnDelete(DeleteBehavior.Cascade);
+        builder.Property(x => x.BookId);
+        builder.HasIndex(x => new { x.BookId, x.ValidFrom });
         builder.ComplexProperty(x => x.Price, MoneyMapping.Configure);
         builder.Property(x => x.ValidFrom);
         builder.Property(x => x.SetBy);

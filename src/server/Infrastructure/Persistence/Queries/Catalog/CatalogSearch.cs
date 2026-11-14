@@ -4,7 +4,7 @@ using Domain.Inventory;
 
 namespace Infrastructure.Persistence.Queries.Catalog;
 
-internal sealed class CatalogSearch(BookstoreDbContext db, IClock clock) : ICatalogSearch
+internal sealed class CatalogSearch(BookstoreDbContext db) : ICatalogSearch
 {
     public async Task<IReadOnlyList<BookSearchResult>> SearchAsync(BookSearchQuery query, CancellationToken ct)
     {
@@ -13,7 +13,6 @@ internal sealed class CatalogSearch(BookstoreDbContext db, IClock clock) : ICata
 
         return books
             .Select(book => ToResult(book, availability[book.Id]))
-            .OfType<BookSearchResult>()
             .Where(result => IsAvailableAt(result, query.AvailableAt))
             .ToList();
     }
@@ -47,11 +46,8 @@ internal sealed class CatalogSearch(BookstoreDbContext db, IClock clock) : ICata
             .ToLookup(s => s.BookId, s => new LocationAvailability(s.LocationId, s.Level.Available));
     }
 
-    private BookSearchResult? ToResult(Book book, IEnumerable<LocationAvailability> availability)
-    {
-        var current = book.PriceHistory.Where(p => p.ValidFrom <= clock.Now).MaxBy(p => p.ValidFrom);
-        return current is null ? null : new BookSearchResult(book.Id, book.Title, current.Price, availability.ToList());
-    }
+    private static BookSearchResult ToResult(Book book, IEnumerable<LocationAvailability> availability) =>
+        new(book.Id, book.Title, book.Price, availability.ToList());
 
     private static bool IsAvailableAt(BookSearchResult result, LocationId? location) =>
         location is not { } at || result.Availability.Any(a => a.Location == at);
