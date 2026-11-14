@@ -1,8 +1,10 @@
 using Application.Common;
 using Application.Crm;
+using Application.Orders;
 using Infrastructure.Bonuses;
 using Infrastructure.Exchange;
 using Infrastructure.Notifications;
+using Infrastructure.Orders;
 using Infrastructure.Returns;
 using Infrastructure.Payments;
 using Infrastructure.Persistence;
@@ -39,6 +41,7 @@ public static class DependencyInjection
         services.AddOptions<BonusOptions>();
         services.AddScoped<IBonusPolicy, ConfiguredBonusPolicy>();
         services.AddSingleton<IReturnPolicy, SevenDayReturnPolicy>();
+        services.AddSingleton<IPickupCodeGenerator, GuidPickupCodeGenerator>();
         services.AddSingleton(reporting ?? new ReportingOptions());
         AddPortAdapters(services);
         return services;
