@@ -1,5 +1,3 @@
-using Domain.Catalog;
-
 namespace Infrastructure.Persistence.Configurations.Catalog;
 
 internal sealed class CategoryConfiguration() : AggregateRootConfiguration<Category, CategoryId>("catalog", "Categories")

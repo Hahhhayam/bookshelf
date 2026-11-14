@@ -1,5 +1,3 @@
-using Domain.Administration;
-
 namespace Infrastructure.Persistence.Configurations.Administration;
 
 internal sealed class AuditRecordConfiguration()

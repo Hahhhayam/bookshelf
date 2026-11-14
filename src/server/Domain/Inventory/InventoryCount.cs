@@ -1,5 +1,11 @@
 namespace Domain.Inventory;
 
+public readonly record struct InventoryCountId(Guid Value)
+{
+    public static InventoryCountId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>An inventory count at one location. Adjustments are generated only after approval.</summary>
 public sealed class InventoryCount : AggregateRoot<InventoryCountId>
 {

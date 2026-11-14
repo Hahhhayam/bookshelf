@@ -1,5 +1,3 @@
-using Domain.Catalog;
-
 namespace Infrastructure.Persistence.Configurations.Catalog;
 
 internal sealed class AuthorConfiguration() : AggregateRootConfiguration<Author, AuthorId>("catalog", $"{nameof(Author)}s")

@@ -1,5 +1,3 @@
-using Domain.Orders;
-
 namespace Infrastructure.Persistence.Configurations.Orders;
 
 internal sealed class CartLineConfiguration : IEntityTypeConfiguration<CartLine>

@@ -1,5 +1,11 @@
 namespace Domain.Crm;
 
+public readonly record struct SegmentId(Guid Value)
+{
+    public static SegmentId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 public sealed class Segment : AggregateRoot<SegmentId>
 {
     public string Name { get; private set; }

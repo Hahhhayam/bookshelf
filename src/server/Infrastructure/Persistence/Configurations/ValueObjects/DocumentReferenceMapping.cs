@@ -1,5 +1,3 @@
-using Domain.Inventory;
-
 namespace Infrastructure.Persistence.Configurations.ValueObjects;
 
 internal static class DocumentReferenceMapping

@@ -1,5 +1,11 @@
 namespace Domain.Administration;
 
+public readonly record struct LocationId(Guid Value)
+{
+    public static LocationId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>A store or warehouse. New locations are added by configuration, without code changes.</summary>
 public sealed class Location : AggregateRoot<LocationId>
 {

@@ -1,5 +1,11 @@
 namespace Domain.Sales;
 
+public readonly record struct GiftCertificateId(Guid Value)
+{
+    public static GiftCertificateId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 public sealed class GiftCertificate : AggregateRoot<GiftCertificateId>
 {
     public string Number { get; }

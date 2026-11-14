@@ -1,5 +1,11 @@
 namespace Domain.Crm;
 
+public readonly record struct PromotionId(Guid Value)
+{
+    public static PromotionId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>A discount rule created by marketing and applied automatically during a sale.</summary>
 public sealed class Promotion : AggregateRoot<PromotionId>
 {

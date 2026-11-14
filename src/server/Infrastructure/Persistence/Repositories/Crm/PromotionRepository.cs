@@ -1,5 +1,4 @@
 using Application.Crm;
-using Domain.Crm;
 
 namespace Infrastructure.Persistence.Repositories.Crm;
 

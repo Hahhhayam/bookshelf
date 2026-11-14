@@ -1,5 +1,4 @@
 using Application.Sales;
-using Domain.Sales;
 
 namespace Infrastructure.Persistence.Repositories.Sales;
 

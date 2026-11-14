@@ -1,5 +1,11 @@
 namespace Domain.Inventory;
 
+public readonly record struct StockItemId(Guid Value)
+{
+    public static StockItemId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>The stock of one catalog item at one location. Exactly one per location–book pair.</summary>
 public sealed class StockItem : AggregateRoot<StockItemId>
 {

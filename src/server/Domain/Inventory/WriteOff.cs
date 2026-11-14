@@ -1,5 +1,11 @@
 namespace Domain.Inventory;
 
+public readonly record struct WriteOffId(Guid Value)
+{
+    public static WriteOffId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 public sealed class WriteOff : AggregateRoot<WriteOffId>
 {
     private readonly List<WriteOffLine> _lines = [];

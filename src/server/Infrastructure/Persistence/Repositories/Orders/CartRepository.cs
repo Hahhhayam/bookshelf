@@ -1,5 +1,4 @@
 using Application.Orders;
-using Domain.Orders;
 
 namespace Infrastructure.Persistence.Repositories.Orders;
 

@@ -1,4 +1,3 @@
-using Domain.Catalog;
 using Infrastructure.Persistence.Conventions;
 using Infrastructure.Persistence.Configurations.ValueObjects;
 

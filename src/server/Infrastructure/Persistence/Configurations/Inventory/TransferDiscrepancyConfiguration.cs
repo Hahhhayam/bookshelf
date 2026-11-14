@@ -1,10 +1,8 @@
-using Domain.Inventory;
-
 namespace Infrastructure.Persistence.Configurations.Inventory;
 
-internal sealed class TransferDiscrepancyConfiguration : IEntityTypeConfiguration<Discrepancy>
+internal sealed class TransferDiscrepancyConfiguration : IEntityTypeConfiguration<Domain.Inventory.Discrepancy>
 {
-    public void Configure(EntityTypeBuilder<Discrepancy> builder)
+    public void Configure(EntityTypeBuilder<Domain.Inventory.Discrepancy> builder)
     {
         builder.ToTable("TransferDiscrepancies", "inventory");
         builder.HasKey(x => x.Id);

@@ -1,7 +1,4 @@
 using Application.Reporting;
-using Domain.Inventory;
-using Domain.Purchasing;
-using Domain.Sales;
 
 namespace Infrastructure.Persistence.Queries.Reporting;
 
@@ -32,7 +29,7 @@ internal sealed class ReportQueries(BookstoreDbContext db, ReportingOptions opti
     private IQueryable<Sale> CompletedSales(ReportRequest request)
     {
         var sales = db.Set<Sale>().AsNoTracking()
-            .Where(s => s.Status == SaleStatus.Completed)
+            .Where(s => s.Status == Domain.Sales.SaleStatus.Completed)
             .Where(s => s.CompletedAt >= request.Period.Start && s.CompletedAt < request.Period.End);
         return request.Locations.Count == 0 ? sales : sales.Where(s => request.Locations.Contains(s.LocationId));
     }

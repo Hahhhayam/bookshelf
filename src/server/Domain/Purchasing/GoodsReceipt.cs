@@ -1,5 +1,11 @@
 namespace Domain.Purchasing;
 
+public readonly record struct GoodsReceiptId(Guid Value)
+{
+    public static GoodsReceiptId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>Receiving a delivery against a purchase order, or an allowed unplanned delivery.</summary>
 public sealed class GoodsReceipt : AggregateRoot<GoodsReceiptId>
 {

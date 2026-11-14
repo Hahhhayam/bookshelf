@@ -1,5 +1,11 @@
 namespace Domain.Crm;
 
+public readonly record struct BonusAccountId(Guid Value)
+{
+    public static BonusAccountId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 public sealed class BonusAccount : AggregateRoot<BonusAccountId>
 {
     private readonly List<BonusTransaction> _transactions = [];

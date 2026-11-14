@@ -1,5 +1,11 @@
 namespace Domain.Purchasing;
 
+public readonly record struct PurchaseOrderId(Guid Value)
+{
+    public static PurchaseOrderId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 public sealed class PurchaseOrder : AggregateRoot<PurchaseOrderId>
 {
     private readonly List<PurchaseOrderLine> _lines = [];

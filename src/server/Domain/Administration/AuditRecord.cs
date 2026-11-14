@@ -1,5 +1,11 @@
 namespace Domain.Administration;
 
+public readonly record struct AuditRecordId(Guid Value)
+{
+    public static AuditRecordId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>An immutable, append-only record of one critical action.</summary>
 public sealed class AuditRecord : AggregateRoot<AuditRecordId>
 {

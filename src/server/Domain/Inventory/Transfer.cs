@@ -1,5 +1,11 @@
 namespace Domain.Inventory;
 
+public readonly record struct TransferId(Guid Value)
+{
+    public static TransferId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>Moves goods between locations. Sender and receiver confirm shipment and receipt separately.</summary>
 public sealed class Transfer : AggregateRoot<TransferId>
 {

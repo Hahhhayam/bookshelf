@@ -1,5 +1,3 @@
-using Domain.Sales;
-
 namespace Infrastructure.Persistence.Configurations.ValueObjects;
 
 internal static class DiscountMapping

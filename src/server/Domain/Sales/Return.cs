@@ -1,5 +1,11 @@
 namespace Domain.Sales;
 
+public readonly record struct ReturnId(Guid Value)
+{
+    public static ReturnId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 public sealed class Return : AggregateRoot<ReturnId>
 {
     private readonly List<ReturnLine> _lines = [];

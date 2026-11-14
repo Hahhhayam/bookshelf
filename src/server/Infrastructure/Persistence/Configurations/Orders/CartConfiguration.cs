@@ -1,5 +1,3 @@
-using Domain.Orders;
-
 namespace Infrastructure.Persistence.Configurations.Orders;
 
 internal sealed class CartConfiguration() : AggregateRootConfiguration<Cart, CartId>("orders", $"{nameof(Cart)}s")

@@ -1,5 +1,3 @@
-using Domain.Crm;
-
 namespace Infrastructure.Bonuses;
 
 public sealed class BonusOptions

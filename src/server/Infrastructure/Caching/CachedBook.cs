@@ -1,5 +1,4 @@
 using Application.Catalog;
-using Domain.Catalog;
 
 namespace Infrastructure.Caching;
 

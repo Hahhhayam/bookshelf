@@ -1,6 +1,4 @@
 using Application.Catalog;
-using Domain.Catalog;
-using Domain.Inventory;
 
 namespace Infrastructure.Persistence.Queries.Catalog;
 
@@ -19,7 +17,7 @@ internal sealed class CatalogSearch(BookstoreDbContext db) : ICatalogSearch
 
     private IQueryable<Book> Matching(BookSearchQuery query)
     {
-        var books = db.Set<Book>().AsNoTracking().Where(b => b.Status == SaleStatus.Active);
+        var books = db.Set<Book>().AsNoTracking().Where(b => b.Status == Domain.Catalog.SaleStatus.Active);
         if (!string.IsNullOrWhiteSpace(query.Text))
         {
             var text = query.Text.Trim();

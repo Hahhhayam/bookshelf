@@ -1,4 +1,3 @@
-using Domain.Administration;
 using Infrastructure.Persistence.Configurations.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations.Administration;

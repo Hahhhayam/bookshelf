@@ -1,4 +1,3 @@
-using Domain.Orders;
 using Infrastructure.Persistence.Configurations.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations.Orders;

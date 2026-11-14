@@ -1,10 +1,8 @@
-using Domain.Purchasing;
-
 namespace Infrastructure.Persistence.Configurations.Purchasing;
 
-internal sealed class ReceiptDiscrepancyConfiguration : IEntityTypeConfiguration<Discrepancy>
+internal sealed class ReceiptDiscrepancyConfiguration : IEntityTypeConfiguration<Domain.Purchasing.Discrepancy>
 {
-    public void Configure(EntityTypeBuilder<Discrepancy> builder)
+    public void Configure(EntityTypeBuilder<Domain.Purchasing.Discrepancy> builder)
     {
         builder.ToTable("ReceiptDiscrepancies", "purchasing");
         builder.HasKey(x => x.Id);

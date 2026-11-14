@@ -1,5 +1,4 @@
 using Application.Purchasing;
-using Domain.Purchasing;
 
 namespace Infrastructure.Persistence.Repositories.Purchasing;
 

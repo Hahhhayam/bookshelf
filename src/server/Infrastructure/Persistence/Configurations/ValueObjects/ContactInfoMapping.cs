@@ -1,5 +1,3 @@
-using Domain.Crm;
-
 namespace Infrastructure.Persistence.Configurations.ValueObjects;
 
 internal static class ContactInfoMapping

@@ -1,4 +1,3 @@
-using Domain.Sales;
 using Infrastructure.Persistence.Configurations.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations.Sales;

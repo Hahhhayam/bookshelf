@@ -1,6 +1,4 @@
 using Application.Catalog;
-using Domain.Catalog;
-using Domain.Inventory;
 
 namespace Infrastructure.Persistence.Queries.Catalog;
 

@@ -1,4 +1,3 @@
-using Domain.Purchasing;
 using Infrastructure.Persistence.Configurations.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations.Purchasing;

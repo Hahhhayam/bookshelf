@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Domain.Administration;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Persistence.Configurations.ValueObjects;

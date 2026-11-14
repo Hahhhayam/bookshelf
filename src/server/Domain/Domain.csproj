@@ -2,6 +2,13 @@
 
   <ItemGroup>
     <Using Include="Shared" />
+    <Using Include="Domain.Administration" />
+    <Using Include="Domain.Catalog" />
+    <Using Include="Domain.Crm" />
+    <Using Include="Domain.Inventory" />
+    <Using Include="Domain.Orders" />
+    <Using Include="Domain.Purchasing" />
+    <Using Include="Domain.Sales" />
   </ItemGroup>
 
   <ItemGroup>

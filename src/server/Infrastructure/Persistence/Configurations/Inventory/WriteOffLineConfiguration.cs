@@ -1,5 +1,3 @@
-using Domain.Inventory;
-
 namespace Infrastructure.Persistence.Configurations.Inventory;
 
 internal sealed class WriteOffLineConfiguration : IEntityTypeConfiguration<WriteOffLine>

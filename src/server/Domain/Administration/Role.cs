@@ -1,5 +1,11 @@
 namespace Domain.Administration;
 
+public readonly record struct RoleId(Guid Value)
+{
+    public static RoleId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>A named set of permissions (RBAC), such as cashier or warehouse keeper.</summary>
 public sealed class Role : AggregateRoot<RoleId>
 {

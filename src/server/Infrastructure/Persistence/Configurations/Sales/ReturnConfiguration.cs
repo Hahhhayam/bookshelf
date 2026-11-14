@@ -1,5 +1,3 @@
-using Domain.Sales;
-
 namespace Infrastructure.Persistence.Configurations.Sales;
 
 internal sealed class ReturnConfiguration() : AggregateRootConfiguration<Return, ReturnId>("sales", $"{nameof(Return)}s")

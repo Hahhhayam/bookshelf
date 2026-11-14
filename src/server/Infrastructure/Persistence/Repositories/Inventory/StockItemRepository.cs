@@ -1,5 +1,4 @@
 using Application.Inventory;
-using Domain.Inventory;
 
 namespace Infrastructure.Persistence.Repositories.Inventory;
 

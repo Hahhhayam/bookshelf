@@ -1,5 +1,4 @@
 using Application.Administration;
-using Domain.Administration;
 
 namespace Infrastructure.Persistence.Queries.Administration;
 

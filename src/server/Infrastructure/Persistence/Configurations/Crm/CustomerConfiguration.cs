@@ -1,4 +1,3 @@
-using Domain.Crm;
 using Infrastructure.Persistence.Configurations.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations.Crm;

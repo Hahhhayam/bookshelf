@@ -1,5 +1,3 @@
-using Domain.Orders;
-
 namespace Infrastructure.Persistence.Configurations.ValueObjects;
 
 internal static class FulfilmentMethodMapping

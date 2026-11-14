@@ -1,5 +1,11 @@
 namespace Domain.Inventory;
 
+public readonly record struct ReservationId(Guid Value)
+{
+    public static ReservationId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>A quantity held for a customer order or a transfer for a defined time.</summary>
 public sealed class Reservation : Entity<ReservationId>
 {

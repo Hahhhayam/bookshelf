@@ -1,5 +1,3 @@
-using Domain.Purchasing;
-
 namespace Infrastructure.Persistence.Configurations.Purchasing;
 
 internal sealed class PurchaseOrderConfiguration()

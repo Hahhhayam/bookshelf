@@ -1,5 +1,11 @@
 namespace Domain.Crm;
 
+public readonly record struct CustomerId(Guid Value)
+{
+    public static CustomerId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 public sealed class Customer : AggregateRoot<CustomerId>
 {
     private readonly HashSet<SegmentId> _segments = [];

@@ -1,5 +1,11 @@
 namespace Domain.Catalog;
 
+public readonly record struct BookId(Guid Value)
+{
+    public static BookId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>A sellable catalog item: a book, or a product without an ISBN such as stationery.</summary>
 public sealed class Book : AggregateRoot<BookId>
 {

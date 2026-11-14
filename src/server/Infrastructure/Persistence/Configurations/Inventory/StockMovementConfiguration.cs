@@ -1,4 +1,3 @@
-using Domain.Inventory;
 using Infrastructure.Persistence.Configurations.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations.Inventory;

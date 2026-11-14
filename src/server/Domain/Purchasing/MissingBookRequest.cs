@@ -1,5 +1,11 @@
 namespace Domain.Purchasing;
 
+public readonly record struct MissingBookRequestId(Guid Value)
+{
+    public static MissingBookRequestId New() => new(Guid.CreateVersion7());
+    public override string ToString() => Value.ToString();
+}
+
 /// <summary>A recorded demand for an item the chain does not have, so it can be ordered later.</summary>
 public sealed class MissingBookRequest : AggregateRoot<MissingBookRequestId>
 {

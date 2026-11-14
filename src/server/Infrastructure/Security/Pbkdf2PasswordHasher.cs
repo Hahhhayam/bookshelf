@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
 using Application.Administration;
-using Domain.Administration;
 
 namespace Infrastructure.Security;
 

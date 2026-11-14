@@ -1,5 +1,3 @@
-using Domain.Crm;
-
 namespace Infrastructure.Persistence.Configurations.Crm;
 
 internal sealed class BonusTransactionConfiguration : IEntityTypeConfiguration<BonusTransaction>

@@ -37,7 +37,7 @@ Value objects used by several contexts. Each context refers to aggregates from o
 - **CurrencyCode** — a three-letter ISO 4217 code such as UAH or USD. Both it and Money are value objects, so currencies have no table of their own. Exchange rates are not part of the model; they come from a currency converter port.
 - **Quantity** — a non-negative number of units of an item.
 - **Period** — a time interval with a start and an end. Used for promotion validity, reservation time and report periods.
-- **Identifiers** — typed IDs such as BookId, LocationId, CustomerId, UserId and SupplierId. Contexts use them to refer to each other's aggregates.
+- **Identifiers** — typed IDs such as BookId, LocationId, CustomerId, UserId and SupplierId. Each one belongs to the context that owns its aggregate; other contexts use it to refer to that aggregate.
 - **IdempotencyKey** — a unique operation key attached to commands. It stops a repeated request, for example a POS resend after a connection drop, from posting twice ([report 2.2.3](Звіт_Книжковий%20магаз.md#223-аналіз-ризиків)).
 
 ---

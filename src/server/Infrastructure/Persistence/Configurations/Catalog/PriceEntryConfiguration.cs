@@ -1,4 +1,3 @@
-using Domain.Catalog;
 using Infrastructure.Persistence.Configurations.ValueObjects;
 
 namespace Infrastructure.Persistence.Configurations.Catalog;
