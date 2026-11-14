@@ -22,6 +22,7 @@
     <Using Include="Microsoft.EntityFrameworkCore" />
     <Using Include="Microsoft.EntityFrameworkCore.Metadata.Builders" />
     <Using Include="Application.Common" />
+    <Using Include="Domain.Common" />
     <Using Include="Domain.Administration" />
     <Using Include="Domain.Catalog" />
     <Using Include="Domain.Crm" />

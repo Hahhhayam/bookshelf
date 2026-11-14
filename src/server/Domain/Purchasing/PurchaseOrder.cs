@@ -39,21 +39,21 @@ public sealed class PurchaseOrder : AggregateRoot<PurchaseOrderId>
         return order;
     }
 
-    public void Send()
+    public void Send(UserId by, DateTimeOffset now)
     {
         Guard.That(Status == PurchaseOrderStatus.Draft, "Only a draft order can be sent.");
-        Status = PurchaseOrderStatus.Sent;
+        MoveTo(PurchaseOrderStatus.Sent, by, now);
     }
 
-    public void Cancel()
+    public void Cancel(UserId by, DateTimeOffset now)
     {
         Guard.That(Status is PurchaseOrderStatus.Draft or PurchaseOrderStatus.Sent,
             "Only an order with no deliveries can be cancelled.");
-        Status = PurchaseOrderStatus.Cancelled;
+        MoveTo(PurchaseOrderStatus.Cancelled, by, now);
     }
 
     /// <summary>Called when a goods receipt is confirmed; updates received quantities and the status.</summary>
-    public void ApplyReceipt(IEnumerable<ItemQuantity> received)
+    public void ApplyReceipt(IEnumerable<ItemQuantity> received, UserId by, DateTimeOffset now)
     {
         Guard.That(Status is PurchaseOrderStatus.Sent or PurchaseOrderStatus.PartlyReceived,
             "The order is not awaiting delivery.");
@@ -63,9 +63,17 @@ public sealed class PurchaseOrder : AggregateRoot<PurchaseOrderId>
             if (line is not null)
                 line.Received += item.Quantity;
         }
-        Status = _lines.All(l => l.Received >= l.Ordered)
+        var next = _lines.All(l => l.Received >= l.Ordered)
             ? PurchaseOrderStatus.Received
             : PurchaseOrderStatus.PartlyReceived;
+        if (next != Status)
+            MoveTo(next, by, now);
+    }
+
+    private void MoveTo(PurchaseOrderStatus to, UserId by, DateTimeOffset now)
+    {
+        Raise(new PurchaseOrderStatusChanged(Id, Status, to, by, now));
+        Status = to;
     }
 
     /// <summary>A delivery late against its expected date raises a notification, once.</summary>

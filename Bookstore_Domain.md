@@ -119,6 +119,14 @@ A document that moves goods from one location to another.
   - The sender and the receiver confirm shipment and receipt separately.
   - Goods are reserved once the transfer is approved.
 
+### Aggregate: TransferStatusChange (transfer status history)
+
+One status transition of a transfer, with its time and the responsible user. The history of a transfer is the set of its entries ([report 4.6](Звіт_Книжковий%20магаз.md#46-підтримка-бази-даних)). It is kept out of the Transfer aggregate, so loading a transfer to change it does not load its history.
+
+- **Rules**
+  - Entries are append-only and refer to their transfer only by TransferId, with no database foreign key.
+  - Entries are created by a handler of TransferStatusChanged, in the same transaction as the transition, and take the identifier of that event.
+
 ### Aggregate: InventoryCount
 
 An inventory count at one location.
@@ -204,7 +212,6 @@ A customer order placed through the website, or a large B2B order from a school,
 
 - **Entities**
   - **OrderLine** — an ordered item with its quantity and price.
-  - **StatusChange** — a record of one status transition with its time and the responsible user. Together, the records are the order's history ([report 4.6](Звіт_Книжковий%20магаз.md#46-підтримка-бази-даних)).
 - **Value objects**
   - **OrderStatus** — one of New, Confirmed, Picking, Ready, Issued or Cancelled.
   - **FulfilmentMethod** — pickup at a chosen store or delivery.
@@ -213,6 +220,14 @@ A customer order placed through the website, or a large B2B order from a school,
 - **Rules**
   - Only allowed status transitions can happen.
   - Placing an order reserves the stock. When the order is Issued, the reservation becomes a write-off; when it is Cancelled, the reservation is released.
+
+### Aggregate: OrderStatusChange (order status history)
+
+One status transition of an order, with its time and the responsible user. The history of an order is the set of its entries ([report 4.6](Звіт_Книжковий%20магаз.md#46-підтримка-бази-даних)). It is kept out of the Order aggregate, so loading an order to change it does not load its history.
+
+- **Rules**
+  - Entries are append-only and refer to their order only by OrderId, with no database foreign key.
+  - Entries are created by a handler of OrderStatusChanged, in the same transaction as the transition, and take the identifier of that event.
 
 ---
 
@@ -235,6 +250,14 @@ An order placed with one supplier.
   - **PurchaseOrderStatus** — the stage of the order, including partly and fully received.
 - **Rules**
   - A delivery that is late against its expected date raises a notification.
+
+### Aggregate: PurchaseOrderStatusChange (purchase order status history)
+
+One status transition of a purchase order, with its time and the responsible user. The history of a purchase order is the set of its entries ([report 4.6](Звіт_Книжковий%20магаз.md#46-підтримка-бази-даних)). It is kept out of the PurchaseOrder aggregate, so loading an order to change it does not load its history.
+
+- **Rules**
+  - Entries are append-only and refer to their purchase order only by PurchaseOrderId, with no database foreign key.
+  - Entries are created by a handler of PurchaseOrderStatusChanged, in the same transaction as the transition, and take the identifier of that event. A receipt that leaves the status unchanged adds no entry.
 
 ### Aggregate: GoodsReceipt
 
@@ -333,7 +356,7 @@ A store, warehouse or the central warehouse. New locations are added by configur
 
 ### Aggregate: Integration
 
-The settings and health of one external connection: the payment service, the online shop, accounting, or e-mail/SMS. Each one is reached through an adapter.
+The settings and health of one external connection: the payment service, the online shop, accounting, or e-mail/SMS. Each one is reached through an adapter. There can be several connections of the same kind (for example two payment providers), so an integration is identified by its own identifier, not by its kind, and an adapter reports failures for the integration it was configured with.
 
 ### Aggregate: AuditRecord
 
@@ -353,7 +376,8 @@ Events are handled in-process: when the aggregates are saved, the handlers of th
 
 - **SaleCompleted** — leads to bonus accrual, an analytics update and export to accounting.
 - **ReturnConfirmed** — leads to bonus reversal, an analytics update and export to accounting.
-- **OrderPlaced** and **OrderStatusChanged** — lead to the reservation or its release in Inventory.
+- **OrderPlaced** and **OrderStatusChanged** — lead to the reservation or its release in Inventory. OrderStatusChanged also leads to an order status history entry.
+- **TransferStatusChanged** and **PurchaseOrderStatusChanged** — lead to a status history entry.
 - **OrderReady** — leads to a notification to the customer.
 - **StockBelowMinimum** — leads to a low-stock notification.
 - **TransferShipped** and **TransferReceived** — update stock at the sending and receiving locations; a mismatch raises a discrepancy for review.

@@ -38,17 +38,15 @@ public sealed class Transfer : AggregateRoot<TransferId>
     }
 
     /// <summary>Approval makes Inventory reserve the goods at the sending location.</summary>
-    public void Approve(DateTimeOffset now)
+    public void Approve(UserId by, DateTimeOffset now)
     {
-        Require(TransferStatus.Created);
-        Status = TransferStatus.Approved;
+        MoveTo(TransferStatus.Approved, from: TransferStatus.Created, by, now);
         Raise(new TransferApproved(Id, Route, Items(l => l.Shipped), now));
     }
 
     public void Ship(UserId by, DateTimeOffset now)
     {
-        Require(TransferStatus.Approved);
-        Status = TransferStatus.Shipped;
+        MoveTo(TransferStatus.Shipped, from: TransferStatus.Approved, by, now);
         ShippedBy = by;
         Raise(new TransferShipped(Id, Route, Items(l => l.Shipped), now));
     }
@@ -56,14 +54,13 @@ public sealed class Transfer : AggregateRoot<TransferId>
     /// <summary>Records what the receiver counted. A mismatch creates a discrepancy for review.</summary>
     public void Receive(IReadOnlyDictionary<BookId, Quantity> received, UserId by, DateTimeOffset now)
     {
-        Require(TransferStatus.Shipped);
+        MoveTo(TransferStatus.Received, from: TransferStatus.Shipped, by, now);
         foreach (var line in _lines)
         {
             line.Received = received.GetValueOrDefault(line.Id);
             if (line.Received != line.Shipped)
                 _discrepancies.Add(new(line.Id, line.Shipped, line.Received.Value));
         }
-        Status = TransferStatus.Received;
         ReceivedBy = by;
         Raise(new TransferReceived(Id, Route, Items(l => l.Received ?? Quantity.Zero), _discrepancies.Count > 0, now));
     }
@@ -71,6 +68,10 @@ public sealed class Transfer : AggregateRoot<TransferId>
     private IReadOnlyList<ItemQuantity> Items(Func<TransferLine, Quantity> quantity) =>
         _lines.Select(l => new ItemQuantity(l.Id, quantity(l))).ToList();
 
-    private void Require(TransferStatus expected) =>
-        Guard.That(Status == expected, $"Transfer must be {expected}, but is {Status}.");
+    private void MoveTo(TransferStatus to, TransferStatus from, UserId by, DateTimeOffset now)
+    {
+        Guard.That(Status == from, $"Transfer must be {from}, but is {Status}.");
+        Status = to;
+        Raise(new TransferStatusChanged(Id, from, to, by, now));
+    }
 }

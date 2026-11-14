@@ -712,6 +712,38 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("TransferLines", "inventory");
                 });
 
+            modelBuilder.Entity("Domain.Inventory.TransferStatusChange", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("At")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("By")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("From")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("TransferId");
+
+                    b.Property<string>("To")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId", "At");
+
+                    b.ToTable("TransferStatusChanges", "inventory");
+                });
+
             modelBuilder.Entity("Domain.Inventory.WriteOff", b =>
                 {
                     b.Property<Guid>("Id")
@@ -868,7 +900,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("OrderLines", "orders");
                 });
 
-            modelBuilder.Entity("Domain.Orders.StatusChange", b =>
+            modelBuilder.Entity("Domain.Orders.OrderStatusChange", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
@@ -876,7 +908,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("At")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid?>("By")
+                    b.Property<Guid>("By")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("From")
@@ -884,8 +916,9 @@ namespace Infrastructure.Persistence.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("OrderId");
 
                     b.Property<string>("To")
                         .IsRequired()
@@ -894,7 +927,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("ParentId", "At");
 
                     b.ToTable("OrderStatusChanges", "orders");
                 });
@@ -1042,6 +1075,38 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("PurchaseOrderId", "Id");
 
                     b.ToTable("PurchaseOrderLines", "purchasing");
+                });
+
+            modelBuilder.Entity("Domain.Purchasing.PurchaseOrderStatusChange", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("At")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("By")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("From")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<Guid>("ParentId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("PurchaseOrderId");
+
+                    b.Property<string>("To")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId", "At");
+
+                    b.ToTable("PurchaseOrderStatusChanges", "purchasing");
                 });
 
             modelBuilder.Entity("Domain.Purchasing.ReceiptLine", b =>
@@ -1453,15 +1518,6 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Orders.StatusChange", b =>
-                {
-                    b.HasOne("Domain.Orders.Order", null)
-                        .WithMany("History")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Purchasing.Discrepancy", b =>
                 {
                     b.HasOne("Domain.Purchasing.GoodsReceipt", null)
@@ -1552,8 +1608,6 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Orders.Order", b =>
                 {
-                    b.Navigation("History");
-
                     b.Navigation("Lines");
                 });
 

@@ -10,7 +10,7 @@ public sealed class ApproveTransferUseCase(
         var transfer = await transfers.GetAsync(transferId, ct).OrNotFound("Transfer");
         user.RequireAccess(transfer.Route.From);
 
-        transfer.Approve(clock.Now);
+        transfer.Approve(user.Id, clock.Now);
         foreach (var line in transfer.Lines)
         {
             var item = await stock.RequireAsync(transfer.Route.From, line.Id, ct);

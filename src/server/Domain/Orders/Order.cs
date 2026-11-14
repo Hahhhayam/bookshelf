@@ -21,7 +21,6 @@ public sealed class Order : AggregateRoot<OrderId>
         };
 
     private readonly List<OrderLine> _lines = [];
-    private readonly List<StatusChange> _history = [];
 
     public CustomerId CustomerId { get; }
     public OrderType Type { get; }
@@ -33,7 +32,6 @@ public sealed class Order : AggregateRoot<OrderId>
     public PickupCode PickupCode { get; }
     public OrderStatus Status { get; private set; } = OrderStatus.New;
     public IReadOnlyList<OrderLine> Lines => _lines;
-    public IReadOnlyList<StatusChange> History => _history;
 
     // EF Core cannot bind complex-type properties through the constructor, so it materializes via this one.
     private Order() : base(default) { Fulfilment = null!; }
@@ -94,7 +92,6 @@ public sealed class Order : AggregateRoot<OrderId>
         Guard.That(Transitions[Status].Contains(to), $"An order cannot move from {Status} to {to}.");
         var from = Status;
         Status = to;
-        _history.Add(new(from, to, now, by));
         Raise(new OrderStatusChanged(Id, from, to, by, now));
     }
 }

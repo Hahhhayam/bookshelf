@@ -19,7 +19,7 @@ public sealed class ReceiveDeliveryUseCase(
         receipt.Confirm(user.Id, clock.Now);
 
         await IncreaseStockAsync(receipt, ct);
-        order?.ApplyReceipt(command.Received);
+        order?.ApplyReceipt(command.Received, user.Id, clock.Now);
         receipts.Add(receipt);
         await unitOfWork.CommitAsync(ct);
         return receipt.Id;
