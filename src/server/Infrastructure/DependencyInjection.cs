@@ -13,9 +13,11 @@ using Infrastructure.Persistence;
 using Application.Administration;
 using Application.Sales;
 using Infrastructure.Persistence.Queries.Reporting;
+using Infrastructure.Scheduling;
 using Infrastructure.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Quartz;
 
 namespace Infrastructure;
 
@@ -23,7 +25,8 @@ public static class DependencyInjection
 {
     /// <param name="configureDatabase">Picks the database provider, e.g. <c>o =&gt; o.UseNpgsql(connectionString)</c>.</param>
     public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services, Action<DbContextOptionsBuilder> configureDatabase, ReportingOptions? reporting = null)
+        this IServiceCollection services, Action<DbContextOptionsBuilder> configureDatabase,
+        ReportingOptions? reporting = null, ScheduledJobsOptions? scheduling = null)
     {
         services.AddScoped<DomainEventInterceptor>();
         services.AddDbContext<BookstoreDbContext>((provider, options) =>
@@ -49,7 +52,21 @@ public static class DependencyInjection
         services.AddSingleton<ISearchResultCache, DistributedSearchResultCache>();
         services.AddSingleton(reporting ?? new ReportingOptions());
         AddPortAdapters(services);
+        AddScheduledJobs(services, scheduling ?? new ScheduledJobsOptions());
         return services;
+    }
+
+    // Quartz keeps its schedule in memory, so every app instance runs these jobs; both are safe to repeat.
+    private static void AddScheduledJobs(IServiceCollection services, ScheduledJobsOptions scheduling)
+    {
+        services.AddQuartz(quartz =>
+        {
+            quartz.ScheduleJob<ExpireReservationsJob>(trigger => trigger.StartNow()
+                .WithSimpleSchedule(s => s.WithInterval(scheduling.ExpireReservationsInterval).RepeatForever()));
+            quartz.ScheduleJob<FlagOverduePurchaseOrdersJob>(trigger => trigger.StartNow()
+                .WithSimpleSchedule(s => s.WithInterval(scheduling.FlagOverduePurchaseOrdersInterval).RepeatForever()));
+        });
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
     }
 
     private static readonly string[] AdapterNamespaces =

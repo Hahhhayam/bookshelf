@@ -247,7 +247,7 @@ The system must allow login with an account and determine user rights according 
 #### FR-02 Book catalog
 An authorized user can add, edit and deactivate books. ISBN uniqueness must be checked.
 
-*Implementation notes (not in the report):* an item keeps only its current price, and a price change applies at once. Earlier prices are kept in a separate append-only history that is written from the price-change event, so it is eventually consistent. Scheduled (future-dated) prices are not supported.
+*Implementation notes (not in the report):* an item keeps only its current price, and a price change applies at once. Earlier prices are kept in a separate append-only history that is written from the price-change event in the same transaction. Scheduled (future-dated) prices are not supported.
 
 <a id="fr-03"></a>
 #### FR-03 Search
@@ -269,6 +269,8 @@ The system allows a return based on a sale. The operation is recorded in history
 #### FR-06 Reservation
 A book can be reserved for a customer for a defined time. The reserved quantity must not be sold to another online customer.
 *Supports:* [BC-05](#bc-05)
+
+*Implementation notes (not in the report):* only manual holds have an expiry; reservations made by an order or a transfer last until that document releases or fulfils them. A scheduled job ends expired holds every minute (configurable), so a hold may outlive its expiry by up to that interval.
 
 <a id="fr-07"></a>
 #### FR-07 Online order
@@ -329,6 +331,8 @@ For critical entities the system stores the user, time, action type and values o
 #### FR-18 Notifications
 The system creates notifications about order readiness, low stock, overdue delivery and critical integration errors.
 *Supports:* [BC-03](#bc-03)
+
+*Implementation notes (not in the report):* overdue deliveries are found by a scheduled job that runs hourly (configurable) and notifies once per purchase order. The schedule is kept in memory, so every running instance runs the job. Integration-error notifications are not triggered yet, because no adapter reports its failures.
 
 <a id="fr-19"></a>
 #### FR-19 Users

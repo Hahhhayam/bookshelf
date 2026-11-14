@@ -69,7 +69,7 @@ One price a catalog item had from a given moment, with the user who set it. The 
 - **Rules**
   - Entries are append-only and are never changed or deleted. They stay when the item is deleted.
   - An entry refers to its item only by BookId, with no database foreign key.
-  - Entries are created by a handler of BookAdded and PriceChanged, not by the Book itself, so the history is eventually consistent with the current price. The entry takes the identifier of the event that caused it, so a redelivered event does not create a second entry.
+  - Entries are created by a handler of BookAdded and PriceChanged, not by the Book itself, in the same transaction as the price change. The entry takes the identifier of the event that caused it.
 
 ### Aggregate: Author
 
@@ -94,7 +94,7 @@ Owns stock at every location, plus every document that moves goods: reservations
 The stock of one catalog item at one location. There is exactly one StockItem per location–book pair ([report 4.6](Звіт_Книжковий%20магаз.md#46-підтримка-бази-даних)).
 
 - **Entities**
-  - **Reservation** — a quantity held for a customer order or a transfer for a defined time. When the time runs out, the hold ends; when the goods are handed over, it becomes an actual write-off.
+  - **Reservation** — a quantity held for a customer order or a transfer. A manual hold for a customer lasts a defined time and ends when it runs out; a hold made by an order or a transfer lasts until that document releases it. When the goods are handed over, it becomes an actual write-off.
   - **StockMovement** — a record of one change to the stock (sale, return, receipt, transfer, write-off or adjustment) with the document that caused it. Together, the movements are the stock history.
 - **Value objects**
   - **StockLevel** — the on-hand, reserved and available quantities. Available equals on hand minus reserved.
@@ -276,7 +276,7 @@ The customer's bonus balance.
   - **BonusBalance** — the current number of bonuses.
 - **Rules**
   - The balance can never be negative.
-  - Bonuses are accrued asynchronously after a sale is completed.
+  - Bonuses are accrued by a handler of SaleCompleted, in the same transaction as the sale.
 
 ### Aggregate: Promotion
 

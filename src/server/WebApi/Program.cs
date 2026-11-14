@@ -4,6 +4,7 @@ using Infrastructure;
 using Infrastructure.Bonuses;
 using Infrastructure.Notifications;
 using Infrastructure.Persistence;
+using Infrastructure.Scheduling;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Errors;
 using WebApi.Security;
@@ -11,8 +12,9 @@ using WebApi.Security;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Bookstore")));
+builder.Services.AddInfrastructure(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("Bookstore")),
+    scheduling: builder.Configuration.GetSection("Scheduling").Get<ScheduledJobsOptions>());
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
 builder.Services.Configure<BonusOptions>(builder.Configuration.GetSection("Bonuses"));
 AddDistributedCache(builder);
