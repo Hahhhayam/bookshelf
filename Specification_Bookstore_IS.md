@@ -312,6 +312,8 @@ An administrator can open an inventory count, enter actual stock and, after appr
 The system accrues and redeems bonuses by rules, stores operation history and does not allow a negative bonus balance.
 *Supports:* [BC-02](#bc-02), [BC-06](#bc-06)
 
+*Implementation notes (not in the report):* the customer card (opened by id, or by the scanned card number at the till) shows contact data, tier, segments, the bonus balance with its operations, and the purchase history. It holds personal data, so only cashiers and CRM managers can open it.
+
 <a id="fr-15"></a>
 #### FR-15 Promotions
 An authorized user creates a promotion with validity period, conditions and priority. At sale the system automatically checks applicable rules.
@@ -472,6 +474,8 @@ User opens an entity (order, book, stock adjustment) → "History" tab → event
 
 **3.11 Status display** — *Customer / employee / manager.* Precondition: object has a status lifecycle.
 User opens a list of orders, deliveries or transfers → current status, last change date and responsible person shown → overdue/problem objects get a warning → card shows allowed next actions by role and status.
+
+*Implementation notes for 3.10–3.11 (not in the report):* the cards of an order, a transfer and a purchase order show their status history. Lists of orders and transfers (per location) and purchase orders show the current status with the time and user of its last change; overdue purchase orders and transfers with unresolved discrepancies are flagged. Without a status filter, a list shows only open documents. A customer can follow an order without an account by its pickup code and sees only the status and when it changed.
 
 **3.12 Management report** — *Chain manager.* Precondition: sales and movements accumulated for the period.
 Manager opens analytics → selects period, stores and metrics → system shows sales, average check, margin, top books and slow-moving items → drill-down or export.

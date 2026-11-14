@@ -70,6 +70,12 @@ public sealed class PurchaseOrder : AggregateRoot<PurchaseOrderId>
             MoveTo(next, by, now);
     }
 
+    public bool IsOverdue(DateOnly today) => IsLate(Status, ExpectedDate, today);
+
+    /// <summary>Late means past the expected date while goods are still awaited.</summary>
+    public static bool IsLate(PurchaseOrderStatus status, DateOnly expectedDate, DateOnly today) =>
+        today > expectedDate && status is PurchaseOrderStatus.Sent or PurchaseOrderStatus.PartlyReceived;
+
     private void MoveTo(PurchaseOrderStatus to, UserId by, DateTimeOffset now)
     {
         Raise(new PurchaseOrderStatusChanged(Id, Status, to, by, now));
@@ -79,9 +85,7 @@ public sealed class PurchaseOrder : AggregateRoot<PurchaseOrderId>
     /// <summary>A delivery late against its expected date raises a notification, once.</summary>
     public void CheckOverdue(DateOnly today, DateTimeOffset now)
     {
-        if (OverdueNotified || today <= ExpectedDate)
-            return;
-        if (Status is not (PurchaseOrderStatus.Sent or PurchaseOrderStatus.PartlyReceived))
+        if (OverdueNotified || !IsOverdue(today))
             return;
 
         OverdueNotified = true;

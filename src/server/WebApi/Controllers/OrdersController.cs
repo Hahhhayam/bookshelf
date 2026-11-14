@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Contracts;
 using WebApi.Security;
 
 namespace WebApi.Controllers;
@@ -33,6 +34,54 @@ public sealed class OrdersController : ControllerBase
             new CustomerId(request.Customer), request.Type, ToFulfilment(request.Fulfilment), new LocationId(request.StockLocation));
         var id = await useCase.ExecuteAsync(command, ct);
         return Created($"orders/{id.Value}", new { id = id.Value });
+    }
+
+    [AllowAnonymous]
+    [HttpGet("orders/track/{code}")]
+    public async Task<IActionResult> Track(string code, [FromServices] TrackOrderUseCase useCase, CancellationToken ct)
+    {
+        var view = await useCase.ExecuteAsync(new PickupCode(code), ct);
+        return Ok(new
+        {
+            view.Order.Status, view.Order.Fulfilment.Kind,
+            history = view.History.Select(c => new { c.To, c.At }),
+        });
+    }
+
+    [RequirePermission(Permissions.OrdersManage)]
+    [HttpGet("orders/{id:guid}")]
+    public async Task<IActionResult> Get(Guid id, [FromServices] GetOrderUseCase useCase, CancellationToken ct)
+    {
+        var (order, history) = await useCase.ExecuteAsync(new OrderId(id), ct);
+        return Ok(new
+        {
+            id = order.Id.Value, customer = order.CustomerId.Value, order.Type, order.Status,
+            stockLocation = order.StockLocation.Value, pickupCode = order.PickupCode.Value,
+            fulfilment = new
+            {
+                order.Fulfilment.Kind, pickupLocation = order.Fulfilment.PickupLocation?.Value,
+                order.Fulfilment.DeliveryAddress,
+            },
+            total = MoneyDto.From(order.Total),
+            lines = order.Lines.Select(l => new
+            {
+                book = l.Id.Value, quantity = l.Quantity.Value, unitPrice = MoneyDto.From(l.UnitPrice),
+            }),
+            history = history.Select(c => new { c.From, c.To, c.At, by = c.By.Value }),
+        });
+    }
+
+    [RequirePermission(Permissions.OrdersManage)]
+    [HttpGet("locations/{location:guid}/orders")]
+    public async Task<IActionResult> List(
+        Guid location, OrderStatus? status, [FromServices] ListOrdersUseCase useCase, CancellationToken ct)
+    {
+        var orders = await useCase.ExecuteAsync(new LocationId(location), status, ct);
+        return Ok(orders.Select(o => new
+        {
+            id = o.Order.Value, customer = o.Customer.Value, o.Type, o.Status, o.LastChangedAt,
+            lastChangedBy = o.LastChangedBy?.Value,
+        }));
     }
 
     [RequirePermission(Permissions.OrdersManage)]

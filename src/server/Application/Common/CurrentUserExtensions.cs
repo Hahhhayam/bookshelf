@@ -8,6 +8,12 @@ public static class CurrentUserExtensions
             throw new ForbiddenException($"Permission '{permission}' is required.");
     }
 
+    public static void RequireAny(this ICurrentUser user, params Permission[] permissions)
+    {
+        if (!permissions.Any(user.Has))
+            throw new ForbiddenException($"One of the permissions {string.Join(", ", permissions)} is required.");
+    }
+
     public static void RequireAccess(this ICurrentUser user, LocationId location)
     {
         if (!user.CanAccess(location))

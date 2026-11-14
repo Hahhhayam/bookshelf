@@ -39,6 +39,55 @@ public sealed class InventoryController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.SalesCreate, Permissions.StockAdjust, Permissions.TransfersManage,
+        Permissions.InventoryCountManage, Permissions.ReceivingConfirm, Permissions.PurchasingManage)]
+    [HttpGet("locations/{location:guid}/stock")]
+    public async Task<IActionResult> Stock(
+        Guid location, Guid? book, bool belowMinimum, [FromServices] GetLocationStockUseCase useCase, CancellationToken ct)
+    {
+        var lines = await useCase.ExecuteAsync(
+            new LocationId(location), book is { } b ? new BookId(b) : null, belowMinimum, ct);
+        return Ok(lines.Select(l => new
+        {
+            book = l.Book.Value, onHand = l.OnHand.Value, reserved = l.Reserved.Value, available = l.Available.Value,
+            minimum = l.Minimum.Value, l.BelowMinimum,
+        }));
+    }
+
+    [RequirePermission(Permissions.TransfersManage)]
+    [HttpGet("transfers/{id:guid}")]
+    public async Task<IActionResult> GetTransfer(Guid id, [FromServices] GetTransferUseCase useCase, CancellationToken ct)
+    {
+        var (transfer, history) = await useCase.ExecuteAsync(new TransferId(id), ct);
+        return Ok(new
+        {
+            id = transfer.Id.Value, from = transfer.Route.From.Value, to = transfer.Route.To.Value, transfer.Status,
+            shippedBy = transfer.ShippedBy?.Value, receivedBy = transfer.ReceivedBy?.Value,
+            lines = transfer.Lines.Select(l => new
+            {
+                book = l.Id.Value, shipped = l.Shipped.Value, received = l.Received?.Value,
+            }),
+            discrepancies = transfer.Discrepancies.Select(d => new
+            {
+                id = d.Id, book = d.BookId.Value, expected = d.Expected.Value, actual = d.Actual.Value, d.IsResolved,
+            }),
+            history = history.Select(c => new { c.From, c.To, c.At, by = c.By.Value }),
+        });
+    }
+
+    [RequirePermission(Permissions.TransfersManage)]
+    [HttpGet("locations/{location:guid}/transfers")]
+    public async Task<IActionResult> ListTransfers(
+        Guid location, TransferStatus? status, [FromServices] ListTransfersUseCase useCase, CancellationToken ct)
+    {
+        var transfers = await useCase.ExecuteAsync(new LocationId(location), status, ct);
+        return Ok(transfers.Select(t => new
+        {
+            id = t.Transfer.Value, from = t.Route.From.Value, to = t.Route.To.Value, t.Status, t.HasOpenDiscrepancies,
+            t.LastChangedAt, lastChangedBy = t.LastChangedBy?.Value,
+        }));
+    }
+
     [RequirePermission(Permissions.StockAdjust)]
     [HttpPut("locations/{location:guid}/stock/{book:guid}/minimum")]
     public async Task<IActionResult> SetMinimum(

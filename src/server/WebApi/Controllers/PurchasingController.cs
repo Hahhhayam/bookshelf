@@ -29,6 +29,36 @@ public sealed class PurchasingController : ControllerBase
         return Created($"purchase-orders/{id.Value}", new { id = id.Value });
     }
 
+    [RequirePermission(Permissions.PurchasingManage, Permissions.ReceivingConfirm)]
+    [HttpGet("purchase-orders/{id:guid}")]
+    public async Task<IActionResult> GetOrder(Guid id, [FromServices] GetPurchaseOrderUseCase useCase, CancellationToken ct)
+    {
+        var (order, history, isOverdue) = await useCase.ExecuteAsync(new PurchaseOrderId(id), ct);
+        return Ok(new
+        {
+            id = order.Id.Value, supplier = order.SupplierId.Value, order.Status, order.ExpectedDate, isOverdue,
+            lines = order.Lines.Select(l => new
+            {
+                book = l.Id.Value, ordered = l.Ordered.Value, received = l.Received.Value,
+                purchasePrice = MoneyDto.From(l.PurchasePrice),
+            }),
+            history = history.Select(c => new { c.From, c.To, c.At, by = c.By.Value }),
+        });
+    }
+
+    [RequirePermission(Permissions.PurchasingManage, Permissions.ReceivingConfirm)]
+    [HttpGet("purchase-orders")]
+    public async Task<IActionResult> ListOrders(
+        PurchaseOrderStatus? status, bool overdue, [FromServices] ListPurchaseOrdersUseCase useCase, CancellationToken ct)
+    {
+        var orders = await useCase.ExecuteAsync(status, overdue, ct);
+        return Ok(orders.Select(o => new
+        {
+            id = o.Order.Value, supplier = o.Supplier.Value, o.Status, o.ExpectedDate, o.IsOverdue, o.LastChangedAt,
+            lastChangedBy = o.LastChangedBy?.Value,
+        }));
+    }
+
     [RequirePermission(Permissions.PurchasingManage)]
     [HttpPost("purchase-orders/{id:guid}/send")]
     public async Task<IActionResult> SendOrder(Guid id, [FromServices] SendPurchaseOrderUseCase useCase, CancellationToken ct)
