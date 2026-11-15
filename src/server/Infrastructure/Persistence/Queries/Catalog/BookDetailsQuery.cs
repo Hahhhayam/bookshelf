@@ -19,6 +19,9 @@ internal sealed class BookDetailsQuery(BookstoreDbContext db) : IBookDetailsQuer
             .ToList();
     }
 
+    public async Task<IReadOnlyList<PriceEntry>> PriceHistoryAsync(BookId book, CancellationToken ct) =>
+        await db.Set<PriceEntry>().AsNoTracking().Where(e => e.BookId == book).OrderBy(e => e.ValidFrom).ToListAsync(ct);
+
     private static BookDetails ToDetails(Book book) => new(
         book.Id, book.Title, book.Price, book.Isbn, book.Barcode, book.ItemType, book.Status,
         book.PublisherId, book.CategoryId, book.Authors);

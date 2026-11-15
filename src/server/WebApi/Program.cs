@@ -55,3 +55,6 @@ static void AddDistributedCache(WebApplicationBuilder builder)
             options.InstanceName = "bookstore:";
         });
 }
+
+/// <summary>Lets the end-to-end tests host the app with WebApplicationFactory.</summary>
+public partial class Program;

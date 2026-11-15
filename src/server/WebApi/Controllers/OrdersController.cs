@@ -32,8 +32,8 @@ public sealed class OrdersController : ControllerBase
     {
         var command = new PlaceOrderCommand(
             new CustomerId(request.Customer), request.Type, ToFulfilment(request.Fulfilment), new LocationId(request.StockLocation));
-        var id = await useCase.ExecuteAsync(command, ct);
-        return Created($"orders/{id.Value}", new { id = id.Value });
+        var placed = await useCase.ExecuteAsync(command, ct);
+        return Created($"orders/{placed.Order.Value}", new { id = placed.Order.Value, pickupCode = placed.PickupCode.Value });
     }
 
     [AllowAnonymous]

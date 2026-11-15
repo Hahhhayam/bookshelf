@@ -48,6 +48,15 @@ public sealed class CatalogController : ControllerBase
         });
     }
 
+    [AllowAnonymous]
+    [HttpGet("books/{id:guid}/prices")]
+    public async Task<IActionResult> PriceHistory(
+        Guid id, [FromServices] GetPriceHistoryUseCase useCase, CancellationToken ct)
+    {
+        var history = await useCase.ExecuteAsync(new BookId(id), ct);
+        return Ok(history.Select(e => new { price = MoneyDto.From(e.Price), e.ValidFrom }));
+    }
+
     [RequirePermission(Permissions.CatalogEdit)]
     [HttpPost("books")]
     public async Task<IActionResult> Add(AddBookRequest request, [FromServices] AddBookUseCase useCase, CancellationToken ct)

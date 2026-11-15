@@ -247,7 +247,7 @@ The system must allow login with an account and determine user rights according 
 #### FR-02 Book catalog
 An authorized user can add, edit and deactivate books. ISBN uniqueness must be checked.
 
-*Implementation notes (not in the report):* editing an item's details removes its cached card at once. Authors, publishers and suppliers are deactivated instead of deleted and can be reactivated; categories can only be renamed. An item keeps only its current price, and a price change applies at once. Earlier prices are kept in a separate append-only history that is written from the price-change event in the same transaction. Scheduled (future-dated) prices are not supported.
+*Implementation notes (not in the report):* editing an item's details removes its cached card at once. Authors, publishers and suppliers are deactivated instead of deleted and can be reactivated; categories can only be renamed. An item keeps only its current price, and a price change applies at once. Earlier prices are kept in a separate append-only history that is written from the price-change event in the same transaction; anyone can read an item's price history, like its card. Scheduled (future-dated) prices are not supported.
 
 <a id="fr-03"></a>
 #### FR-03 Search
@@ -481,7 +481,7 @@ User opens an entity (order, book, stock adjustment) → "History" tab → event
 **3.11 Status display** — *Customer / employee / manager.* Precondition: object has a status lifecycle.
 User opens a list of orders, deliveries or transfers → current status, last change date and responsible person shown → overdue/problem objects get a warning → card shows allowed next actions by role and status.
 
-*Implementation notes for 3.10–3.11 (not in the report):* the cards of an order, a transfer and a purchase order show their status history. Lists of orders and transfers (per location) and purchase orders show the current status with the time and user of its last change; overdue purchase orders and transfers with unresolved discrepancies are flagged. Without a status filter, a list shows only open documents. A customer can follow an order without an account by its pickup code and sees only the status and when it changed.
+*Implementation notes for 3.10–3.11 (not in the report):* the cards of an order, a transfer and a purchase order show their status history. Lists of orders and transfers (per location) and purchase orders show the current status with the time and user of its last change; overdue purchase orders and transfers with unresolved discrepancies are flagged. Without a status filter, a list shows only open documents. A customer gets the pickup code when placing an order, and can follow the order with it without an account, seeing only the status and when it changed.
 
 **3.12 Management report** — *Chain manager.* Precondition: sales and movements accumulated for the period.
 Manager opens analytics → selects period, stores and metrics → system shows sales, average check, margin, top books and slow-moving items → drill-down or export.

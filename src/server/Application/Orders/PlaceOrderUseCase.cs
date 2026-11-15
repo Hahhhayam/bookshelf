@@ -9,7 +9,7 @@ public sealed class PlaceOrderUseCase(
     ICartRepository carts, IOrderRepository orders, IBookRepository books, StockItemLoader stock,
     IPickupCodeGenerator codes, IClock clock, IUnitOfWork unitOfWork)
 {
-    public async Task<OrderId> ExecuteAsync(PlaceOrderCommand command, CancellationToken ct)
+    public async Task<PlacedOrder> ExecuteAsync(PlaceOrderCommand command, CancellationToken ct)
     {
         var cart = await carts.FindByCustomerAsync(command.Customer, ct).OrNotFound("Cart");
         var now = clock.Now;
@@ -22,7 +22,7 @@ public sealed class PlaceOrderUseCase(
         cart.Clear();
         orders.Add(order);
         await unitOfWork.CommitAsync(ct);
-        return order.Id;
+        return new PlacedOrder(order.Id, order.PickupCode);
     }
 
     private async Task<IReadOnlyList<(BookId, Quantity, Money)>> PriceLinesAsync(Cart cart, CancellationToken ct)
