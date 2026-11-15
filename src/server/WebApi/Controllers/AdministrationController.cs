@@ -39,6 +39,17 @@ public sealed class AdministrationController : ControllerBase
         };
     }
 
+    [HttpGet("auth/me")]
+    public async Task<IActionResult> Me([FromServices] GetMyProfileUseCase useCase, CancellationToken ct)
+    {
+        var profile = await useCase.ExecuteAsync(ct);
+        return Ok(new
+        {
+            id = profile.User.Value, profile.Login, profile.Permissions,
+            locations = profile.Locations.Select(l => new { id = l.Location.Value, l.Name, l.Type }),
+        });
+    }
+
     [HttpPost("auth/logout")]
     public async Task<IActionResult> Logout([FromServices] LogoutUseCase useCase, CancellationToken ct)
     {

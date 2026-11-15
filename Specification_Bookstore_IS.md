@@ -241,6 +241,7 @@ The system must allow login with an account and determine user rights according 
 *Implementation notes (not in the report):*
 - A successful login issues a random bearer session token valid for 8 hours. Only its hash is stored. Logout revokes the caller's own session at once.
 - A token stops working when it expires, is revoked, or its user is blocked. Roles and location access are read on every request, so a change to them applies immediately.
+- A signed-in user can read their own profile: login, permissions and the active locations they may work in. The client builds its navigation from it.
 - Every endpoint requires a signed-in user. The exceptions are login, catalog search, viewing a single item, and the customer-facing cart and order placement. Each staff operation also requires its named permission, checked at the API boundary before the request is processed and again inside the use case.
 
 <a id="fr-02"></a>

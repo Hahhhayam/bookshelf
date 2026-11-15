@@ -14,11 +14,13 @@ public sealed class AdminManagesAccess(SqlServerFixture sql) : EndToEndTest(sql)
         var user = await CreatesUser(admin, "junior", "Junior#1", role, World.StoreA);
 
         var junior = await LogsIn("junior", "Junior#1");
+        await SeesOwnProfile(junior, "junior", [Permissions.SalesCreate], World.StoreA);
         await CanSeeStock(junior, World.StoreA);
         await CannotChangePrice(junior, World.Kobzar);
         await CannotSeeStock(junior, World.StoreB);
 
         await GivesAccess(admin, user, role, World.StoreA, World.StoreB);
+        await SeesOwnProfile(junior, "junior", [Permissions.SalesCreate], World.StoreA, World.StoreB);
         await CanSeeStock(junior, World.StoreB);
 
         await CannotLogIn("junior", "wrong password", HttpStatusCode.Unauthorized);
@@ -29,6 +31,15 @@ public sealed class AdminManagesAccess(SqlServerFixture sql) : EndToEndTest(sql)
         await CannotLogIn("junior", "Junior#1", HttpStatusCode.Forbidden);
         await SeesUserChangesInAudit(admin, user, by: UserOf(SampleUsers.Admin),
             "user.created", "user.access-changed", "user.blocked");
+    }
+
+    /// <summary>The profile the client builds its navigation from follows access changes without a new login.</summary>
+    private static async Task SeesOwnProfile(Api employee, string login, string[] permissions, params LocationId[] locations)
+    {
+        var profile = await employee.Get("auth/me");
+        Assert.Equal(login, profile.Text("login"));
+        Assert.Equal(permissions, profile.Items("permissions").Select(p => p.GetValue<string>()));
+        Assert.Equal(locations.Select(l => l.Value).Order(), profile.Items("locations").Select(l => l.Id()).Order());
     }
 
     private static async Task<Guid> CreatesRole(Api admin, string name, params string[] permissions) =>
