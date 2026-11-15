@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npm create vite@latest *)",
+      "PowerShell(npm install)",
+      "PowerShell(npm install *)",
+      "PowerShell(npm run *)",
+      "Bash(npm create vite@latest *)",
+      "Bash(npm install)",
+      "Bash(npm install *)",
+      "Bash(npm run *)"
+    ]
+  }
+}
