@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Онлайн-замовлення — дошка</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=Fira+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input{font-family:inherit}
+.mono{font-family:'Fira Mono',ui-monospace,monospace}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;font-size:14px;font-weight:600;line-height:1;border:1px solid transparent;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-secondary{background:#FFFFFF;color:#1E1A16;border-color:#CFC6B7}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.rail{flex:0 0 64px;background:#FBF9F5;border-right:1px solid #E3DCD0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0}
+.rl{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;color:#4D463D}
+.rl-on{background:#F2EAF4;color:#5B2C6F;box-shadow:inset 3px 0 0 #5B2C6F}
+.top{min-height:56px;box-sizing:border-box;padding:8px 28px;background:#FFFFFF;border-bottom:1px solid #E3DCD0;display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.chipf{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid #CFC6B7;background:#FFFFFF;font-size:13px;font-weight:500;color:#1E1A16;cursor:pointer;white-space:nowrap}
+.col{background:#EFEAE1;display:flex;flex-direction:column;min-width:0}
+.colh{display:flex;align-items:center;gap:10px;padding:14px 14px 10px;font-size:14px;font-weight:700}
+.cnt{min-width:24px;height:22px;padding:0 6px;box-sizing:border-box;background:#FFFFFF;font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;color:#4D463D}
+.kc{position:relative;background:#FFFFFF;border:1px solid #E3DCD0;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 2px rgba(30,26,22,.06)}
+.kc-late{border-color:#E8B65A;box-shadow:inset 0 3px 0 #D98B0B}
+.next{height:36px;border:1px solid #5B2C6F;background:#FFFFFF;color:#5B2C6F;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.next:hover{background:#5B2C6F;color:#FFFFFF}
+.dots{width:32px;height:32px;border:0;background:transparent;color:#4D463D;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.menu{position:absolute;right:10px;top:44px;z-index:3;width:220px;background:#FFFFFF;box-shadow:0 6px 16px rgba(30,26,22,.14),0 0 0 1px #E3DCD0;padding:4px 0;display:flex;flex-direction:column}
+.mi{display:flex;align-items:center;gap:10px;height:36px;padding:0 14px;font-size:14px}
+.t-ok{color:#4D463D}
+.t-late{color:#855100;font-weight:700;background:#FDF0D7;padding:2px 6px}
+.tag{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 6px;background:#F6F3ED;font-size:12px;font-weight:500;color:#4D463D}
+</style>
+</helmet>
+<div class="root" style="min-height: 960px; display: flex; background: #F6F3ED">
+  <nav class="rail" aria-label="Розділи">
+    <svg width="28" height="28" viewBox="0 0 36 36" aria-hidden="true" style="margin-bottom: 14px"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg>
+    <a class="rl" href="#" aria-label="Каса"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18"></rect><path d="M8 7h8M8 11h8M8 15h3"></path></svg></a>
+    <a class="rl rl-on" href="#" aria-label="Онлайн-замовлення" aria-current="page"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 13H6.2L5 8z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg></a>
+    <a class="rl" href="#" aria-label="Повернення"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14l-4-4 4-4"></path><path d="M5 10h9a5 5 0 0 1 0 10h-2"></path></svg></a>
+    <a class="rl" href="#" aria-label="Залишки"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5V8z"></path><path d="M3 8l9 5 9-5M12 13v8"></path></svg></a>
+    <a class="rl" href="#" aria-label="Переміщення"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h13l-3-3M20 17H7l3 3"></path></svg></a>
+    <a class="rl" href="#" aria-label="Інвентаризація"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17"></rect><path d="M9 4h6v3H9zM9 12l2 2 4-4"></path></svg></a>
+  </nav>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+    <header class="top">
+      <h1 style="margin: 0; font-size: 22px; font-weight: 600">Онлайн-замовлення</h1>
+      <span style="font-size: 14px; color: #4D463D">самовивіз і доставка з магазину</span>
+      <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="color: #5B2C6F"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Магазин на Хрещатику</span>
+      <span style="width: 32px; height: 32px; background: #5B2C6F; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center" aria-label="Оксана Мельник">ОМ</span>
+    </header>
+
+    <div style="padding: 18px 28px 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+      <label style="width: 300px; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #CFC6B7; background: #FFFFFF; color: #6E665A"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4-4"></path></svg><input type="search" placeholder="Номер, клієнт або телефон" aria-label="Пошук замовлення" style="flex: 1; min-width: 0; border: 0; outline: none; font-size: 13px; background: transparent"></label>
+      <button class="chipf" type="button">Отримання: усі<svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+      <button class="chipf" type="button"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color: #855100"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg>Чекають задовго · 2</button>
+      <span style="margin-left: auto; font-size: 13px; color: #4D463D">Норма: нове — підтвердити за 30 хв, готове — видати за 3 дні</span>
+    </div>
+
+    <div style="flex: 1; padding: 16px 28px 28px; overflow-x: auto">
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(260px, 1fr)); gap: 16px; min-height: 760px">
+        <sc-for list="{{ cols }}" as="c" hint-placeholder-count="4">
+          <section class="col" aria-label="{{ c.title }}">
+            <div class="colh"><span style="width: 10px; height: 10px; background: {{ c.dot }}"></span>{{ c.title }}<span class="cnt">{{ c.count }}</span></div>
+            <div style="display: flex; flex-direction: column; gap: 10px; padding: 0 10px 12px">
+              <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="3">
+                <article class="kc {{ k.lateClass }}">
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+                    <a href="#" class="mono" style="font-size: 13px; font-weight: 600; text-decoration: none">{{ k.no }}</a>
+                    <button class="dots" type="button" aria-label="Дії із замовленням {{ k.no }}" aria-expanded="{{ k.menu }}"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h.01M12 12h.01M18 12h.01"></path></svg></button>
+                  </div>
+                  <sc-if value="{{ k.menu }}" hint-placeholder-val="{{ false }}">
+                    <div class="menu" role="menu">
+                      <span class="mi" role="menuitem">Відкрити замовлення</span>
+                      <span class="mi" role="menuitem">Зателефонувати клієнту</span>
+                      <span class="mi" role="menuitem">Друк листа комплектування</span>
+                      <span style="height: 1px; background: #EFEAE1; margin: 4px 0"></span>
+                      <span class="mi" role="menuitem" style="color: #A12A1F; font-weight: 600">Скасувати замовлення…</span>
+                    </div>
+                  </sc-if>
+                  <div style="display: flex; flex-direction: column; gap: 2px">
+                    <strong style="font-size: 15px">{{ k.customer }}</strong>
+                    <span style="font-size: 13px; color: #4D463D">{{ k.items }} · <strong style="color: #1E1A16">{{ k.total }}</strong></span>
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+                    <span class="tag">{{ k.mode }}</span>
+                    <span class="{{ k.timeClass }}" style="display: inline-flex; align-items: center; gap: 5px; font-size: 12px"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg>{{ k.time }}</span>
+                  </div>
+                  <button class="next" type="button">{{ k.next }}<svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+                </article>
+              </sc-for>
+            </div>
+          </section>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const card = (no, customer, items, total, mode, time, next, late, menu) => ({
+      no, customer, items, total, mode, next, menu: !!menu,
+      time: late ? 'Чекає ' + time : time + ' тому',
+      lateClass: late ? 'kc-late' : '',
+      timeClass: late ? 't-late' : 't-ok'
+    });
+    return {
+      cols: [
+        { title: 'Нове', count: 3, dot: '#8C8478', cards: [
+          card('ОН-2026-10477', 'Ірина Савчук', '3 книжки', '1 286,50 ₴', 'Самовивіз', '12 хв', 'Підтвердити'),
+          card('ОН-2026-10471', 'Богдан Литвиненко', '1 книжка', '450,00 ₴', 'Нова пошта', '52 хв', 'Підтвердити', true),
+          card('ОН-2026-10469', 'Христина Мороз', '2 книжки', '705,00 ₴', 'Самовивіз', '25 хв', 'Підтвердити')
+        ] },
+        { title: 'Підтверджене', count: 2, dot: '#2F6BD0', cards: [
+          card('ОН-2026-10466', 'Дмитро Олійник', '4 книжки', '1 512,00 ₴', 'Самовивіз', '1 год 05 хв', 'Почати комплектування', false, true),
+          card('ОН-2026-10462', 'Софія Гончаренко', '1 книжка', '290,00 ₴', 'Самовивіз', '38 хв', 'Почати комплектування')
+        ] },
+        { title: 'Комплектується', count: 2, dot: '#2F6BD0', cards: [
+          card('ОН-2026-10458', 'Андрій Ковальчук', '2 книжки', '670,00 ₴', 'Нова пошта', '20 хв', 'Готове'),
+          card('ОН-2026-10451', 'Олена Бойко', '6 книжок', '2 140,00 ₴', 'Самовивіз', '2 год 15 хв', 'Готове', true)
+        ] },
+        { title: 'Готове', count: 3, dot: '#2E8B50', cards: [
+          card('ОН-2026-10447', 'Максим Ткаченко', '1 книжка', '385,00 ₴', 'Самовивіз · К3-8H-61', '3 год', 'Видати клієнту'),
+          card('ОН-2026-10440', 'Юлія Петренко', '2 книжки', '640,00 ₴', 'Нова пошта · ТТН', '5 год', 'Передати перевізнику'),
+          card('ОН-2026-10433', 'Віра Кравчук', '3 книжки', '960,00 ₴', 'Самовивіз · М2-4T-07', '1 день', 'Видати клієнту')
+        ] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 2360, "title": "Палітра і токени" },
+    "Components.dc.html": { "x": 1520, "y": 0, "w": 1440, "h": 2400, "title": "Компоненти" },
+
+    "Login.dc.html": { "x": 0, "y": 2800, "w": 1440, "h": 820, "title": "1 · Вхід: звичайний, помилка, блокування" },
+    "Transfers.dc.html": { "x": 1520, "y": 2800, "w": 1440, "h": 980, "title": "2–3 · Оболонка адміністратора магазину і список переміщень", "expand": "fill" },
+    "ShellCashier.dc.html": { "x": 3040, "y": 2800, "w": 1440, "h": 900, "title": "2 · Оболонка касира, стан «немає з’єднання»", "expand": "fill" },
+    "ListStates.dc.html": { "x": 4560, "y": 2800, "w": 1440, "h": 1400, "title": "3 · Список замовлень постачальникам і його стани" },
+    "Document.dc.html": { "x": 6080, "y": 2800, "w": 1440, "h": 1150, "title": "4 · Картка документа: переміщення з розбіжністю", "expand": "fill", "is_interactive": true },
+    "Kanban.dc.html": { "x": 7600, "y": 2800, "w": 1440, "h": 960, "title": "5 · Канбан онлайн-замовлень", "expand": "fill" },
+    "Receiving.dc.html": { "x": 9120, "y": 2800, "w": 1440, "h": 1000, "title": "6 · Введення рядків: приймання поставки", "expand": "fill" },
+
+    "Till.dc.html": { "x": 0, "y": 4600, "w": 1280, "h": 800, "title": "7 · Каса — чек у роботі, 1280×800" },
+    "TillPay.dc.html": { "x": 1360, "y": 4600, "w": 1280, "h": 800, "title": "7 · Каса — розділена оплата" },
+    "TillStates.dc.html": { "x": 2720, "y": 4600, "w": 1440, "h": 1180, "title": "7 · Каса — чек закрито (1440) і помилки" },
+
+    "Reports.dc.html": { "x": 0, "y": 6800, "w": 1440, "h": 1500, "title": "8 · Звіти: панель продажів", "expand": "fill" },
+    "Customer.dc.html": { "x": 1520, "y": 6800, "w": 1440, "h": 1150, "title": "9 · Картка клієнта", "expand": "fill" },
+    "BookForm.dc.html": { "x": 3040, "y": 6800, "w": 1440, "h": 1100, "title": "10 · Форма: нова книга", "expand": "fill" },
+    "FormDialogs.dc.html": { "x": 4560, "y": 6800, "w": 1440, "h": 1000, "title": "10 · Діалог зміни ціни і редактор ролі" },
+    "Audit.dc.html": { "x": 6080, "y": 6800, "w": 1440, "h": 1050, "title": "11 · Журнал аудиту", "expand": "fill" },
+    "SystemStates.dc.html": { "x": 7600, "y": 6800, "w": 1440, "h": 1300, "title": "13 · Системні стани" },
+
+    "ShopCatalog.dc.html": { "x": 0, "y": 8700, "w": 1440, "h": 1300, "title": "12a · Магазин: пошук і каталог", "expand": "fill" },
+    "ShopBook.dc.html": { "x": 1520, "y": 8700, "w": 1440, "h": 1150, "title": "12b · Магазин: сторінка книги", "expand": "fill" },
+    "ShopCart.dc.html": { "x": 3040, "y": 8700, "w": 1440, "h": 900, "title": "12c · Магазин: кошик", "expand": "fill" },
+    "ShopCheckout.dc.html": { "x": 4560, "y": 8700, "w": 1440, "h": 1100, "title": "12d · Магазин: оформлення", "expand": "fill" },
+    "ShopConfirm.dc.html": { "x": 6080, "y": 8700, "w": 1440, "h": 900, "title": "12d · Магазин: підтвердження з кодом", "expand": "fill" },
+    "ShopTrack.dc.html": { "x": 7600, "y": 8700, "w": 1440, "h": 860, "title": "12e · Магазин: відстеження за кодом", "expand": "fill" },
+    "ShopMobile.dc.html": { "x": 9120, "y": 8700, "w": 2190, "h": 1000, "title": "12 · Магазин на телефоні, 390 px" }
+  },
+  "createdOnFiles": { "at": "2026-11-15T12:00:00Z", "v": 1 },
+  "designSystems": [],
+  "launch": { "view": "canvas" },
+  "notes": {
+    "concept": { "kind": "title1", "maxW": 2960, "text": "Полиця — основи: палітра, шрифти, компоненти", "w": 240, "x": 0, "y": -320 },
+    "rowStaff": { "kind": "title1", "maxW": 10560, "text": "Робоче місце персоналу", "x": 0, "y": 2480 },
+    "rowTill": { "kind": "title1", "maxW": 4160, "text": "Каса", "x": 0, "y": 4280 },
+    "rowBack": { "kind": "title1", "maxW": 9040, "text": "Аналітика, клієнти, каталог, адміністрування", "x": 0, "y": 6480 },
+    "rowShop": { "kind": "title1", "maxW": 11310, "text": "Онлайн-магазин", "x": 0, "y": 8380 },
+    "tillflow": {
+      "fill": "purple",
+      "size": 24,
+      "text": "Клавіатурний потік каси\n\n1. Поле скану завжди у фокусі. Скан або Enter після ISBN додає рядок, фокус лишається в полі.\n2. + / − змінює кількість останнього рядка, Del прибирає його (з підтвердженням).\n3. F4 відкриває пошук клієнта за карткою чи телефоном; Esc повертає в поле скану.\n4. F8 Готівка, F9 Картка, F10 Сертифікат. Enter підтверджує суму, чек закривається.\n5. F2 пошук книги за назвою, F12 вихід з каси (лише з порожнім чеком).",
+      "w": 640,
+      "x": 0,
+      "y": 5480
+    },
+    "tillsplit": {
+      "fill": "purple",
+      "size": "m",
+      "w": 560,
+      "x": 1360,
+      "y": 5480,
+      "text": "Розділена оплата\n\nF7 відкриває діалог. Tab переходить між способами, у кожному полі Enter підставляє залишок до сплати. «Залишилось сплатити» оновлюється одразу. Ctrl+Enter проводить оплату, коли залишок 0. Esc закриває без змін."
+    }
+  },
+  "order": [
+    "Main.dc.html", "Components.dc.html",
+    "Login.dc.html", "Transfers.dc.html", "ShellCashier.dc.html", "ListStates.dc.html", "Document.dc.html", "Kanban.dc.html", "Receiving.dc.html",
+    "Till.dc.html", "TillPay.dc.html", "TillStates.dc.html",
+    "Reports.dc.html", "Customer.dc.html", "BookForm.dc.html", "FormDialogs.dc.html", "Audit.dc.html", "SystemStates.dc.html",
+    "ShopCatalog.dc.html", "ShopBook.dc.html", "ShopCart.dc.html", "ShopCheckout.dc.html", "ShopConfirm.dc.html", "ShopTrack.dc.html", "ShopMobile.dc.html"
+  ],
+  "pages": [],
+  "title": "Книгарня — дизайн системи"
+}

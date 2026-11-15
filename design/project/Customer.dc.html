@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Картка клієнта — Ірина Савчук</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=Fira+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button{font-family:inherit}
+.mono{font-family:'Fira Mono',ui-monospace,monospace}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+.badge{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;font-size:12px;font-weight:600;line-height:1;white-space:nowrap}
+.badge i{width:6px;height:6px;display:block}
+.b-done{background:#FFFFFF;color:#4D463D;box-shadow:inset 0 0 0 1px #D6CEC1}.b-done i{background:#A79F92}
+.b-green{background:#E2F1E7;color:#1D6A3A}.b-green i{background:#2E8B50}
+.b-grey{background:#EDE9E3;color:#4D463D}.b-grey i{background:#8C8478}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;font-size:14px;font-weight:600;line-height:1;border:1px solid transparent;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-primary{background:#5B2C6F;color:#FFFFFF}
+.btn-secondary{background:#FFFFFF;color:#1E1A16;border-color:#CFC6B7}
+.link{border:0;background:transparent;color:#5B2C6F;font-size:13px;font-weight:600;padding:0;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.rail{flex:0 0 64px;background:#FBF9F5;border-right:1px solid #E3DCD0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0}
+.rl{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;color:#4D463D}
+.rl-on{background:#F2EAF4;color:#5B2C6F;box-shadow:inset 3px 0 0 #5B2C6F}
+.top{min-height:56px;box-sizing:border-box;padding:8px 28px;background:#FFFFFF;border-bottom:1px solid #E3DCD0;display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.card{background:#FFFFFF;border:1px solid #E3DCD0}
+.h2{margin:0;font-size:16px;font-weight:600}
+.kv{display:grid;grid-template-columns:150px minmax(0,1fr);row-gap:12px;column-gap:12px;font-size:14px;margin:0}
+.kv dt{color:#4D463D}.kv dd{margin:0}
+.seg{display:inline-flex;align-items:center;height:26px;padding:0 10px;background:#F2EAF4;color:#5B2C6F;font-size:13px;font-weight:600}
+.t{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;min-width:620px}
+.t th{background:#EFEAE1;text-align:left;font-size:12px;font-weight:600;color:#4D463D;padding:0 12px;height:36px;border-bottom:1px solid #E3DCD0;white-space:nowrap}
+.t td{padding:10px 12px;border-bottom:1px solid #EFEAE1}
+.n{text-align:right;white-space:nowrap}
+.op{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:12px;padding-bottom:16px}
+.p{color:#1D6A3A;font-weight:700}.m{color:#1E1A16;font-weight:700}.x{color:#855100;font-weight:700}
+</style>
+</helmet>
+<div class="root" style="min-height: 1150px; display: flex; background: #F6F3ED">
+  <nav class="rail" aria-label="Розділи">
+    <svg width="28" height="28" viewBox="0 0 36 36" aria-hidden="true" style="margin-bottom: 14px"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg>
+    <a class="rl rl-on" href="#" aria-label="Клієнти" aria-current="page"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.5a3.5 3.5 0 0 1 0 7M21 20c0-2.6-1.6-4.8-4-5.6"></path></svg></a>
+    <a class="rl" href="#" aria-label="Сегменти"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 3.5V12h8.5"></path></svg></a>
+    <a class="rl" href="#" aria-label="Акції"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8L3 12z"></path><circle cx="7.5" cy="8.5" r="1.5"></circle></svg></a>
+    <a class="rl" href="#" aria-label="Звіти"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg></a>
+  </nav>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 8px 28px; background: #EFEAE1; border-bottom: 1px solid #E3DCD0; font-size: 13px; color: #4D463D">
+      <svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+      <span><strong style="color: #1E1A16">Персональні дані.</strong> Перегляд записується в журнал аудиту. Не копіюйте контакти поза системою.</span>
+    </div>
+    <header class="top">
+      <nav aria-label="Шлях" style="font-size: 14px; color: #4D463D; display: flex; gap: 8px"><a href="#" style="text-decoration: none">Клієнти</a><span aria-hidden="true">/</span><span style="color: #1E1A16; font-weight: 600">Ірина Савчук</span></nav>
+      <span style="margin-left: auto; width: 32px; height: 32px; background: #8E5BA3; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center" aria-label="Катерина Руденко, CRM-маркетолог">КР</span>
+    </header>
+
+    <main style="box-sizing: border-box; padding: 24px 28px 40px; display: flex; flex-direction: column; gap: 20px; max-width: 1376px; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px">
+        <div style="display: flex; align-items: center; gap: 16px">
+          <span style="width: 64px; height: 64px; background: #5B2C6F; color: #FFFFFF; font-size: 22px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">ІС</span>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px"><h1 style="margin: 0; font-size: 28px; font-weight: 600">Ірина Савчук</h1><span style="display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; background: #FDF0D7; color: #855100; font-size: 13px; font-weight: 700"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"></path></svg>Золотий рівень</span></div>
+            <span style="font-size: 14px; color: #4D463D">Клієнтка з березня 2021 · картка лояльності <span class="mono" style="font-size: 13px">•••• 4471</span> · улюблений магазин — Хрещатик</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px"><button class="btn btn-secondary" type="button">Нарахувати бонуси вручну</button><button class="btn btn-primary" type="button">Редагувати</button></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; align-items: start">
+        <section class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 16px">
+          <h2 class="h2">Контакти</h2>
+          <dl class="kv">
+            <dt>Телефон</dt><dd style="display: flex; gap: 10px; align-items: center"><span class="mono" style="font-size: 13px">+380 67 ••• •• 08</span><button class="link" type="button">Показати</button></dd>
+            <dt>E-mail</dt><dd style="display: flex; gap: 10px; align-items: center"><span>i.sav•••@example.com</span><button class="link" type="button">Показати</button></dd>
+            <dt>Місто</dt><dd>Київ</dd>
+            <dt>День народження</dt><dd>14 березня</dd>
+            <dt>Розсилки</dt><dd style="display: flex; flex-wrap: wrap; gap: 6px"><span class="badge b-green"><i></i>E-mail: так</span><span class="badge b-grey"><i></i>SMS: ні</span></dd>
+          </dl>
+          <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #EFEAE1; padding-top: 14px">
+            <span style="font-size: 12px; font-weight: 600; color: #4D463D">Сегменти</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px"><span class="seg">Сучасна українська проза</span><span class="seg">Батьки дітей 6–10</span><span class="seg">Активні онлайн</span><span class="seg">Відвідує презентації</span></div>
+          </div>
+        </section>
+
+        <section class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end">
+            <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; font-weight: 600; color: #4D463D">Бонусний рахунок</span><span style="font-size: 34px; font-weight: 700">286,00 ₴</span></div>
+            <span style="font-size: 13px; color: #4D463D; text-align: right">3% бонусами з кожної покупки<br>50 ₴ згорять 31.12.2026</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="height: 8px; background: #EFEAE1" aria-hidden="true"><div style="width: 68%; height: 8px; background: #D98B0B"></div></div>
+            <span style="font-size: 13px; color: #4D463D">До Платинового рівня — ще 3 840 ₴ покупок до кінця року</span>
+          </div>
+          <ol style="list-style: none; margin: 0; padding: 14px 0 0; border-top: 1px solid #EFEAE1; display: flex; flex-direction: column">
+            <li class="op"><span style="width: 10px; height: 10px; background: #2E8B50; margin-top: 5px"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px">Нараховано за чек <span class="mono" style="font-size: 12px">0398-0051</span></span><span style="font-size: 12px; color: #4D463D">02.11.2026 · Магазин на Хрещатику</span></span><span class="p">+38,70 ₴</span></li>
+            <li class="op"><span style="width: 10px; height: 10px; background: #5B2C6F; margin-top: 5px"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px">Списано в замовленні <span class="mono" style="font-size: 12px">ОН-2026-10102</span></span><span style="font-size: 12px; color: #4D463D">28.10.2026 · онлайн</span></span><span class="m">−120,00 ₴</span></li>
+            <li class="op"><span style="width: 10px; height: 10px; background: #2E8B50; margin-top: 5px"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px">Акція «Осінні читання»</span><span style="font-size: 12px; color: #4D463D">14.10.2026 · нараховано автоматично</span></span><span class="p">+100,00 ₴</span></li>
+            <li class="op"><span style="width: 10px; height: 10px; background: #D98B0B; margin-top: 5px"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px">Згоріли невикористані бонуси</span><span style="font-size: 12px; color: #4D463D">01.10.2026 · термін дії 12 місяців</span></span><span class="x">−25,00 ₴</span></li>
+            <li class="op" style="padding-bottom: 0"><span style="width: 10px; height: 10px; background: #2E8B50; margin-top: 5px"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px">Нараховано за чек <span class="mono" style="font-size: 12px">0377-0112</span></span><span style="font-size: 12px; color: #4D463D">19.09.2026 · Магазин на Подолі</span></span><span class="p">+52,30 ₴</span></li>
+          </ol>
+        </section>
+      </div>
+
+      <section class="card">
+        <div style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: baseline"><h2 class="h2">Історія покупок</h2><span style="font-size: 13px; color: #4D463D">за рік 41 покупка · 14 260 ₴ · середній чек 347,80 ₴</span></div>
+        <div style="overflow-x: auto">
+          <table class="t">
+            <thead><tr><th>Дата</th><th>Де</th><th>Документ</th><th>Книжки</th><th class="n">Сума</th><th>Стан</th></tr></thead>
+            <tbody>
+              <tr><td>02.11.2026</td><td>Магазин на Хрещатику</td><td class="mono" style="font-size: 13px">Чек 0398-0051</td><td>Амадока, Лісова пісня</td><td class="n" style="font-weight: 600">1 290,00 ₴</td><td><span class="badge b-done"><i></i>Оплачено</span></td></tr>
+              <tr><td>28.10.2026</td><td>Онлайн · самовивіз Хрещатик</td><td class="mono" style="font-size: 13px">ОН-2026-10102</td><td>Абетка, 100 казок. Том 1</td><td class="n" style="font-weight: 600">640,00 ₴</td><td><span class="badge b-done"><i></i>Видано</span></td></tr>
+              <tr><td>14.10.2026</td><td>Магазин на Хрещатику</td><td class="mono" style="font-size: 13px">Чек 0381-0007</td><td>Інтернат</td><td class="n" style="font-weight: 600">385,00 ₴</td><td><span class="badge b-done"><i></i>Оплачено</span></td></tr>
+              <tr><td>19.09.2026</td><td>Магазин на Подолі</td><td class="mono" style="font-size: 13px">Чек 0377-0112</td><td>Felix Austria, Тигролови, Котигорошко</td><td class="n" style="font-weight: 600">1 743,00 ₴</td><td><span class="badge b-done"><i></i>Оплачено</span></td></tr>
+              <tr><td>02.09.2026</td><td>Магазин на Подолі</td><td class="mono" style="font-size: 13px">Повернення 0371-0040</td><td>Котигорошко</td><td class="n" style="font-weight: 600; color: #4D463D">−210,00 ₴</td><td><span class="badge b-grey"><i></i>Повернення</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1150}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

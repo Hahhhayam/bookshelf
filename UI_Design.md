@@ -177,32 +177,21 @@ Users (create, block, unblock, roles and locations), roles (name and permission 
 
 ## 7. Project structure
 
+Feature-Sliced Design (rules in `src/client/CONVENTIONS.md`); a layer imports only from the layers below it:
+
 ```
-src/client/
-  src/
-    api/            generated OpenAPI types, client, query keys
-    app/            router, providers, the two shells
-    auth/           login, session, permission checks
-    components/     shared UI: status badge, document card, data table, money, hotkeys
-    features/
-      shop/         catalog, book page, cart, checkout, tracking
-      till/
-      orders/
-      stock/
-      transfers/
-      counts/
-      purchasing/
-      receiving/
-      returns/
-      catalog/
-      customers/
-      promotions/
-      reports/
-      admin/
-    i18n/           uk, en
+src/client/src/
+  app/        providers, routing (routes, guards, navigation config), global styles and theme
+  pages/      one slice per route: shop-*, staff-home, till, order-board, transfer, reports, users …
+  widgets/    large blocks: staff-shell, shop-shell, document cards, line editors
+  features/   one user action each: auth, switch-location, shop-*, till-* …
+  entities/   business objects with types, API calls, query hooks, status labels: book, order, transfer,
+              purchase-order, stock, sale, customer, report, audit, reference, cart, viewer …
+  shared/     no business knowledge: api (HTTP, stubs), lib (formatting, storage, permissions), ui kit, tokens
 ```
 
-Each feature folder holds its routes, screens, hooks and components; features talk to each other only through routes.
+Requests and responses are typed by hand in `entities/*/api`: the API's OpenAPI document has no response schemas
+(`src/client/API_GAPS.md`, R-01).
 
 ## 8. Delivery order
 
@@ -216,14 +205,10 @@ Each feature folder holds its routes, screens, hooks and components; features ta
 
 ## 9. API gaps
 
-What the screens above need and the server does not offer yet:
+The full list of what the screens need and the server does not offer, what is redundant and what is broken, with
+the client's workaround for each, is kept in [src/client/API_GAPS.md](src/client/API_GAPS.md). The largest ones:
+pricing a receipt before payment (`POST /sales/quote`), a barcode filter on `GET /books`, list endpoints for reference
+data and documents, customer search and sign-in, and reading or reducing the server cart.
 
-| Need | Proposal | Used by |
-|---|---|---|
-| Price a receipt before payment (promotions, total) | `POST /sales/quote` with the same lines as a sale | till |
-| Find a book by barcode | `barcode` filter on `GET /books` | till, receiving, counts |
-| Lists of reference data | `GET` lists for authors, publishers, categories, suppliers, locations, roles, users, segments, promotions, integrations | pickers and administration |
-| Lists of documents | `GET` lists for returns (pending), inventory counts, write-offs, sales of a day | returns, counts, stock, till |
-| Customer search | by name or phone, not only by card | customers |
-| Customer sign-in | accounts for the online shop; until then the shop works with a customer id and the pickup code | online shop |
-| Same origin in production | serve the built client and the API from one origin (e.g. one reverse proxy); development already uses the Vite proxy for `/api`, so no CORS is needed | all |
+In production the built client and the API should be served from one origin (e.g. one reverse proxy); development
+already uses the Vite proxy for `/api`, so no CORS is needed.

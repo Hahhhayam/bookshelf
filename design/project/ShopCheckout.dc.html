@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Оформлення замовлення — Полиця</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=EB+Garamond:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input{font-family:inherit}
+.disp{font-family:'EB Garamond',Georgia,serif}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.sec{background:#FFFFFF;border:1px solid #E3DCD0;padding:24px;display:flex;flex-direction:column;gap:16px}
+.h2{margin:0;font-size:19px;font-weight:600;display:flex;align-items:center;gap:12px}
+.num{width:28px;height:28px;background:#1E1A16;color:#FFFFFF;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.fld{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+.inp{height:46px;box-sizing:border-box;border:1px solid #CFC6B7;background:#FFFFFF;padding:0 12px;font-size:16px;font-weight:400;width:100%}
+.opt{display:flex;gap:14px;align-items:flex-start;padding:16px;border:1px solid #CFC6B7;background:#FFFFFF;cursor:pointer}
+.opt-on{border:2px solid #5B2C6F;background:#FBF7FC;padding:15px}
+.rad{width:20px;height:20px;box-sizing:border-box;border:2px solid #8C8478;border-radius:50%;flex:none;margin-top:2px;display:inline-flex;align-items:center;justify-content:center}
+.rad-on{border-color:#5B2C6F}
+.rad-on span{width:10px;height:10px;border-radius:50%;background:#5B2C6F;display:block}
+.st{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:14px;align-items:start;padding:14px 0;border-bottom:1px solid #EFEAE1}
+.ok{color:#1D6A3A;font-weight:600}.mid{color:#855100;font-weight:600}
+.sum{display:flex;justify-content:space-between;font-size:15px;padding:5px 0}
+</style>
+</helmet>
+<div class="root" style="min-height: 1100px; background: #F6F3ED; display: flex; flex-direction: column">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E3DCD0">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+      <a href="#" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #1E1A16"><svg width="30" height="30" viewBox="0 0 36 36" aria-hidden="true"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg><span class="disp" style="font-size: 28px; font-weight: 600">Полиця</span></a>
+      <a href="#" style="margin-left: auto; font-size: 14px; font-weight: 600">← Повернутися до кошика</a>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; width: 100%; margin: 0 auto; box-sizing: border-box; padding: 28px 24px 56px; display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+    <form style="flex: 999 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 16px" aria-label="Оформлення">
+      <h1 class="disp" style="margin: 0; font-size: 40px; font-weight: 600">Оформлення замовлення</h1>
+
+      <section class="sec">
+        <h2 class="h2"><span class="num">1</span>Контакти</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px">
+          <label class="fld">Ім’я та прізвище<input class="inp" type="text" value="Ірина Савчук" autocomplete="name"></label>
+          <label class="fld">Телефон<input class="inp" type="tel" value="+380 67 482 21 08" autocomplete="tel"><span style="font-size: 12px; font-weight: 400; color: #4D463D">Надішлемо SMS, коли буде готове</span></label>
+          <label class="fld">E-mail · необов’язково<input class="inp" type="email" value="" placeholder="для електронного чека" autocomplete="email"></label>
+        </div>
+      </section>
+
+      <section class="sec">
+        <h2 class="h2"><span class="num">2</span>Отримання</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <label class="opt opt-on"><span class="rad rad-on"><span></span></span><span style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 16px">Самовивіз з магазину</strong><span style="font-size: 14px; color: #4D463D">Безкоштовно · оплата на місці або онлайн</span></span></label>
+          <label class="opt"><span class="rad"></span><span style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 16px">Доставка Новою поштою</strong><span style="font-size: 14px; color: #4D463D">1–2 дні · від 70 ₴, безкоштовно від 1 500 ₴</span></span></label>
+        </div>
+        <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column">
+          <legend style="font-size: 14px; font-weight: 600; padding: 4px 0 6px">Оберіть магазин</legend>
+          <label class="st"><span class="rad rad-on"><span></span></span><span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px">Магазин на Хрещатику</strong><span style="font-size: 13px; color: #4D463D">вул. Хрещатик, 22 · щодня 9:00–21:00</span></span><span class="mid" style="font-size: 14px; text-align: right">Усе — завтра після 12:00<br><span style="font-weight: 400; color: #4D463D; font-size: 13px">«Амадоку» привеземо зі складу</span></span></label>
+          <label class="st"><span class="rad"></span><span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px">Магазин на Подолі</strong><span style="font-size: 13px; color: #4D463D">вул. Сагайдачного, 10 · щодня 10:00–20:00</span></span><span class="ok" style="font-size: 14px; text-align: right">Усе є · сьогодні після 18:00</span></label>
+          <label class="st"><span class="rad"></span><span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px">Магазин на Лівому березі</strong><span style="font-size: 13px; color: #4D463D">просп. Броварський, 17 · щодня 10:00–20:00</span></span><span class="mid" style="font-size: 14px; text-align: right">Усе — через 1–2 дні</span></label>
+        </fieldset>
+      </section>
+
+      <section class="sec">
+        <h2 class="h2"><span class="num">3</span>Оплата</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <label class="opt opt-on"><span class="rad rad-on"><span></span></span><span style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 16px">У магазині при отриманні</strong><span style="font-size: 14px; color: #4D463D">Готівкою, карткою або сертифікатом</span></span></label>
+          <label class="opt"><span class="rad"></span><span style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 16px">Карткою онлайн</strong><span style="font-size: 14px; color: #4D463D">Після підтвердження наявності</span></span></label>
+        </div>
+      </section>
+    </form>
+
+    <aside style="flex: 1 1 320px; max-width: 400px; background: #FFFFFF; border: 1px solid #E3DCD0; padding: 24px; display: flex; flex-direction: column; gap: 6px; position: sticky; top: 24px">
+      <h2 style="margin: 0 0 8px; font-size: 18px; font-weight: 600">Ваше замовлення</h2>
+      <div class="sum"><span>Інтернат</span><span>346,50 ₴</span></div>
+      <div class="sum"><span>Амадока</span><span>650,00 ₴</span></div>
+      <div class="sum"><span>Абетка</span><span>290,00 ₴</span></div>
+      <div class="sum" style="border-top: 1px solid #EFEAE1; margin-top: 6px; padding-top: 10px"><span style="color: #4D463D">Самовивіз · Хрещатик</span><span>0,00 ₴</span></div>
+      <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 2px solid #1E1A16; margin-top: 10px; padding-top: 14px"><span style="font-size: 16px; font-weight: 600">До сплати</span><strong style="font-size: 30px">1 286,50 ₴</strong></div>
+      <button type="button" style="margin-top: 16px; height: 54px; border: 0; background: #5B2C6F; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">Підтвердити замовлення</button>
+      <span style="font-size: 13px; line-height: 19px; color: #4D463D; margin-top: 8px">Натискаючи кнопку, ви погоджуєтеся з <a href="#">умовами продажу</a>. Скасувати можна до видачі — у листі буде посилання.</span>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

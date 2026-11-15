@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Магазин на телефоні</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=EB+Garamond:wght@500;600&amp;family=Fira+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#E9E4DB}
+a{color:#5B2C6F}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input{font-family:inherit}
+.disp{font-family:'EB Garamond',Georgia,serif}
+.mono{font-family:'Fira Mono',ui-monospace,monospace}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.ph{width:390px;height:844px;background:#F6F3ED;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 20px 48px rgba(30,26,22,.18)}
+.lab{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#4D463D}
+.bar{height:56px;flex:none;background:#FFFFFF;border-bottom:1px solid #E3DCD0;display:flex;align-items:center;gap:12px;padding:0 16px}
+.ib{width:44px;height:44px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;color:#1E1A16;padding:0;position:relative}
+.cnt{position:absolute;top:6px;right:4px;min-width:18px;height:18px;padding:0 4px;box-sizing:border-box;background:#5B2C6F;color:#FFFFFF;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.chip{height:36px;padding:0 12px;border:1px solid #CFC6B7;background:#FFFFFF;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip-on{border-color:#5B2C6F;background:#F2EAF4;color:#5B2C6F}
+.cov{aspect-ratio:2/3;padding:10px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;color:#F6F3ED}
+.cta{position:absolute;left:0;right:0;bottom:0;background:#FFFFFF;border-top:1px solid #E3DCD0;padding:12px 16px 20px}
+.big{width:100%;height:52px;border:0;background:#5B2C6F;color:#FFFFFF;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:space-between;padding:0 18px;box-sizing:border-box}
+.ch{width:44px;height:60px;background:#FFFFFF;border:2px solid #1E1A16;display:inline-flex;align-items:center;justify-content:center;font-size:30px;font-weight:500}
+.sq{width:22px;height:22px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:none}
+</style>
+</helmet>
+<div class="root" style="width: 2190px; height: 1000px; box-sizing: border-box; padding: 40px; background: #E9E4DB; display: flex; gap: 40px; align-items: flex-start">
+
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <span class="lab">a · Пошук</span>
+    <div class="ph">
+      <div class="bar"><span class="disp" style="font-size: 24px; font-weight: 600; flex: 1">Полиця</span><button class="ib" type="button" aria-label="Кошик, 3 книжки"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 13H6.2L5 8z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cnt">3</span></button><button class="ib" type="button" aria-label="Меню"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button></div>
+      <div style="padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; background: #FFFFFF; border-bottom: 1px solid #E3DCD0">
+        <label style="display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 12px; border: 2px solid #1E1A16"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4-4"></path></svg><input type="search" value="Жадан" aria-label="Пошук книг" style="flex: 1; min-width: 0; border: 0; outline: none; font-size: 16px"></label>
+        <div style="display: flex; gap: 8px; overflow: hidden"><span class="chip chip-on"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.5"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Є на Хрещатику</span><span class="chip">Фільтри · 1</span><span class="chip">Популярні</span></div>
+      </div>
+      <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px">
+        <h1 class="disp" style="margin: 0; font-size: 28px; font-weight: 600">«Жадан» — 14 книжок</h1>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><div class="cov" style="background: #3D2A4A"><span class="disp" style="font-size: 20px; font-weight: 600">Інтернат</span><span style="font-size: 9px; letter-spacing: .08em; text-transform: uppercase">Сергій Жадан</span></div><strong style="font-size: 15px">Інтернат</strong><span style="display: flex; justify-content: space-between; font-size: 14px"><strong>346,50 ₴</strong><span style="color: #1D6A3A; font-weight: 600; font-size: 12px">Сьогодні</span></span></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div class="cov" style="background: #2F4A3E"><span class="disp" style="font-size: 20px; font-weight: 600">Ворошиловград</span><span style="font-size: 9px; letter-spacing: .08em; text-transform: uppercase">Сергій Жадан</span></div><strong style="font-size: 15px">Ворошиловград</strong><span style="display: flex; justify-content: space-between; font-size: 14px"><strong>360,00 ₴</strong><span style="color: #1D6A3A; font-weight: 600; font-size: 12px">Сьогодні</span></span></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div class="cov" style="background: #7A3B2E"><span class="disp" style="font-size: 20px; font-weight: 600">Месопотамія</span></div></div>
+          <div style="display: flex; flex-direction: column; gap: 6px"><div class="cov" style="background: #2E3F5C"><span class="disp" style="font-size: 20px; font-weight: 600">Депеш Мод</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <span class="lab">b · Книга</span>
+    <div class="ph">
+      <div class="bar"><button class="ib" type="button" aria-label="Назад"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button><span style="flex: 1"></span><button class="ib" type="button" aria-label="Кошик, 3 книжки"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 13H6.2L5 8z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cnt">3</span></button></div>
+      <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; gap: 16px">
+          <div class="cov" style="width: 140px; flex: none; background: #3D2A4A"><span class="disp" style="font-size: 26px; font-weight: 600">Інтернат</span><span style="font-size: 9px; letter-spacing: .08em; text-transform: uppercase">Сергій Жадан</span></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; justify-content: flex-end">
+            <h1 class="disp" style="margin: 0; font-size: 32px; line-height: 1; font-weight: 600">Інтернат</h1>
+            <a href="#" style="font-size: 15px; font-weight: 600; text-decoration: none">Сергій Жадан</a>
+            <span style="font-size: 26px; font-weight: 700; margin-top: 8px">346,50 ₴</span>
+            <span style="font-size: 14px; color: #6E665A; text-decoration: line-through">385,00 ₴</span>
+          </div>
+        </div>
+        <span style="height: 28px; padding: 0 10px; background: #E2F1E7; color: #1D6A3A; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; align-self: flex-start">Тиждень Жадана −10% · до 22.11</span>
+        <div style="background: #FFFFFF; border: 1px solid #E3DCD0; display: flex; flex-direction: column">
+          <div style="display: flex; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid #EFEAE1; font-size: 14px"><strong>Хрещатик · ваш</strong><span style="color: #1D6A3A; font-weight: 600">4 шт., сьогодні</span></div>
+          <div style="display: flex; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid #EFEAE1; font-size: 14px"><span>Поділ</span><span style="color: #1D6A3A; font-weight: 600">2 шт., сьогодні</span></div>
+          <div style="display: flex; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid #EFEAE1; font-size: 14px"><span>Лівий берег</span><span style="color: #4D463D">1–2 дні</span></div>
+          <div style="display: flex; justify-content: space-between; padding: 12px 14px; font-size: 14px"><span>Нова пошта</span><span style="color: #855100; font-weight: 600">1–2 дні</span></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline"><strong style="font-size: 15px">Історія ціни</strong><span style="font-size: 12px; color: #4D463D">12 міс.</span></div>
+        <svg viewBox="0 0 358 70" width="358" height="70" role="img" aria-label="Ціна зростала з 340 до 385 гривень, зараз 346,50 за акцією"><path d="M0 52 H90 V36 H250 V10 H330 V44 H358" fill="none" stroke="#5B2C6F" stroke-width="2.5"></path><rect x="346" y="38" width="10" height="10" fill="#1D6A3A"></rect></svg>
+      </div>
+      <div class="cta"><button class="big" type="button">У кошик<span>346,50 ₴</span></button></div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <span class="lab">c · Кошик</span>
+    <div class="ph">
+      <div class="bar"><button class="ib" type="button" aria-label="Назад"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button><strong style="font-size: 17px; flex: 1">Кошик · 3</strong></div>
+      <div style="padding: 0 16px; display: flex; flex-direction: column">
+        <div style="display: grid; grid-template-columns: 60px minmax(0, 1fr) auto; gap: 12px; padding: 16px 0; border-bottom: 1px solid #E3DCD0"><div class="cov" style="background: #3D2A4A; padding: 6px"></div><span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px">Інтернат</strong><span style="font-size: 13px; color: #4D463D">Сергій Жадан</span><span style="display: inline-flex; margin-top: 6px"><button type="button" aria-label="Менше" style="width: 36px; height: 36px; border: 1px solid #CFC6B7; background: #FFFFFF">−</button><span style="width: 40px; height: 36px; box-sizing: border-box; border-top: 1px solid #CFC6B7; border-bottom: 1px solid #CFC6B7; display: inline-flex; align-items: center; justify-content: center; font-weight: 600">1</span><button type="button" aria-label="Більше" style="width: 36px; height: 36px; border: 1px solid #CFC6B7; background: #FFFFFF">+</button></span></span><strong style="font-size: 15px">346,50 ₴</strong></div>
+        <div style="display: grid; grid-template-columns: 60px minmax(0, 1fr) auto; gap: 12px; padding: 16px 0; border-bottom: 1px solid #E3DCD0"><div class="cov" style="background: #2F4A3E; padding: 6px"></div><span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px">Амадока</strong><span style="font-size: 13px; color: #4D463D">Софія Андрухович</span><span style="font-size: 12px; color: #855100; font-weight: 600">Зі складу — завтра</span></span><strong style="font-size: 15px">650,00 ₴</strong></div>
+        <div style="display: grid; grid-template-columns: 60px minmax(0, 1fr) auto; gap: 12px; padding: 16px 0; border-bottom: 1px solid #E3DCD0"><div class="cov" style="background: #7A3B2E; padding: 6px"></div><span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px">Абетка</strong><span style="font-size: 13px; color: #4D463D">Іван Малкович</span></span><strong style="font-size: 15px">290,00 ₴</strong></div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 0 4px; font-size: 14px"><span style="color: #4D463D">Знижка</span><span style="color: #1D6A3A; font-weight: 600">−38,50 ₴</span></div>
+        <div style="display: flex; justify-content: space-between; padding: 4px 0; font-size: 16px"><strong>До сплати</strong><strong style="font-size: 22px">1 286,50 ₴</strong></div>
+      </div>
+      <div class="cta"><button class="big" type="button">Оформити замовлення<svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <span class="lab">d · Підтвердження</span>
+    <div class="ph" style="background: #FFFFFF">
+      <div class="bar"><span class="disp" style="font-size: 24px; font-weight: 600">Полиця</span></div>
+      <div role="status" style="padding: 24px 20px; display: flex; flex-direction: column; gap: 18px">
+        <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #1D6A3A"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.2"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Замовлення прийнято</span>
+        <h1 class="disp" style="margin: 0; font-size: 34px; line-height: 1.05; font-weight: 600">Ваш код отримання</h1>
+        <div class="mono" aria-label="Код R7 4Q 29" style="display: flex; align-items: center; gap: 6px"><span class="ch">R</span><span class="ch">7</span><span style="width: 8px"></span><span class="ch">4</span><span class="ch">Q</span><span style="width: 8px"></span><span class="ch">2</span><span class="ch">9</span></div>
+        <span style="font-size: 15px; line-height: 23px">Покажіть код на касі <strong>Магазину на Хрещатику</strong>. Буде готове <strong>завтра після 12:00</strong> — надішлемо SMS.</span>
+        <div style="background: #F6F3ED; padding: 14px; font-size: 14px; line-height: 21px; color: #4D463D"><strong style="color: #1E1A16">вул. Хрещатик, 22</strong><br>щодня 9:00–21:00 · чекаємо 3 дні<br>Сплатити на місці: <strong style="color: #1E1A16">1 286,50 ₴</strong></div>
+        <a href="#" style="height: 52px; background: #5B2C6F; color: #FFFFFF; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Відстежити замовлення</a>
+        <button type="button" style="height: 48px; border: 1px solid #CFC6B7; background: #FFFFFF; font-size: 15px; font-weight: 600">Додати в Гаманець</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <span class="lab">e · Відстеження</span>
+    <div class="ph">
+      <div class="bar"><span class="disp" style="font-size: 24px; font-weight: 600; flex: 1">Полиця</span></div>
+      <div style="padding: 20px 16px; display: flex; flex-direction: column; gap: 16px">
+        <h1 class="disp" style="margin: 0; font-size: 30px; font-weight: 600">Де моє замовлення?</h1>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Код отримання<span style="display: flex; gap: 8px"><input class="mono" type="text" value="R7-4Q-29" style="flex: 1; min-width: 0; height: 52px; box-sizing: border-box; border: 2px solid #1E1A16; padding: 0 12px; font-size: 20px"><button type="button" style="width: 60px; height: 52px; border: 0; background: #5B2C6F; color: #FFFFFF" aria-label="Перевірити"><svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button></span></label>
+        <div style="background: #FFFFFF; border: 1px solid #E3DCD0; padding: 18px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; color: #4D463D">ОН-2026-10477 · 3 книжки</span><strong style="font-size: 22px; color: #1F4F99">Комплектується</strong><span style="font-size: 14px">Готове завтра після 12:00</span></div>
+          <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; font-size: 14px">
+            <li style="display: flex; gap: 12px; align-items: center"><span class="sq" style="background: #1D6A3A; color: #FFFFFF"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.5"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><span style="flex: 1">Прийнято</span><span style="color: #4D463D">15.11, 15:02</span></li>
+            <li style="display: flex; gap: 12px; align-items: center"><span class="sq" style="background: #1D6A3A; color: #FFFFFF"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.5"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><span style="flex: 1">Підтверджено</span><span style="color: #4D463D">15:20</span></li>
+            <li style="display: flex; gap: 12px; align-items: center" aria-current="step"><span class="sq" style="border: 3px solid #2F6BD0; background: #FFFFFF"></span><strong style="flex: 1; color: #1F4F99">Комплектується</strong><span style="color: #4D463D">16:05</span></li>
+            <li style="display: flex; gap: 12px; align-items: center; color: #4D463D"><span class="sq" style="border: 2px solid #CFC6B7; background: #FFFFFF"></span><span style="flex: 1">Готове до видачі</span><span>16.11</span></li>
+            <li style="display: flex; gap: 12px; align-items: center; color: #4D463D"><span class="sq" style="border: 2px solid #CFC6B7; background: #FFFFFF"></span><span style="flex: 1">Видано</span><span></span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":2190,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

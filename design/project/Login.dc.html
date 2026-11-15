@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Вхід для працівників</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=EB+Garamond:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.root{font-family:'Commissioner',system-ui,sans-serif;color:#1E1A16}
+button,input{font-family:inherit}
+.disp{font-family:'EB Garamond',Georgia,serif}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.card{width:400px;box-sizing:border-box;background:#FFFFFF;border:1px solid #E3DCD0;box-shadow:0 1px 2px rgba(30,26,22,.06);padding:36px;display:flex;flex-direction:column;gap:20px}
+.fld{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+.inp{height:44px;box-sizing:border-box;border:1px solid #CFC6B7;background:#FFFFFF;padding:0 12px;font-size:15px;font-weight:400;color:#1E1A16;width:100%}
+.pw{display:flex;align-items:center;height:44px;box-sizing:border-box;border:1px solid #CFC6B7;background:#FFFFFF}
+.pw input{flex:1;min-width:0;height:100%;border:0;padding:0 12px;font-size:15px;background:transparent;outline:none}
+.eye{width:44px;height:42px;border:0;background:transparent;color:#4D463D;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.go{height:48px;border:0;background:#5B2C6F;color:#FFFFFF;font-size:15px;font-weight:600;cursor:pointer}
+.go:hover{background:#4A2259}
+.go:disabled{background:#EFEAE1;color:#8C8478;cursor:not-allowed}
+.state{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6E665A}
+.brand{display:flex;align-items:center;gap:10px}
+</style>
+</helmet>
+<div class="root" style="width: 1440px; height: 820px; box-sizing: border-box; background: #F6F3ED; padding: 56px 64px; display: flex; flex-direction: column; gap: 36px">
+  <div style="display: flex; justify-content: space-between; align-items: baseline">
+    <span class="disp" style="font-size: 32px; font-weight: 600">Вхід для працівників</span>
+    <span style="font-size: 14px; color: #4D463D">Одна сторінка для всіх ролей · після входу навігація будується за правами користувача</span>
+  </div>
+  <div style="display: flex; justify-content: space-between; gap: 32px">
+
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="state">Звичайний стан</span>
+      <form class="card" aria-label="Вхід">
+        <div class="brand"><svg width="32" height="32" viewBox="0 0 36 36" aria-hidden="true"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg><span class="disp" style="font-size: 28px; font-weight: 600">Полиця</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px"><strong style="font-size: 20px">Увійдіть, щоб почати зміну</strong><span style="font-size: 14px; color: #4D463D">Логін і пароль видає адміністратор магазину</span></div>
+        <label class="fld">Логін<input class="inp" type="text" value="o.melnyk" autocomplete="username"></label>
+        <div class="fld"><label for="p1">Пароль</label><div class="pw" style="border-color: #5B2C6F; box-shadow: 0 0 0 3px #F2EAF4"><input id="p1" type="password" value="••••••••••" autocomplete="current-password"><button class="eye" type="button" aria-label="Показати пароль"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div></div>
+        <button class="go" type="submit">Увійти</button>
+        <span style="font-size: 13px; line-height: 19px; color: #4D463D">Забули пароль? Зверніться до адміністратора свого магазину — він скине його за хвилину.</span>
+      </form>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="state">Помилка входу</span>
+      <form class="card" aria-label="Вхід">
+        <div class="brand"><svg width="32" height="32" viewBox="0 0 36 36" aria-hidden="true"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg><span class="disp" style="font-size: 28px; font-weight: 600">Полиця</span></div>
+        <div role="alert" style="display: flex; gap: 10px; padding: 12px 14px; background: #FBE6E4; color: #7E1F16; font-size: 14px; line-height: 20px">
+          <svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+          <span><strong>Невірний логін або пароль</strong><br>Перевірте розкладку клавіатури та Caps Lock. Залишилось 2 спроби.</span>
+        </div>
+        <label class="fld">Логін<input class="inp" type="text" value="o.melnyk" style="border-color: #A12A1F" aria-invalid="true"></label>
+        <div class="fld"><label for="p2">Пароль</label><div class="pw" style="border-color: #A12A1F; box-shadow: 0 0 0 3px #FBE6E4"><input id="p2" type="password" value="" aria-invalid="true" placeholder="Введіть пароль ще раз"><button class="eye" type="button" aria-label="Показати пароль"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #855100"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l7 8h-4v6H9v-6H5l7-8z"></path></svg>Увімкнено Caps Lock</span>
+        </div>
+        <button class="go" type="submit">Увійти</button>
+        <span style="font-size: 13px; line-height: 19px; color: #4D463D">Пароль очищено, логін збережено. Фокус — у полі пароля.</span>
+      </form>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="state">Обліковий запис заблоковано</span>
+      <form class="card" aria-label="Вхід">
+        <div class="brand"><svg width="32" height="32" viewBox="0 0 36 36" aria-hidden="true"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg><span class="disp" style="font-size: 28px; font-weight: 600">Полиця</span></div>
+        <div role="alert" style="display: flex; flex-direction: column; gap: 10px; padding: 16px; background: #FDF0D7; color: #5E3A00; font-size: 14px; line-height: 20px">
+          <span style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>Обліковий запис заблоковано</span>
+          <span>Після 5 невдалих спроб вхід для <strong>o.melnyk</strong> закрито. Це захищає дані магазину.</span>
+          <span>Щоб розблокувати, зверніться до системного адміністратора: <strong>внутр. 1204</strong> або <a href="#" style="color: inherit; font-weight: 600">admin@polytsia.ua</a>.</span>
+        </div>
+        <label class="fld" style="color: #8C8478">Логін<input class="inp" type="text" value="o.melnyk" disabled="disabled" style="background: #EFEAE1; color: #6E665A; border-color: #E3DCD0"></label>
+        <label class="fld" style="color: #8C8478">Пароль<input class="inp" type="password" value="" disabled="disabled" style="background: #EFEAE1; border-color: #E3DCD0"></label>
+        <button class="go" type="submit" disabled="disabled">Увійти</button>
+        <a href="#" style="font-size: 14px; font-weight: 600">Увійти під іншим логіном</a>
+      </form>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

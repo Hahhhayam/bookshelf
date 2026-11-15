@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Нова книга</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=EB+Garamond:wght@500;600&amp;family=Fira+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input,select,textarea{font-family:inherit}
+.disp{font-family:'EB Garamond',Georgia,serif}
+.mono{font-family:'Fira Mono',ui-monospace,monospace}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;font-size:14px;font-weight:600;line-height:1;border:1px solid transparent;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-primary{background:#5B2C6F;color:#FFFFFF}.btn-primary:hover{background:#4A2259}
+.btn-secondary{background:#FFFFFF;color:#1E1A16;border-color:#CFC6B7}
+.btn-ghost{background:transparent;color:#4D463D}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.rail{flex:0 0 64px;background:#FBF9F5;border-right:1px solid #E3DCD0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0}
+.rl{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;color:#4D463D}
+.rl-on{background:#F2EAF4;color:#5B2C6F;box-shadow:inset 3px 0 0 #5B2C6F}
+.top{min-height:56px;box-sizing:border-box;padding:8px 28px;background:#FFFFFF;border-bottom:1px solid #E3DCD0;display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.card{background:#FFFFFF;border:1px solid #E3DCD0}
+.fld{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+.req{color:#A12A1F}
+.inp{height:42px;box-sizing:border-box;border:1px solid #CFC6B7;background:#FFFFFF;padding:0 12px;font-size:15px;font-weight:400;color:#1E1A16;width:100%}
+.hint{font-size:12px;font-weight:400;color:#4D463D}
+.ok{font-size:12px;font-weight:500;color:#1D6A3A;display:inline-flex;align-items:center;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 4px 0 10px;background:#F2EAF4;color:#5B2C6F;font-size:13px;font-weight:600}
+.chip button{border:0;background:transparent;color:inherit;padding:4px;display:inline-flex;cursor:pointer}
+.menu{background:#FFFFFF;box-shadow:0 6px 16px rgba(30,26,22,.12),0 0 0 1px #E3DCD0;padding:4px 0;display:flex;flex-direction:column}
+.mi{display:flex;align-items:center;gap:10px;min-height:38px;padding:0 14px;font-size:14px;font-weight:400}
+.h2{margin:0;font-size:16px;font-weight:600}
+</style>
+</helmet>
+<div class="root" style="min-height: 1100px; display: flex; background: #F6F3ED">
+  <nav class="rail" aria-label="Розділи">
+    <svg width="28" height="28" viewBox="0 0 36 36" aria-hidden="true" style="margin-bottom: 14px"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg>
+    <a class="rl rl-on" href="#" aria-label="Каталог" aria-current="page"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v16H4zM10 4h5v16h-5zM15 5l4-1 3 15-4 1z"></path></svg></a>
+    <a class="rl" href="#" aria-label="Ціни"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8L3 12z"></path><circle cx="7.5" cy="8.5" r="1.5"></circle></svg></a>
+    <a class="rl" href="#" aria-label="Звіти"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg></a>
+  </nav>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+    <header class="top">
+      <nav aria-label="Шлях" style="font-size: 14px; color: #4D463D; display: flex; gap: 8px"><a href="#" style="text-decoration: none">Каталог</a><span aria-hidden="true">/</span><span style="color: #1E1A16; font-weight: 600">Нова книга</span></nav>
+      <span style="margin-left: auto; width: 32px; height: 32px; background: #A12A1F; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center" aria-label="Марина Левченко, комерційний менеджер">МЛ</span>
+    </header>
+
+    <form style="flex: 1; display: flex; flex-direction: column" aria-label="Нова книга">
+      <main style="box-sizing: border-box; padding: 24px 28px 32px; display: flex; flex-direction: column; gap: 20px; max-width: 1240px; width: 100%">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h1 style="margin: 0; font-size: 28px; font-weight: 600">Нова книга</h1>
+          <span style="font-size: 14px; color: #4D463D">Поля з <span class="req">*</span> обов’язкові. Після збереження книга з’явиться на касах і в онлайн-магазині.</span>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+          <section class="card" style="flex: 999 1 560px; min-width: 0; padding: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+            <label class="fld" style="grid-column: 1 / -1">Назва <span class="req" aria-hidden="true">*</span><input class="inp" type="text" value="Амадока" required="required"></label>
+            <label class="fld">ISBN <span class="req" aria-hidden="true">*</span><input class="inp mono" type="text" value="978-617-679-761-6"><span class="ok"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>ISBN коректний, такої книги ще немає</span></label>
+            <label class="fld">Штрихкод EAN-13<input class="inp mono" type="text" value="9786176797616"><span class="hint">Заповнено з ISBN. Змініть, лише якщо на книзі інший.</span></label>
+            <div class="fld" style="grid-column: 1 / -1; position: relative">
+              <span>Автори <span class="req" aria-hidden="true">*</span></span>
+              <div style="min-height: 42px; box-sizing: border-box; border: 2px solid #5B2C6F; box-shadow: 0 0 0 3px #F2EAF4; background: #FFFFFF; padding: 5px 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px">
+                <span class="chip">Софія Андрухович<button type="button" aria-label="Прибрати автора Софія Андрухович"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></span>
+                <input type="text" value="Остап Слив" aria-label="Додати автора" style="flex: 1; min-width: 160px; border: 0; outline: none; font-size: 15px; height: 28px">
+              </div>
+              <div class="menu" role="listbox" style="position: absolute; left: 0; right: 0; top: 76px; z-index: 2">
+                <span class="mi" role="option" style="background: #F2EAF4"><strong style="color: #5B2C6F">Остап Слив</strong>инський<span style="margin-left: auto; font-size: 12px; color: #4D463D">12 книжок у каталозі</span></span>
+                <span style="height: 1px; background: #EFEAE1; margin: 4px 0"></span>
+                <span class="mi" role="option" style="color: #5B2C6F; font-weight: 600"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Створити нового автора «Остап Слив»</span>
+              </div>
+            </div>
+            <label class="fld" style="margin-top: 92px">Категорія <span class="req" aria-hidden="true">*</span><select class="inp"><option>Сучасна українська проза</option></select></label>
+            <label class="fld" style="margin-top: 92px">Видавництво <span class="req" aria-hidden="true">*</span><select class="inp"><option>Видавництво Старого Лева</option></select></label>
+            <label class="fld">Рік видання<input class="inp" type="text" value="2020"></label>
+            <label class="fld">Сторінок<input class="inp" type="text" value="832"></label>
+            <label class="fld" style="grid-column: 1 / -1">Анотація для магазину<textarea class="inp" rows="3" style="height: 96px; padding: 10px 12px; resize: vertical">Великий роман про пам’ять, втрату й ідентичність: чоловік без спогадів і жінка, що намагається повернути йому минуле.</textarea><span class="hint">112 / 600 символів</span></label>
+          </section>
+
+          <aside style="flex: 1 1 300px; max-width: 380px; display: flex; flex-direction: column; gap: 16px">
+            <section class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px">
+              <h2 class="h2">Обкладинка</h2>
+              <div style="display: flex; gap: 14px; align-items: center">
+                <div style="width: 96px; height: 136px; background: #3D2A4A; color: #F6F3ED; padding: 10px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between" aria-hidden="true"><span class="disp" style="font-size: 18px; font-weight: 600; line-height: 1.1">Амадока</span><span style="font-size: 9px; letter-spacing: .06em; text-transform: uppercase">Софія Андрухович</span></div>
+                <div style="display: flex; flex-direction: column; gap: 8px"><button class="btn btn-secondary" type="button">Замінити файл</button><span class="hint">JPG або PNG, від 600 px завширшки</span></div>
+              </div>
+            </section>
+            <section class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 14px">
+              <h2 class="h2">Ціна</h2>
+              <label class="fld">Роздрібна ціна, ₴ <span class="req" aria-hidden="true">*</span><input class="inp" type="text" value="650,00" style="font-size: 18px; font-weight: 600"></label>
+              <label class="fld">Закупівельна ціна, ₴<input class="inp" type="text" value="410,00"></label>
+              <div style="display: flex; justify-content: space-between; font-size: 14px; padding-top: 6px; border-top: 1px solid #EFEAE1"><span style="color: #4D463D">Маржа</span><strong>240,00 ₴ · 36,9%</strong></div>
+              <span class="hint">Пізніші зміни ціни — через діалог «Змінити ціну», з датою початку дії.</span>
+            </section>
+          </aside>
+        </div>
+      </main>
+
+      <div style="position: sticky; bottom: 0; margin-top: auto; background: #FFFFFF; border-top: 1px solid #E3DCD0; padding: 14px 28px; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px">
+        <span style="margin-right: auto; font-size: 13px; color: #4D463D">Чернетку збережено автоматично о 14:18</span>
+        <button class="btn btn-ghost" type="button">Скасувати</button>
+        <button class="btn btn-secondary" type="button">Зберегти чернетку</button>
+        <button class="btn btn-primary" type="submit">Додати до каталогу</button>
+      </div>
+    </form>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

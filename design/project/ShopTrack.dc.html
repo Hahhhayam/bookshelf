@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Відстеження замовлення — Полиця</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=EB+Garamond:wght@500;600&amp;family=Fira+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input{font-family:inherit}
+.disp{font-family:'EB Garamond',Georgia,serif}
+.mono{font-family:'Fira Mono',ui-monospace,monospace}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.stp{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:16px;min-height:72px}
+.mk{display:flex;flex-direction:column;align-items:center}
+.sq{width:28px;height:28px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.sq-done{background:#1D6A3A;color:#FFFFFF}
+.sq-now{background:#FFFFFF;border:3px solid #2F6BD0}
+.sq-next{background:#FFFFFF;border:2px solid #CFC6B7}
+.ln{flex:1;width:2px;background:#CFC6B7}
+.ln-done{background:#1D6A3A}
+</style>
+</helmet>
+<div class="root" style="min-height: 860px; background: #F6F3ED; display: flex; flex-direction: column">
+  <header style="background: #FFFFFF; border-bottom: 1px solid #E3DCD0">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 16px">
+      <a href="#" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #1E1A16"><svg width="30" height="30" viewBox="0 0 36 36" aria-hidden="true"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg><span class="disp" style="font-size: 28px; font-weight: 600">Полиця</span></a>
+      <a href="#" style="margin-left: auto; font-size: 14px; font-weight: 600">До каталогу</a>
+    </div>
+  </header>
+
+  <main style="max-width: 760px; width: 100%; margin: 0 auto; box-sizing: border-box; padding: 48px 24px 56px; display: flex; flex-direction: column; gap: 28px">
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <h1 class="disp" style="margin: 0; font-size: 44px; font-weight: 600">Де моє замовлення?</h1>
+      <form style="display: flex; flex-wrap: wrap; gap: 10px" aria-label="Пошук за кодом">
+        <label style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600">Код отримання<input class="mono" type="text" value="R7-4Q-29" style="height: 52px; box-sizing: border-box; border: 2px solid #1E1A16; padding: 0 14px; font-size: 22px; letter-spacing: .08em"></label>
+        <button type="submit" style="align-self: flex-end; height: 52px; padding: 0 24px; border: 0; background: #5B2C6F; color: #FFFFFF; font-size: 16px; font-weight: 600; cursor: pointer">Перевірити</button>
+      </form>
+      <span style="font-size: 14px; color: #4D463D">Код є в SMS і на сторінці підтвердження. Особисті дані тут не показуємо.</span>
+    </div>
+
+    <section aria-labelledby="st-t" style="background: #FFFFFF; border: 1px solid #E3DCD0; padding: 28px; display: flex; flex-direction: column; gap: 22px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 14px; color: #4D463D">Замовлення <span class="mono">ОН-2026-10477</span> · 3 книжки</span><h2 id="st-t" style="margin: 0; font-size: 26px; font-weight: 600; color: #1F4F99">Комплектується</h2></div>
+        <span style="font-size: 15px; text-align: right">Буде готове <strong>завтра після 12:00</strong><br><span style="color: #4D463D; font-size: 14px">Магазин на Хрещатику</span></span>
+      </div>
+      <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+        <li class="stp"><span class="mk"><span class="sq sq-done"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.5"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><span class="ln ln-done"></span></span><span style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 18px"><strong style="font-size: 16px">Прийнято</strong><span style="font-size: 14px; color: #4D463D">Ми отримали ваше замовлення</span></span><span style="font-size: 14px; color: #4D463D">15.11, 15:02</span></li>
+        <li class="stp"><span class="mk"><span class="sq sq-done"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.5"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><span class="ln ln-done"></span></span><span style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 18px"><strong style="font-size: 16px">Підтверджено</strong><span style="font-size: 14px; color: #4D463D">Книжки зарезервовано для вас</span></span><span style="font-size: 14px; color: #4D463D">15.11, 15:20</span></li>
+        <li class="stp" aria-current="step"><span class="mk"><span class="sq sq-now"></span><span class="ln"></span></span><span style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 18px"><strong style="font-size: 16px; color: #1F4F99">Комплектується</strong><span style="font-size: 14px; color: #4D463D">2 книжки вже на полиці видачі, «Амадока» їде зі складу</span></span><span style="font-size: 14px; color: #4D463D">15.11, 16:05</span></li>
+        <li class="stp"><span class="mk"><span class="sq sq-next"></span><span class="ln"></span></span><span style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 18px"><strong style="font-size: 16px; color: #4D463D">Готове до видачі</strong><span style="font-size: 14px; color: #4D463D">Надішлемо SMS</span></span><span style="font-size: 14px; color: #6E665A">очікується 16.11</span></li>
+        <li class="stp" style="min-height: 0"><span class="mk"><span class="sq sq-next"></span></span><span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 16px; color: #4D463D">Видано</strong><span style="font-size: 14px; color: #4D463D">Чекаємо вас до 19.11 включно</span></span><span></span></li>
+      </ol>
+    </section>
+    <span style="font-size: 14px; color: #4D463D">Питання щодо замовлення? Зателефонуйте в магазин: <a href="#">+380 44 000 00 22</a></span>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

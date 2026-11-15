@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Замовлення постачальникам — стани списку</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input{font-family:inherit}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+.badge{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;font-size:12px;font-weight:600;line-height:1;white-space:nowrap}
+.badge i{width:6px;height:6px;display:block}
+.b-grey{background:#EDE9E3;color:#4D463D}.b-grey i{background:#8C8478}
+.b-blue{background:#E4ECF9;color:#1F4F99}.b-blue i{background:#2F6BD0}
+.b-red{background:#FBE6E4;color:#A12A1F}.b-red i{background:#D0402F}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;font-size:14px;font-weight:600;line-height:1;border:1px solid transparent;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-primary{background:#5B2C6F;color:#FFFFFF}
+.btn-secondary{background:#FFFFFF;color:#1E1A16;border-color:#CFC6B7}
+.btn-ghost{background:transparent;color:#4D463D}
+button:focus-visible,a:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.chipf{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid #CFC6B7;background:#FFFFFF;font-size:13px;font-weight:500;color:#1E1A16;cursor:pointer;white-space:nowrap}
+.chipf-on{border-color:#5B2C6F;background:#F2EAF4;color:#5B2C6F;font-weight:600}
+.t{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+.t th{background:#EFEAE1;text-align:left;font-size:12px;font-weight:600;color:#4D463D;padding:0 12px;height:40px;border-bottom:1px solid #E3DCD0;white-space:nowrap}
+.t td{padding:12px;border-bottom:1px solid #EFEAE1;vertical-align:middle}
+.r-red td{background:#FEF7F6}
+.r-amber td{background:#FFFAF0}
+.av{width:24px;height:24px;background:#E8DDEB;color:#5B2C6F;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.state{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6E665A}
+.sk{background:#EFEAE1;height:12px}
+.panel{background:#FFFFFF;border:1px solid #E3DCD0;display:flex;flex-direction:column}
+.mini th{height:36px}
+.f-red{color:#A12A1F}
+.f-amber{color:#855100;font-weight:600}
+</style>
+</helmet>
+<div class="root" style="width: 1440px; min-height: 1400px; box-sizing: border-box; background: #F6F3ED; padding: 48px 56px; display: flex; flex-direction: column; gap: 22px">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px">
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <span style="font-size: 13px; color: #4D463D">Закупівлі · менеджер із закупівель Олена Ткачук</span>
+      <h1 style="margin: 0; font-size: 28px; font-weight: 600">Замовлення постачальникам</h1>
+    </div>
+    <button class="btn btn-primary" type="button"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Нове замовлення</button>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+    <button class="chipf chipf-on" type="button">Статус: відкриті (4)<svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <button class="chipf" type="button"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Останні 30 днів<svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <button class="chipf" type="button">Постачальник: усі<svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+    <button class="chipf" type="button"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color: #855100"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg>Лише прострочені · 2</button>
+    <label style="margin-left: auto; width: 300px; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #CFC6B7; background: #FFFFFF; color: #6E665A"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4-4"></path></svg><input type="search" placeholder="Номер, постачальник або ISBN" aria-label="Пошук замовлень" style="flex: 1; min-width: 0; border: 0; outline: none; font-size: 13px; background: transparent"></label>
+  </div>
+
+  <div class="panel">
+    <table class="t">
+      <thead><tr><th style="width: 28px"></th><th>Номер</th><th>Постачальник</th><th style="text-align: right">Сума</th><th>Статус</th><th>Очікувана поставка</th><th>Остання зміна</th></tr></thead>
+      <tbody>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+          <tr class="{{ r.rowClass }}">
+            <td style="padding-right: 0">
+              <sc-if value="{{ r.isOverdue }}" hint-placeholder-val="{{ false }}"><svg class="i" width="18" height="18" viewBox="0 0 24 24" role="img" aria-label="Прострочено" style="color: #B26B00; display: block"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg></sc-if>
+              <sc-if value="{{ r.isProblem }}" hint-placeholder-val="{{ false }}"><svg class="i" width="18" height="18" viewBox="0 0 24 24" role="img" aria-label="Проблема" style="color: #C2392B; display: block"><path d="M12 3.5l9.5 16.5h-19L12 3.5z"></path><path d="M12 10v4.5M12 17.5h.01"></path></svg></sc-if>
+            </td>
+            <td><div style="display: flex; flex-direction: column; gap: 3px"><a href="#" style="font-weight: 600; text-decoration: none">{{ r.no }}</a><sc-if value="{{ r.flag }}" hint-placeholder-val="{{ false }}"><span class="{{ r.flagClass }}" style="font-size: 12px; font-weight: 600">{{ r.flag }}</span></sc-if></div></td>
+            <td>{{ r.supplier }}</td>
+            <td style="text-align: right; white-space: nowrap; font-weight: 600">{{ r.sum }}</td>
+            <td><span class="badge {{ r.badge }}"><i></i>{{ r.status }}</span></td>
+            <td class="{{ r.dueClass }}" style="white-space: nowrap">{{ r.due }}</td>
+            <td><div style="display: flex; align-items: center; gap: 8px; white-space: nowrap"><span class="av" aria-hidden="true">{{ r.ini }}</span><span style="display: flex; flex-direction: column; line-height: 1.3"><span style="font-size: 13px">{{ r.when }}</span><span style="font-size: 12px; color: #4D463D">{{ r.who }}</span></span></div></td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+    <div style="display: flex; justify-content: space-between; padding: 10px 16px; border-top: 1px solid #E3DCD0; font-size: 13px; color: #4D463D"><span>6 відкритих · сортування за останньою зміною</span><span>Сторінка 1 з 1</span></div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 18px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span class="state">Завантаження</span>
+      <div class="panel" aria-busy="true" style="height: 420px">
+        <table class="t mini"><thead><tr><th>Номер</th><th>Постачальник</th><th>Статус</th></tr></thead></table>
+        <div style="display: flex; flex-direction: column; padding: 4px 12px">
+          <sc-for list="{{ skel }}" as="s" hint-placeholder-count="7">
+            <div style="display: grid; grid-template-columns: 1fr 1.4fr 0.8fr; gap: 16px; align-items: center; height: 46px; border-bottom: 1px solid #EFEAE1"><span class="sk" style="width: 80%"></span><span class="sk" style="width: 65%"></span><span class="sk" style="width: 70%; height: 20px"></span></div>
+          </sc-for>
+        </div>
+        <span style="margin: auto 16px 14px; font-size: 13px; color: #4D463D">Шапку й фільтри видно одразу — рядки підвантажуються.</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span class="state">Порожньо · немає відкритих</span>
+      <div class="panel" style="height: 420px; align-items: center; justify-content: center; text-align: center; padding: 32px; box-sizing: border-box; gap: 12px">
+        <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><rect x="12" y="18" width="40" height="30" fill="#E8DDEB"></rect><path d="M12 18l20 14 20-14" fill="none" stroke="#8E5BA3" stroke-width="2.5"></path><rect x="8" y="48" width="48" height="3" fill="#8E5BA3"></rect></svg>
+        <strong style="font-size: 18px">Усі замовлення закрито</strong>
+        <span style="font-size: 14px; line-height: 20px; color: #4D463D; max-width: 320px">Відкритих замовлень постачальникам немає. Закриті — у фільтрі «Статус: усі». Нове варто створити, коли звіт «Закінчуються» покаже дефіцит.</span>
+        <div style="display: flex; gap: 10px; margin-top: 6px"><button class="btn btn-secondary" type="button">Показати всі</button><button class="btn btn-primary" type="button">Нове замовлення</button></div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span class="state">Нічого не знайдено за фільтрами</span>
+      <div class="panel" style="height: 420px; align-items: center; justify-content: center; text-align: center; padding: 32px; box-sizing: border-box; gap: 12px">
+        <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="28" cy="28" r="14" fill="none" stroke="#8E5BA3" stroke-width="3"></circle><path d="M38 38l14 14" stroke="#8E5BA3" stroke-width="4"></path><path d="M22 28h12" stroke="#D3BEDD" stroke-width="3"></path></svg>
+        <strong style="font-size: 18px">За цими фільтрами — нічого</strong>
+        <span style="font-size: 14px; line-height: 20px; color: #4D463D; max-width: 320px">Немає замовлень «Фоліо» зі статусом «Частково отримано» за останні 7 днів.</span>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px">
+          <span class="chipf chipf-on" style="height: 30px">Фоліо ×</span><span class="chipf chipf-on" style="height: 30px">Частково отримано ×</span><span class="chipf chipf-on" style="height: 30px">7 днів ×</span>
+        </div>
+        <button class="btn btn-secondary" type="button" style="margin-top: 6px">Скинути фільтри</button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const row = (no, supplier, sum, badge, status, due, when, who, ini, kind, flag) => ({
+      no, supplier, sum, badge, status, due, when, who, ini, flag: flag || '',
+      isOverdue: kind === 'overdue',
+      isProblem: kind === 'problem',
+      rowClass: kind === 'overdue' ? 'r-amber' : kind === 'problem' ? 'r-red' : '',
+      flagClass: kind === 'problem' ? 'f-red' : 'f-amber',
+      dueClass: kind === 'overdue' ? 'f-amber' : ''
+    });
+    return {
+      skel: [1, 2, 3, 4, 5, 6, 7],
+      rows: [
+        row('ЗП-2026-0318', 'Видавництво «Ранок»', '48 320,00 ₴', 'b-blue', 'Відправлено постачальнику', '08.11.2026', '08.11, 11:20', 'Олена Ткачук', 'ОТ', 'overdue', 'Прострочено на 7 днів'),
+        row('ЗП-2026-0321', 'Видавництво Старого Лева', '112 450,00 ₴', 'b-blue', 'Підтверджено', '12.11.2026', '06.11, 15:04', 'Олена Ткачук', 'ОТ', 'overdue', 'Прострочено на 3 дні'),
+        row('ЗП-2026-0331', 'Фоліо', '58 040,00 ₴', 'b-red', 'Відхилено частково', '17.11.2026', 'Сьогодні, 09:41', 'Олена Ткачук', 'ОТ', 'problem', 'Постачальник відхилив 4 позиції'),
+        row('ЗП-2026-0325', 'А-ба-ба-га-ла-ма-га', '36 900,00 ₴', 'b-blue', 'Частково отримано', '14.11.2026', 'Сьогодні, 12:30', 'Ігор Бондар', 'ІБ'),
+        row('ЗП-2026-0327', 'Наш Формат', '74 180,00 ₴', 'b-blue', 'Підтверджено', '18.11.2026', 'Сьогодні, 10:14', 'Олена Ткачук', 'ОТ'),
+        row('ЗП-2026-0330', 'Віхола', '21 600,00 ₴', 'b-grey', 'Чернетка', '—', 'Вчора, 17:55', 'Олена Ткачук', 'ОТ')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

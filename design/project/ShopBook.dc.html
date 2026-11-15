@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Інтернат — Сергій Жадан</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=EB+Garamond:wght@500;600&amp;family=Fira+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input{font-family:inherit}
+.disp{font-family:'EB Garamond',Georgia,serif}
+.mono{font-family:'Fira Mono',ui-monospace,monospace}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.hdr{background:#FFFFFF;border-bottom:1px solid #E3DCD0}
+.hin{max-width:1280px;margin:0 auto;padding:14px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px}
+.hl{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:#1E1A16;text-decoration:none}
+.buy{height:52px;border:0;background:#5B2C6F;color:#FFFFFF;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 24px}
+.buy2{height:52px;border:1px solid #1E1A16;background:#FFFFFF;color:#1E1A16;font-size:16px;font-weight:600;cursor:pointer;padding:0 20px}
+.t{width:100%;border-collapse:separate;border-spacing:0;font-size:15px}
+.t td{padding:12px 0;border-bottom:1px solid #E3DCD0}
+.ok{color:#1D6A3A;font-weight:600}.mid{color:#855100;font-weight:600}.no{color:#6E665A}
+.kv{display:grid;grid-template-columns:140px minmax(0,1fr);row-gap:8px;font-size:14px;margin:0}
+.kv dt{color:#4D463D}.kv dd{margin:0}
+.gl line{stroke:#E3DCD0;stroke-width:1}
+.ax text{font-size:11px;fill:#6E665A}
+.ax-e text{text-anchor:end}
+.ax-m text{text-anchor:middle}
+.ln{fill:none;stroke:#5B2C6F;stroke-width:2.5}
+.lb{font-size:12px;fill:#4D463D;text-anchor:end}
+.lb-g{font-weight:700;fill:#1D6A3A}
+</style>
+</helmet>
+<div class="root" style="min-height: 1150px; background: #F6F3ED; display: flex; flex-direction: column">
+  <header class="hdr">
+    <div class="hin">
+      <a href="#" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #1E1A16"><svg width="30" height="30" viewBox="0 0 36 36" aria-hidden="true"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg><span class="disp" style="font-size: 28px; font-weight: 600">Полиця</span></a>
+      <label style="flex: 1 1 360px; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 14px; border: 1px solid #CFC6B7; background: #FFFFFF; color: #6E665A"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4-4"></path></svg><input type="search" placeholder="Книга, автор або ISBN" aria-label="Пошук книг" style="flex: 1; min-width: 0; border: 0; outline: none; font-size: 16px; background: transparent"></label>
+      <a class="hl" href="#"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="color: #5B2C6F"><path d="M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Мій магазин: <strong>Хрещатик</strong></a>
+      <a class="hl" href="#">Відстежити замовлення</a>
+      <a class="hl" href="#" aria-label="Кошик, 3 книжки"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 13H6.2L5 8z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span style="min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; background: #5B2C6F; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">3</span></a>
+    </div>
+  </header>
+
+  <main style="max-width: 1280px; width: 100%; margin: 0 auto; box-sizing: border-box; padding: 24px 24px 56px; display: flex; flex-direction: column; gap: 24px">
+    <nav aria-label="Шлях" style="font-size: 14px; color: #4D463D; display: flex; gap: 8px"><a href="#" style="text-decoration: none">Каталог</a><span aria-hidden="true">/</span><a href="#" style="text-decoration: none">Сучасна українська проза</a><span aria-hidden="true">/</span><span>Інтернат</span></nav>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+      <div class="cov" style="flex: 0 1 360px; aspect-ratio: 2/3; background: #3D2A4A; color: #F6F3ED; padding: 28px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between" role="img" aria-label="Обкладинка книги «Інтернат»"><span class="disp" style="font-size: 56px; font-weight: 600; line-height: 1">Інтернат</span><span style="font-size: 14px; letter-spacing: .1em; text-transform: uppercase">Сергій Жадан</span></div>
+
+      <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <h1 class="disp" style="margin: 0; font-size: 52px; line-height: 1.05; font-weight: 600">Інтернат</h1>
+          <a href="#" style="font-size: 18px; font-weight: 600; text-decoration: none">Сергій Жадан</a>
+        </div>
+        <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap">
+          <span style="font-size: 36px; font-weight: 700">346,50 ₴</span>
+          <span style="font-size: 18px; color: #6E665A; text-decoration: line-through">385,00 ₴</span>
+          <span style="height: 26px; padding: 0 10px; background: #E2F1E7; color: #1D6A3A; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center">Тиждень Жадана −10% · до 22.11</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px">
+          <button class="buy" type="button"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 13H6.2L5 8z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>У кошик</button>
+          <button class="buy2" type="button">Забрати сьогодні на Хрещатику</button>
+        </div>
+        <span class="ok" style="display: inline-flex; align-items: center; gap: 8px; font-size: 15px"><span style="width: 8px; height: 8px; background: #2E8B50"></span>На Хрещатику 4 шт. · готове до видачі за 2 години</span>
+
+        <section aria-labelledby="av-t" style="display: flex; flex-direction: column; gap: 6px; margin-top: 8px">
+          <h2 id="av-t" style="margin: 0; font-size: 18px; font-weight: 600">Наявність у магазинах</h2>
+          <table class="t">
+            <tbody>
+              <tr><td><strong>Магазин на Хрещатику</strong> <span style="font-size: 13px; color: #4D463D">· ваш</span></td><td class="ok" style="text-align: right">4 шт. · сьогодні</td></tr>
+              <tr><td>Магазин на Подолі</td><td class="ok" style="text-align: right">2 шт. · сьогодні</td></tr>
+              <tr><td>Магазин на Лівому березі</td><td class="no" style="text-align: right">Немає · привеземо за 1–2 дні</td></tr>
+              <tr><td>Магазин у Львові, пл. Ринок</td><td class="ok" style="text-align: right">6 шт. · сьогодні</td></tr>
+              <tr><td>Доставка Новою поштою</td><td class="mid" style="text-align: right">Зі складу · 1–2 дні</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; border-top: 1px solid #E3DCD0; padding-top: 28px">
+      <section style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 14px">
+        <h2 style="margin: 0; font-size: 18px; font-weight: 600">Про книгу</h2>
+        <p style="margin: 0; font-size: 16px; line-height: 26px; max-width: 620px">Роман про три дні дороги через охоплене війною місто: вчитель вирушає забрати племінника з інтернату й мусить нарешті вирішити, на чиєму він боці.</p>
+        <dl class="kv"><dt>Видавництво</dt><dd>Meridian Czernowitz, 2017</dd><dt>Сторінок</dt><dd>336</dd><dt>ISBN</dt><dd class="mono" style="font-size: 13px">978-617-614-301-7</dd><dt>Мова</dt><dd>українська</dd></dl>
+      </section>
+      <section style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: 18px; font-weight: 600">Історія ціни</h2><span style="font-size: 13px; color: #4D463D">за 12 місяців</span></div>
+        <svg viewBox="0 0 520 190" width="100%" role="img" aria-label="Ціна: 340 гривень до березня, 360 до серпня, 385 до листопада, зараз 346,50 за акцією" style="max-width: 560px">
+          <g class="gl"><line x1="40" y1="20" x2="500" y2="20"></line><line x1="40" y1="55" x2="500" y2="55"></line><line x1="40" y1="90" x2="500" y2="90"></line><line x1="40" y1="125" x2="500" y2="125"></line><line x1="40" y1="160" x2="500" y2="160"></line></g>
+          <g class="ax ax-e"><text x="32" y="24">400</text><text x="32" y="59">380</text><text x="32" y="94">360</text><text x="32" y="129">340</text><text x="32" y="164">320</text></g>
+          <path class="ln" d="M40 125 H160 V90 H360 V46 H466 V114 H480"></path>
+          <rect x="474" y="108" width="12" height="12" fill="#1D6A3A"></rect>
+          <text class="lb lb-g" x="470" y="140">346,50 ₴ зараз</text>
+          <text class="lb" x="352" y="38">385,00 ₴</text>
+          <g class="ax ax-m"><text x="40" y="182">гру</text><text x="120" y="182">лют</text><text x="200" y="182">кві</text><text x="280" y="182">чер</text><text x="360" y="182">сер</text><text x="440" y="182">жов</text><text x="480" y="182">лис</text></g>
+        </svg>
+        <span style="font-size: 13px; color: #4D463D">Найнижча ціна за 30 днів до акції — 385,00 ₴.</span>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1150}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

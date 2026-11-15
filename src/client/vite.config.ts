@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+import { fileURLToPath, URL } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
@@ -6,6 +7,9 @@ import { defineConfig } from 'vite'
 // origin in development, so the API needs no CORS settings.
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
   server: {
     port: 5173,
     proxy: {
@@ -18,6 +22,6 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
+    setupFiles: ['./src/shared/test/setup.ts'],
   },
 })

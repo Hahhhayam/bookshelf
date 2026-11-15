@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Палітра і токени</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Literata:wght@500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Serif:wght@500;600&amp;family=IBM+Plex+Mono:wght@500&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=KyivType+Sans:wght@400;500;600;700&amp;family=KyivType+Serif:wght@500;600&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Playfair+Display:wght@600&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=EB+Garamond:wght@500;600&amp;family=Fira+Mono:wght@500&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&amp;family=Source+Serif+4:wght@600&amp;family=Source+Code+Pro:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.f-a{--ui:'Inter',system-ui,sans-serif;--disp:'Literata',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+.f-b{--ui:'IBM Plex Sans',system-ui,sans-serif;--disp:'IBM Plex Serif',Georgia,serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+.f-c{--ui:'KyivType Sans',system-ui,sans-serif;--disp:'KyivType Serif',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+.f-d{--ui:'Manrope',system-ui,sans-serif;--disp:'Playfair Display',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+.f-e{--ui:'Commissioner',system-ui,sans-serif;--disp:'EB Garamond',Georgia,serif;--mono:'Fira Mono',ui-monospace,monospace}
+.f-f{--ui:'Source Sans 3',system-ui,sans-serif;--disp:'Source Serif 4',Georgia,serif;--mono:'Source Code Pro',ui-monospace,monospace}
+.root{font-family:var(--ui);font-feature-settings:'tnum' 1}
+button,input,select{font-family:inherit}
+.disp{font-family:var(--disp)}
+.mono,.kbd,.tok{font-family:var(--mono)}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+.badge{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;font-size:12px;font-weight:600;line-height:1;white-space:nowrap}
+.badge i{width:6px;height:6px;display:block}
+.b-grey{background:#EDE9E3;color:#4D463D}.b-grey i{background:#8C8478}
+.b-blue{background:#E4ECF9;color:#1F4F99}.b-blue i{background:#2F6BD0}
+.b-green{background:#E2F1E7;color:#1D6A3A}.b-green i{background:#2E8B50}
+.b-done{background:#FFFFFF;color:#4D463D;box-shadow:inset 0 0 0 1px #D6CEC1}.b-done i{background:#A79F92}
+.b-red{background:#FBE6E4;color:#A12A1F}.b-red i{background:#D0402F}
+.b-amber{background:#FDF0D7;color:#855100}.b-amber i{background:#D98B0B}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;font-size:14px;font-weight:600;line-height:1;border:1px solid transparent;cursor:pointer;white-space:nowrap}
+.btn-primary{background:#5B2C6F;color:#FFFFFF}.btn-primary:hover{background:#4A2259}
+.btn-secondary{background:#FFFFFF;color:#1E1A16;border-color:#CFC6B7}.btn-secondary:hover{background:#F6F3ED}
+.btn-danger{background:#A12A1F;color:#FFFFFF}
+.btn-ghost{background:transparent;color:#4D463D}
+.btn-icon{width:40px;padding:0}
+.btn:disabled{background:#EFEAE1;color:#8C8478;border-color:transparent;cursor:not-allowed}
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;box-sizing:border-box;background:#FFFFFF;border:1px solid #CFC6B7;border-bottom-width:2px;font-size:11px;font-weight:500;line-height:1;color:#4D463D}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.ring{box-shadow:0 0 0 2px #FFFFFF,0 0 0 4px #5B2C6F}
+.lbl{font-size:12px;font-weight:600;color:#4D463D;letter-spacing:.02em}
+.tok{font-size:12px;font-weight:500;line-height:1.4;color:#6E665A}
+.inp{height:40px;box-sizing:border-box;border:1px solid #CFC6B7;background:#FFFFFF;padding:0 12px;font-size:14px;color:#1E1A16;width:100%}
+.sec{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6E665A;margin:0}
+.card{background:#FFFFFF;border:1px solid #E3DCD0}
+.pair{background:#FFFFFF;border:1px solid #E3DCD0;padding:24px;display:flex;flex-direction:column;gap:14px}
+.pair-on{border-color:#5B2C6F;box-shadow:inset 0 0 0 1px #5B2C6F}
+</style>
+</helmet>
+<div class="root {{ fontClass }}" style="width: 1440px; min-height: 2360px; box-sizing: border-box; padding: 64px; background: #F6F3ED; color: #1E1A16; display: flex; flex-direction: column; gap: 56px">
+
+  <header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px; border-bottom: 1px solid #E3DCD0; padding-bottom: 32px">
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg>
+        <span class="disp" style="font-size: 40px; font-weight: 600; letter-spacing: -0.01em">Полиця</span>
+      </div>
+      <p style="margin: 0; font-size: 16px; color: #4D463D">Дизайн-система інформаційної системи мережі книгарень · основи · v0.2</p>
+    </div>
+    <p style="margin: 0; max-width: 520px; font-size: 14px; line-height: 22px; color: #4D463D">Тепла нейтральна основа, як папір і дерево полиць. Один впевнений сливовий акцент лише для головних дій, фокусу та вибраного. Прямі кути всюди: форму тримають лінії й тло. Статуси мають власну шкалу, яка не перетинається з акцентом.</p>
+  </header>
+
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <h2 class="sec">Кольори · нейтральна основа</h2>
+    <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #F6F3ED; box-shadow: inset 0 0 0 1px #E3DCD0"></div><strong style="font-size: 14px">Папір</strong><span class="tok">paper · #F6F3ED</span><span style="font-size: 12px; color: #4D463D">Фон застосунку</span></div>
+      <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #FFFFFF; box-shadow: inset 0 0 0 1px #E3DCD0"></div><strong style="font-size: 14px">Поверхня</strong><span class="tok">surface · #FFFFFF</span><span style="font-size: 12px; color: #4D463D">Картки, таблиці, поля</span></div>
+      <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #EFEAE1"></div><strong style="font-size: 14px">Заглиблення</strong><span class="tok">sunk · #EFEAE1</span><span style="font-size: 12px; color: #4D463D">Шапки таблиць, меню</span></div>
+      <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #E3DCD0"></div><strong style="font-size: 14px">Лінія</strong><span class="tok">line · #E3DCD0</span><span style="font-size: 12px; color: #4D463D">Роздільники</span></div>
+      <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #CFC6B7"></div><strong style="font-size: 14px">Лінія сильна</strong><span class="tok">line-strong · #CFC6B7</span><span style="font-size: 12px; color: #4D463D">Межі полів, кнопок</span></div>
+      <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #6E665A"></div><strong style="font-size: 14px">Чорнило 3</strong><span class="tok">ink-3 · #6E665A</span><span style="font-size: 12px; color: #4D463D">Підказки · 5,3:1</span></div>
+      <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #4D463D"></div><strong style="font-size: 14px">Чорнило 2</strong><span class="tok">ink-2 · #4D463D</span><span style="font-size: 12px; color: #4D463D">Другорядний текст · 8,9:1</span></div>
+      <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #1E1A16"></div><strong style="font-size: 14px">Чорнило</strong><span class="tok">ink · #1E1A16</span><span style="font-size: 12px; color: #4D463D">Основний текст · 16:1</span></div>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <h2 class="sec">Акцент · слива</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #5B2C6F"></div><strong style="font-size: 14px">Акцент</strong><span class="tok">accent · #5B2C6F</span><span style="font-size: 12px; color: #4D463D">Білий текст · 10,6:1</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #4A2259"></div><strong style="font-size: 14px">Наведення</strong><span class="tok">accent-hover · #4A2259</span><span style="font-size: 12px; color: #4D463D">Hover, pressed</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #8E5BA3"></div><strong style="font-size: 14px">Світлий</strong><span class="tok">accent-2 · #8E5BA3</span><span style="font-size: 12px; color: #4D463D">Лише графіка, не текст</span></div>
+        <div style="display: flex; flex-direction: column; gap: 10px"><div style="height: 88px; background: #F2EAF4"></div><strong style="font-size: 14px">Тло вибраного</strong><span class="tok">accent-soft · #F2EAF4</span><span style="font-size: 12px; color: #4D463D">Активний пункт меню</span></div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <h2 class="sec">Акцент у роботі</h2>
+      <div class="card" style="padding: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: center">
+        <button class="btn btn-primary" type="button">Нове переміщення</button>
+        <span style="font-size: 13px; color: #4D463D">Головна дія — одна на екран</span>
+        <button class="btn btn-secondary ring" type="button">Фокус з клавіатури</button>
+        <span style="font-size: 13px; color: #4D463D">Кільце 2 px акценту з білим зазором 2 px</span>
+        <div style="display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px; background: #F2EAF4; color: #5B2C6F; font-size: 14px; font-weight: 600; box-shadow: inset 3px 0 0 #5B2C6F">
+          <svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h13l-3-3M20 17H7l3 3"></path></svg>Переміщення
+        </div>
+        <span style="font-size: 13px; color: #4D463D">Вибраний пункт навігації</span>
+        <a href="#" style="font-size: 14px; font-weight: 600">ПМ-2026-01482</a>
+        <span style="font-size: 13px; color: #4D463D">Посилання на документ</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <h2 class="sec">Шкала статусів · однакова всюди</h2>
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px">
+      <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px">
+        <span class="badge b-grey" style="align-self: flex-start"><i></i>Чернетка</span>
+        <strong style="font-size: 14px">Нове / чернетка</strong>
+        <span style="font-size: 13px; line-height: 19px; color: #4D463D">Нове, Чернетка, Створено</span>
+        <span class="tok">#4D463D на #EDE9E3</span>
+      </div>
+      <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px">
+        <span class="badge b-blue" style="align-self: flex-start"><i></i>В дорозі</span>
+        <strong style="font-size: 14px">У роботі</strong>
+        <span style="font-size: 13px; line-height: 19px; color: #4D463D">Підтверджене, Комплектується, В дорозі</span>
+        <span class="tok">#1F4F99 на #E4ECF9</span>
+      </div>
+      <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px">
+        <span class="badge b-green" style="align-self: flex-start"><i></i>Готове</span>
+        <strong style="font-size: 14px">Готове</strong>
+        <span style="font-size: 13px; line-height: 19px; color: #4D463D">Готове до видачі, Готове до відправки</span>
+        <span class="tok">#1D6A3A на #E2F1E7</span>
+      </div>
+      <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px">
+        <span class="badge b-done" style="align-self: flex-start"><i></i>Закрито</span>
+        <strong style="font-size: 14px">Завершено</strong>
+        <span style="font-size: 13px; line-height: 19px; color: #4D463D">Видано, Отримано, Закрито — більше не потребує уваги</span>
+        <span class="tok">#4D463D, контур #D6CEC1</span>
+      </div>
+      <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px">
+        <span class="badge b-red" style="align-self: flex-start"><i></i>Розбіжність</span>
+        <strong style="font-size: 14px">Скасовано / проблема</strong>
+        <span style="font-size: 13px; line-height: 19px; color: #4D463D">Скасовано, Відхилено, Отримано з розбіжністю</span>
+        <span class="tok">#A12A1F на #FBE6E4</span>
+      </div>
+      <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px">
+        <span class="badge b-amber" style="align-self: flex-start"><i></i>Прострочено</span>
+        <strong style="font-size: 14px">Прострочено / увага</strong>
+        <span style="font-size: 13px; line-height: 19px; color: #4D463D">Прострочено, Чекає задовго, Мало на складі</span>
+        <span class="tok">#855100 на #FDF0D7</span>
+      </div>
+    </div>
+    <p style="margin: 0; font-size: 13px; color: #4D463D">Колір ніколи не працює сам: у бейджі завжди є слово, а маркер проблеми в таблиці має іконку і підпис.</p>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 24px">
+      <h2 class="sec">Шрифти · шість пар з українською кирилицею</h2>
+      <span style="font-size: 13px; color: #4D463D">Інтерфейс · бренд і вітрина · коди та клавіші. Пару для всіх макетів перемикає налаштування «Шрифти» на кожній дошці.</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+      <article class="pair {{ pairA }}">
+        <div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">A · Нейтральна</span><sc-if value="{{ selA }}" hint-placeholder-val="{{ false }}"><span class="badge b-green"><i></i>У макетах</span></sc-if></div>
+        <div style="font-family: 'Literata', Georgia, serif; font-size: 32px; line-height: 40px; font-weight: 600">Полиця — книжки поруч</div>
+        <div style="font-family: 'Inter', sans-serif; display: flex; flex-direction: column; gap: 6px">
+          <strong style="font-size: 18px; font-weight: 600">Переміщення ПМ-2026-01482</strong>
+          <span style="font-size: 14px; line-height: 20px; color: #4D463D">Чуєш їх, доцю, га? Кумедна ж ти, прощайся без ґольфів!</span>
+          <span style="font-size: 24px; font-weight: 700; font-feature-settings: 'tnum' 1">1 431,50 ₴ <span style="font-size: 14px; font-weight: 500; color: #4D463D">· 705,00 · 286,00</span></span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #4D463D">ISBN 978-617-614-301-7 · F8</div>
+        <div style="border-top: 1px solid #EFEAE1; padding-top: 12px; font-size: 12px; line-height: 18px; color: #4D463D"><strong style="color: #1E1A16">Inter · Literata · JetBrains Mono.</strong> Найчіткіші дрібні цифри в щільних таблицях, нейтральний голос.</div>
+      </article>
+      <article class="pair {{ pairB }}">
+        <div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">B · Системна</span><sc-if value="{{ selB }}" hint-placeholder-val="{{ false }}"><span class="badge b-green"><i></i>У макетах</span></sc-if></div>
+        <div style="font-family: 'IBM Plex Serif', Georgia, serif; font-size: 32px; line-height: 40px; font-weight: 600">Полиця — книжки поруч</div>
+        <div style="font-family: 'IBM Plex Sans', sans-serif; display: flex; flex-direction: column; gap: 6px">
+          <strong style="font-size: 18px; font-weight: 600">Переміщення ПМ-2026-01482</strong>
+          <span style="font-size: 14px; line-height: 20px; color: #4D463D">Чуєш їх, доцю, га? Кумедна ж ти, прощайся без ґольфів!</span>
+          <span style="font-size: 24px; font-weight: 700; font-feature-settings: 'tnum' 1">1 431,50 ₴ <span style="font-size: 14px; font-weight: 500; color: #4D463D">· 705,00 · 286,00</span></span>
+        </div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #4D463D">ISBN 978-617-614-301-7 · F8</div>
+        <div style="border-top: 1px solid #EFEAE1; padding-top: 12px; font-size: 12px; line-height: 18px; color: #4D463D"><strong style="color: #1E1A16">IBM Plex Sans · Serif · Mono.</strong> Одна суперродина: інженерна, сувора, найкраще пасує до прямих кутів.</div>
+      </article>
+      <article class="pair {{ pairC }}">
+        <div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">C · Київська</span><sc-if value="{{ selC }}" hint-placeholder-val="{{ false }}"><span class="badge b-green"><i></i>У макетах</span></sc-if></div>
+        <div style="font-family: 'KyivType Serif', Georgia, serif; font-size: 32px; line-height: 40px; font-weight: 600">Полиця — книжки поруч</div>
+        <div style="font-family: 'KyivType Sans', sans-serif; display: flex; flex-direction: column; gap: 6px">
+          <strong style="font-size: 18px; font-weight: 600">Переміщення ПМ-2026-01482</strong>
+          <span style="font-size: 14px; line-height: 20px; color: #4D463D">Чуєш їх, доцю, га? Кумедна ж ти, прощайся без ґольфів!</span>
+          <span style="font-size: 24px; font-weight: 700; font-feature-settings: 'tnum' 1">1 431,50 ₴ <span style="font-size: 14px; font-weight: 500; color: #4D463D">· 705,00 · 286,00</span></span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #4D463D">ISBN 978-617-614-301-7 · F8</div>
+        <div style="border-top: 1px solid #EFEAE1; padding-top: 12px; font-size: 12px; line-height: 18px; color: #4D463D"><strong style="color: #1E1A16">KyivType Sans · KyivType Serif.</strong> Сучасний український шрифт Дмитра Растворцева, з характером міської айдентики.</div>
+      </article>
+      <article class="pair {{ pairD }}">
+        <div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">D · Вітринна</span><sc-if value="{{ selD }}" hint-placeholder-val="{{ false }}"><span class="badge b-green"><i></i>У макетах</span></sc-if></div>
+        <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 32px; line-height: 40px; font-weight: 600">Полиця — книжки поруч</div>
+        <div style="font-family: 'Manrope', sans-serif; display: flex; flex-direction: column; gap: 6px">
+          <strong style="font-size: 18px; font-weight: 600">Переміщення ПМ-2026-01482</strong>
+          <span style="font-size: 14px; line-height: 20px; color: #4D463D">Чуєш їх, доцю, га? Кумедна ж ти, прощайся без ґольфів!</span>
+          <span style="font-size: 24px; font-weight: 700; font-feature-settings: 'tnum' 1">1 431,50 ₴ <span style="font-size: 14px; font-weight: 500; color: #4D463D">· 705,00 · 286,00</span></span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #4D463D">ISBN 978-617-614-301-7 · F8</div>
+        <div style="border-top: 1px solid #EFEAE1; padding-top: 12px; font-size: 12px; line-height: 18px; color: #4D463D"><strong style="color: #1E1A16">Manrope · Playfair Display.</strong> Геометричний гротеск і контрастна антиква: найбільше «вітрини» для магазину.</div>
+      </article>
+      <article class="pair {{ pairE }}">
+        <div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">E · Книжкова</span><sc-if value="{{ selE }}" hint-placeholder-val="{{ true }}"><span class="badge b-green"><i></i>У макетах</span></sc-if></div>
+        <div style="font-family: 'EB Garamond', Georgia, serif; font-size: 34px; line-height: 40px; font-weight: 600">Полиця — книжки поруч</div>
+        <div style="font-family: 'Commissioner', sans-serif; display: flex; flex-direction: column; gap: 6px">
+          <strong style="font-size: 18px; font-weight: 600">Переміщення ПМ-2026-01482</strong>
+          <span style="font-size: 14px; line-height: 20px; color: #4D463D">Чуєш їх, доцю, га? Кумедна ж ти, прощайся без ґольфів!</span>
+          <span style="font-size: 24px; font-weight: 700; font-feature-settings: 'tnum' 1">1 431,50 ₴ <span style="font-size: 14px; font-weight: 500; color: #4D463D">· 705,00 · 286,00</span></span>
+        </div>
+        <div style="font-family: 'Fira Mono', monospace; font-size: 13px; color: #4D463D">ISBN 978-617-614-301-7 · F8</div>
+        <div style="border-top: 1px solid #EFEAE1; padding-top: 12px; font-size: 12px; line-height: 18px; color: #4D463D"><strong style="color: #1E1A16">Commissioner · EB Garamond · Fira Mono.</strong> Теплий гротеск і класичний гарамон, як на титулі книжки.</div>
+      </article>
+      <article class="pair {{ pairF }}">
+        <div style="display: flex; justify-content: space-between; align-items: center"><span class="lbl">F · Видавнича</span><sc-if value="{{ selF }}" hint-placeholder-val="{{ false }}"><span class="badge b-green"><i></i>У макетах</span></sc-if></div>
+        <div style="font-family: 'Source Serif 4', Georgia, serif; font-size: 32px; line-height: 40px; font-weight: 600">Полиця — книжки поруч</div>
+        <div style="font-family: 'Source Sans 3', sans-serif; display: flex; flex-direction: column; gap: 6px">
+          <strong style="font-size: 18px; font-weight: 600">Переміщення ПМ-2026-01482</strong>
+          <span style="font-size: 14px; line-height: 20px; color: #4D463D">Чуєш їх, доцю, га? Кумедна ж ти, прощайся без ґольфів!</span>
+          <span style="font-size: 24px; font-weight: 700; font-feature-settings: 'tnum' 1">1 431,50 ₴ <span style="font-size: 14px; font-weight: 500; color: #4D463D">· 705,00 · 286,00</span></span>
+        </div>
+        <div style="font-family: 'Source Code Pro', monospace; font-size: 13px; color: #4D463D">ISBN 978-617-614-301-7 · F8</div>
+        <div style="border-top: 1px solid #EFEAE1; padding-top: 12px; font-size: 12px; line-height: 18px; color: #4D463D"><strong style="color: #1E1A16">Source Sans 3 · Serif 4 · Code Pro.</strong> Спокійна й компактна: більше тексту в рядку таблиці без тісноти.</div>
+      </article>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <h2 class="sec">Шкала тексту · вибрана пара</h2>
+      <div class="card" style="display: flex; flex-direction: column">
+        <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); align-items: baseline; gap: 16px; padding: 18px 24px; border-bottom: 1px solid #EFEAE1"><span class="tok">display · 48/56 · 700</span><span style="font-size: 48px; line-height: 56px; font-weight: 700; letter-spacing: -0.02em">1 431,50 ₴</span></div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); align-items: baseline; gap: 16px; padding: 18px 24px; border-bottom: 1px solid #EFEAE1"><span class="tok">h1 · 28/36 · 600</span><span style="font-size: 28px; line-height: 36px; font-weight: 600; letter-spacing: -0.01em">Переміщення</span></div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); align-items: baseline; gap: 16px; padding: 18px 24px; border-bottom: 1px solid #EFEAE1"><span class="tok">h2 · 20/28 · 600</span><span style="font-size: 20px; line-height: 28px; font-weight: 600">Розбіжності при прийманні</span></div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); align-items: baseline; gap: 16px; padding: 18px 24px; border-bottom: 1px solid #EFEAE1"><span class="tok">h3 · 16/24 · 600</span><span style="font-size: 16px; line-height: 24px; font-weight: 600">Іван Багряний — «Тигролови»</span></div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); align-items: baseline; gap: 16px; padding: 18px 24px; border-bottom: 1px solid #EFEAE1"><span class="tok">body · 14/20 · 400</span><span style="font-size: 14px; line-height: 20px">Основний текст робочих екранів: таблиці, форми, описи.</span></div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); align-items: baseline; gap: 16px; padding: 18px 24px; border-bottom: 1px solid #EFEAE1"><span class="tok">small · 13/18 · 400</span><span style="font-size: 13px; line-height: 18px; color: #4D463D">Сьогодні 14:12 · Андрій Коваль</span></div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); align-items: baseline; gap: 16px; padding: 18px 24px; border-bottom: 1px solid #EFEAE1"><span class="tok">caption · 12/16 · 600</span><span style="font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: .02em; color: #4D463D">СТАТУС · ОСТАННЯ ЗМІНА</span></div>
+        <div style="display: grid; grid-template-columns: 160px minmax(0, 1fr); align-items: baseline; gap: 16px; padding: 18px 24px"><span class="tok">brand · display 600</span><span class="disp" style="font-size: 28px; font-weight: 600">Полиця — книжки поруч</span></div>
+      </div>
+      <p style="margin: 0; font-size: 13px; color: #4D463D">Антиква — лише для бренду й вітрини онлайн-магазину. Каса рахує базу від 16 px, решта робочих екранів — від 14 px. Цифри завжди табличні.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <h2 class="sec">Відступи · крок 4 px</h2>
+      <div class="card" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 10px">
+        <div style="display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 12px"><span class="tok">space-1 · 4</span><div style="width: 4px; height: 12px; background: #8E5BA3"></div></div>
+        <div style="display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 12px"><span class="tok">space-2 · 8</span><div style="width: 8px; height: 12px; background: #8E5BA3"></div></div>
+        <div style="display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 12px"><span class="tok">space-3 · 12</span><div style="width: 12px; height: 12px; background: #8E5BA3"></div></div>
+        <div style="display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 12px"><span class="tok">space-4 · 16</span><div style="width: 16px; height: 12px; background: #8E5BA3"></div></div>
+        <div style="display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 12px"><span class="tok">space-6 · 24</span><div style="width: 24px; height: 12px; background: #8E5BA3"></div></div>
+        <div style="display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 12px"><span class="tok">space-8 · 32</span><div style="width: 32px; height: 12px; background: #8E5BA3"></div></div>
+        <div style="display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 12px"><span class="tok">space-12 · 48</span><div style="width: 48px; height: 12px; background: #8E5BA3"></div></div>
+        <div style="display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: center; gap: 12px"><span class="tok">space-16 · 64</span><div style="width: 64px; height: 12px; background: #8E5BA3"></div></div>
+      </div>
+
+      <h2 class="sec">Кути · 0 px</h2>
+      <div class="card" style="padding: 20px 24px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <button class="btn btn-primary" type="button">Кнопка</button>
+          <span class="badge b-blue"><i></i>Тег статусу</span>
+          <kbd class="kbd">F8</kbd>
+          <span style="width: 32px; height: 32px; background: #5B2C6F; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center">ОМ</span>
+        </div>
+        <span style="font-size: 13px; line-height: 19px; color: #4D463D">Прямі кути всюди, разом з аватарами й точками статусів. Межі задають лінії 1 px, тло і тінь, вибране — смуга акценту 3 px.</span>
+      </div>
+
+      <h2 class="sec">Висота (тіні)</h2>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+        <div style="height: 88px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(30,26,22,.06), 0 0 0 1px #E3DCD0; display: flex; flex-direction: column; justify-content: center; padding: 0 16px; gap: 4px"><strong style="font-size: 13px">e1 · картка</strong><span class="tok">лінія + 1 px</span></div>
+        <div style="height: 88px; background: #FFFFFF; box-shadow: 0 6px 16px rgba(30,26,22,.10), 0 0 0 1px #E3DCD0; display: flex; flex-direction: column; justify-content: center; padding: 0 16px; gap: 4px"><strong style="font-size: 13px">e2 · меню, тост</strong><span class="tok">0 6 16 · 10%</span></div>
+        <div style="height: 88px; background: #FFFFFF; box-shadow: 0 20px 48px rgba(30,26,22,.18), 0 0 0 1px #E3DCD0; display: flex; flex-direction: column; justify-content: center; padding: 0 16px; gap: 4px"><strong style="font-size: 13px">e3 · діалог</strong><span class="tok">0 20 48 · 18%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 20px">
+    <h2 class="sec">Базові елементи · попередній перегляд</h2>
+    <div class="card" style="padding: 28px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px">
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <span class="lbl">Кнопки</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px">
+          <button class="btn btn-primary" type="button"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Створити</button>
+          <button class="btn btn-secondary" type="button">Зберегти чернетку</button>
+          <button class="btn btn-danger" type="button">Скасувати замовлення</button>
+          <button class="btn btn-ghost" type="button">Скинути фільтри</button>
+          <button class="btn btn-secondary btn-icon" type="button" aria-label="Більше дій"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h.01M12 12h.01M18 12h.01"></path></svg></button>
+          <button class="btn" type="button" disabled="disabled">Недоступно</button>
+        </div>
+        <span class="lbl" style="margin-top: 8px">Клавіші та гроші</span>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; font-size: 14px; color: #4D463D">
+          <span style="display: inline-flex; align-items: center; gap: 6px"><kbd class="kbd">F8</kbd>Готівка</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px"><kbd class="kbd">Ctrl</kbd><kbd class="kbd">K</kbd>Пошук</span>
+          <span style="font-size: 16px; font-weight: 600; color: #1E1A16">705,00 ₴</span>
+          <span style="font-size: 14px; font-weight: 600; color: #1D6A3A">−70,50 ₴</span>
+          <span style="font-size: 14px; color: #6E665A; text-decoration: line-through">450,00 ₴</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <span class="lbl">Поля: звичайне · фокус · помилка</span>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500">Назва книги<input class="inp" type="text" value="Інтернат"></label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500">ISBN<input class="inp mono" type="text" value="978-617-614-301" style="border-color: #5B2C6F; box-shadow: 0 0 0 3px #F2EAF4"></label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500">Ціна, ₴<input class="inp" type="text" value="-385" style="border-color: #A12A1F"><span style="display: flex; align-items: center; gap: 6px; color: #A12A1F; font-weight: 500"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>Ціна має бути більшою за нуль</span></label>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <span class="lbl">Пошук · стан сканування</span>
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border: 1px solid #CFC6B7; background: #FFFFFF; color: #6E665A">
+          <svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4-4"></path></svg>
+          <span style="flex: 1; font-size: 14px">Назва, автор або ISBN</span><kbd class="kbd">/</kbd>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border: 1px solid #5B2C6F; background: #FFFFFF; box-shadow: 0 0 0 3px #F2EAF4; color: #5B2C6F">
+          <svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6v12M7 6v12M11 6v12M14 6v12M17 6v12M20 6v12"></path></svg>
+          <span class="mono" style="flex: 1; font-size: 14px; font-weight: 500; color: #1E1A16">9786176143017</span>
+          <span style="font-size: 12px; font-weight: 600">Сканер готовий</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #E2F1E7; color: #1D6A3A; font-size: 13px; font-weight: 500">
+          <svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Знайдено: Сергій Жадан, «Інтернат»
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;fonts&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;A · Inter + Literata&quot;,&quot;B · IBM Plex&quot;,&quot;C · KyivType&quot;,&quot;D · Manrope + Playfair&quot;,&quot;E · Commissioner + Garamond&quot;,&quot;F · Source Sans + Serif&quot;],&quot;default&quot;:&quot;E · Commissioner + Garamond&quot;},&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:2360}}">
+class Component extends DCLogic {
+  renderVals() {
+    const key = String(this.props.fonts ?? 'E').charAt(0).toLowerCase();
+    const vals = { fontClass: 'f-' + key };
+    ['a', 'b', 'c', 'd', 'e', 'f'].forEach((k) => {
+      vals['sel' + k.toUpperCase()] = k === key;
+      vals['pair' + k.toUpperCase()] = k === key ? 'pair-on' : '';
+    });
+    return vals;
+  }
+}
+</script>
+</body>
+</html>

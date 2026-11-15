@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Каса — розділена оплата</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;family=Fira+Mono:wght@500&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input{font-family:inherit}
+.mono,.kbd{font-family:'Fira Mono',ui-monospace,monospace}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+.kbd{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:22px;padding:0 6px;box-sizing:border-box;background:#FFFFFF;border:1px solid #CFC6B7;border-bottom-width:2px;font-size:11px;font-weight:500;color:#4D463D}
+.kbd-inv{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35);color:#FFFFFF}
+button:focus-visible,input:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.ghost{background:#E3DCD0}
+.row{display:grid;grid-template-columns:40px minmax(0,1fr) 168px;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid #EFEAE1}
+.ico{width:40px;height:40px;background:#F6F3ED;color:#5B2C6F;display:inline-flex;align-items:center;justify-content:center}
+.amt{height:48px;box-sizing:border-box;border:1px solid #CFC6B7;background:#FFFFFF;padding:0 12px;font-size:18px;font-weight:600;text-align:right;width:100%}
+.amt-on{border:2px solid #5B2C6F;box-shadow:0 0 0 3px #F2EAF4}
+.link{border:0;background:transparent;color:#5B2C6F;font-size:13px;font-weight:600;padding:0;cursor:pointer;text-align:left}
+</style>
+</helmet>
+<div class="root" style="width: 1280px; height: 800px; position: relative; overflow: hidden; background: #F6F3ED">
+  <div aria-hidden="true" style="position: absolute; inset: 0; display: flex; flex-direction: column">
+    <div style="height: 52px; background: #1E1A16"></div>
+    <div style="flex: 1; display: flex">
+      <div style="flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+        <div style="height: 64px; background: #FFFFFF; border: 2px solid #CFC6B7"></div>
+        <div style="flex: 1; background: #FFFFFF; border: 1px solid #E3DCD0; display: flex; flex-direction: column; gap: 22px; padding: 56px 20px"><div class="ghost" style="height: 14px; width: 70%"></div><div class="ghost" style="height: 14px; width: 60%"></div><div class="ghost" style="height: 14px; width: 66%"></div><div class="ghost" style="height: 14px; width: 54%"></div></div>
+      </div>
+      <div style="width: 392px; background: #FFFFFF; border-left: 1px solid #E3DCD0"></div>
+    </div>
+    <div style="position: absolute; inset: 0; background: rgba(30,26,22,.55)"></div>
+  </div>
+
+  <div role="dialog" aria-modal="true" aria-labelledby="sp-t" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 620px; background: #FFFFFF; box-shadow: 0 20px 48px rgba(0,0,0,.3); display: flex; flex-direction: column">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 22px 26px 6px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h2 id="sp-t" style="margin: 0; font-size: 22px; font-weight: 600">Розділена оплата</h2>
+        <span style="font-size: 14px; color: #4D463D">Чек № 0412-0087 · Ірина Савчук, Золотий рівень</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px"><span style="font-size: 13px; color: #4D463D">До сплати</span><strong style="font-size: 24px">1 431,50 ₴</strong></div>
+    </div>
+
+    <div style="padding: 4px 26px 0">
+      <div class="row">
+        <span class="ico"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"></path></svg></span>
+        <span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px">Бонуси</strong><span style="font-size: 13px; color: #4D463D">На рахунку 286,00 ₴ · списано все</span></span>
+        <input class="amt" type="text" value="286,00" aria-label="Сума бонусами">
+      </div>
+      <div class="row">
+        <span class="ico"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="12"></rect><path d="M12 8v12M3 12h18M12 8c-1.5-3-5-3.5-5-1.5S10 8 12 8zM12 8c1.5-3 5-3.5 5-1.5S14 8 12 8z"></path></svg></span>
+        <span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px">Подарунковий сертифікат</strong><span style="font-size: 13px; color: #1D6A3A; display: inline-flex; align-items: center; gap: 6px"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg><span class="mono" style="font-size: 12px">ПС-7731-0042</span> · номінал 500,00 ₴, діє до 31.12.2026</span></span>
+        <input class="amt" type="text" value="500,00" aria-label="Сума сертифікатом">
+      </div>
+      <div class="row">
+        <span class="ico"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12"></rect><circle cx="12" cy="12" r="2.5"></circle></svg></span>
+        <span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px">Готівка</strong><span style="font-size: 13px; color: #4D463D">Отримано від клієнта · <strong style="color: #1E1A16">решта 54,50 ₴</strong></span></span>
+        <input class="amt amt-on" type="text" value="700,00" aria-label="Готівка отримана">
+      </div>
+      <div class="row" style="border-bottom: 0">
+        <span class="ico" style="color: #6E665A"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13"></rect><path d="M3 10h18M7 15h3"></path></svg></span>
+        <span style="display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 15px; color: #4D463D">Картка</strong><button class="link" type="button">+ Додати оплату карткою</button></span>
+        <span style="text-align: right; font-size: 15px; color: #6E665A">0,00</span>
+      </div>
+    </div>
+
+    <div style="margin: 6px 26px 0; padding: 16px 18px; background: #E2F1E7; display: flex; justify-content: space-between; align-items: center">
+      <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 600; color: #165530">Залишилось сплатити</span><strong style="font-size: 28px; color: #165530">0,00 ₴</strong></span>
+      <span style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px"><span style="font-size: 13px; font-weight: 600; color: #1E1A16">Видати решту</span><strong style="font-size: 28px">54,50 ₴</strong></span>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 18px 26px 22px; gap: 12px">
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #4D463D"><kbd class="kbd">Tab</kbd>наступний спосіб · <kbd class="kbd">Enter</kbd> у полі — підставити залишок</span>
+      <div style="display: flex; gap: 10px">
+        <button type="button" style="height: 48px; padding: 0 16px; border: 1px solid #CFC6B7; background: #FFFFFF; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px">Назад<kbd class="kbd">Esc</kbd></button>
+        <button type="button" style="height: 48px; padding: 0 18px; border: 0; background: #5B2C6F; color: #FFFFFF; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px">Провести оплату<kbd class="kbd kbd-inv">Ctrl Enter</kbd></button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

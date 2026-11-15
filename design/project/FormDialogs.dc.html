@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Зміна ціни і редактор ролі</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input,select{font-family:inherit}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;font-size:14px;font-weight:600;line-height:1;border:1px solid transparent;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-primary{background:#5B2C6F;color:#FFFFFF}
+.btn-secondary{background:#FFFFFF;color:#1E1A16;border-color:#CFC6B7}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.fld{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+.inp{height:42px;box-sizing:border-box;border:1px solid #CFC6B7;background:#FFFFFF;padding:0 12px;font-size:15px;font-weight:400;color:#1E1A16;width:100%}
+.state{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6E665A}
+.cb{width:18px;height:18px;box-sizing:border-box;border:1.5px solid #8C8478;background:#FFFFFF;display:inline-flex;align-items:center;justify-content:center;flex:none;color:#FFFFFF}
+.cb-on{background:#5B2C6F;border-color:#5B2C6F}
+.cb-mix{background:#5B2C6F;border-color:#5B2C6F}
+.grp{border-top:1px solid #EFEAE1;padding:14px 0;display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px}
+.perm{display:flex;align-items:center;gap:10px;font-size:14px;min-height:28px}
+.warn{font-size:12px;color:#855100;font-weight:600}
+</style>
+</helmet>
+<div class="root" style="width: 1440px; height: 1000px; display: flex; background: #F6F3ED">
+
+  <div style="width: 640px; flex: none; position: relative; background: #5E5850; display: flex; flex-direction: column; padding: 40px; box-sizing: border-box; gap: 16px">
+    <span class="state" style="color: #E9E4DB">Діалог · зміна ціни з підтвердженням</span>
+    <div role="dialog" aria-modal="true" aria-labelledby="pr-t" style="background: #FFFFFF; box-shadow: 0 20px 48px rgba(0,0,0,.3); display: flex; flex-direction: column">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 22px 24px 4px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h2 id="pr-t" style="margin: 0; font-size: 20px; font-weight: 600">Змінити ціну</h2><span style="font-size: 14px; color: #4D463D">Амадока · Софія Андрухович · ISBN 978-617-679-761-6</span></div>
+        <button type="button" aria-label="Закрити" style="width: 36px; height: 36px; border: 0; background: transparent; color: #4D463D; cursor: pointer"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+      <div style="padding: 16px 24px; display: flex; flex-direction: column; gap: 18px">
+        <div style="display: grid; grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr); align-items: end; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 13px; font-weight: 600; color: #4D463D">Зараз</span><span style="height: 52px; display: flex; align-items: center; padding: 0 14px; background: #F6F3ED; font-size: 22px; font-weight: 600; color: #4D463D; text-decoration: line-through">650,00 ₴</span></div>
+          <svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="margin-bottom: 14px; color: #4D463D"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          <label class="fld">Нова ціна<input class="inp" type="text" value="720,00 ₴" style="height: 52px; font-size: 22px; font-weight: 700; border: 2px solid #5B2C6F; box-shadow: 0 0 0 3px #F2EAF4"></label>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px; padding: 10px 14px; background: #F6F3ED"><span>Різниця <strong>+70,00 ₴ (+10,8%)</strong></span><span>Нова маржа <strong>43,1%</strong></span></div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+          <label class="fld">Діє з<input class="inp" type="text" value="16.11.2026, 00:00"></label>
+          <label class="fld">Причина<select class="inp"><option>Зміна ціни постачальника</option></select></label>
+        </div>
+        <div style="display: flex; gap: 10px; padding: 12px 14px; background: #E4ECF9; color: #173D78; font-size: 14px; line-height: 20px"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="margin-top: 1px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg><span>Нова ціна з’явиться на 5 касах і в онлайн-магазині. 3 оформлені замовлення залишаться за старою ціною.</span></div>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 10px; padding: 8px 24px 22px">
+        <button class="btn btn-secondary" type="button" style="box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #5B2C6F">Скасувати</button>
+        <button class="btn btn-primary" type="button">Змінити ціну на 720,00 ₴</button>
+      </div>
+    </div>
+    <span style="font-size: 13px; line-height: 19px; color: #E9E4DB">Кнопка називає наслідок і суму. Зміна потрапляє в журнал аудиту з «було / стало».</span>
+  </div>
+
+  <div style="flex: 1; min-width: 0; padding: 40px 48px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+    <span class="state">Сторінка форми · редактор ролі</span>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end">
+      <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; color: #4D463D">Адміністрування / Ролі</span><h1 style="margin: 0; font-size: 26px; font-weight: 600">Адміністратор магазину</h1></div>
+      <span style="font-size: 13px; color: #4D463D">Роль мають 6 працівників</span>
+    </div>
+    <div style="background: #FFFFFF; border: 1px solid #E3DCD0; padding: 22px 24px; display: flex; flex-direction: column; gap: 4px">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding-bottom: 16px">
+        <label class="fld">Назва ролі<input class="inp" type="text" value="Адміністратор магазину"></label>
+        <label class="fld">Опис<input class="inp" type="text" value="Керує одним магазином: замовлення, повернення, залишки"></label>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 6px"><strong style="font-size: 15px">Права за розділами</strong><span style="font-size: 13px; color: #4D463D">Вибрано 13 з 20</span></div>
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="7">
+        <div class="grp">
+          <label class="perm" style="font-weight: 700; align-self: start"><span class="cb {{ g.cls }}"><sc-if value="{{ g.all }}" hint-placeholder-val="{{ false }}"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.5"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if><sc-if value="{{ g.mix }}" hint-placeholder-val="{{ false }}"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.5"><path d="M6 12h12"></path></svg></sc-if></span>{{ g.name }}<span style="font-weight: 400; font-size: 12px; color: #6E665A">{{ g.count }}</span></label>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px">
+            <sc-for list="{{ g.perms }}" as="p" hint-placeholder-count="3">
+              <label class="perm"><span class="cb {{ p.cls }}"><sc-if value="{{ p.on }}" hint-placeholder-val="{{ false }}"><svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="stroke-width: 2.5"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if></span><span style="display: flex; flex-direction: column"><span>{{ p.label }}</span><sc-if value="{{ p.warn }}" hint-placeholder-val="{{ false }}"><span class="warn">{{ p.warn }}</span></sc-if></span></label>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display: flex; justify-content: flex-end; gap: 10px"><button class="btn btn-secondary" type="button">Скасувати</button><button class="btn btn-primary" type="button">Зберегти роль</button></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const g = (name, perms) => {
+      const on = perms.filter((p) => p[1]).length;
+      const all = on === perms.length, none = on === 0;
+      return {
+        name, count: on + ' з ' + perms.length, all, mix: !all && !none,
+        cls: all ? 'cb-on' : none ? '' : 'cb-mix',
+        perms: perms.map(([label, v, warn]) => ({ label, on: v, cls: v ? 'cb-on' : '', warn: warn || '' }))
+      };
+    };
+    return {
+      groups: [
+        g('Каса', [['Продаж', true], ['Повернення', true], ['Анулювання чека', true]]),
+        g('Замовлення', [['Перегляд', true], ['Зміна статусу', true], ['Скасування', true]]),
+        g('Склад', [['Залишки', true], ['Переміщення: створення', true], ['Переміщення: приймання', true], ['Списання', false]]),
+        g('Інвентаризація', [['Проведення', true], ['Підтвердження розбіжностей', false]]),
+        g('Каталог', [['Перегляд', true], ['Зміна цін', false, 'Лише комерційний менеджер']]),
+        g('Клієнти', [['Пошук і перегляд', true], ['Персональні дані', true, 'Перегляд записується в аудит'], ['Ручне нарахування бонусів', false]]),
+        g('Адміністрування', [['Користувачі', false], ['Ролі', false], ['Журнал аудиту', false]])
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+/* Base styles of «Полиця»: values come from the design tokens (design/README.md). */
+
+body {
+  margin: 0;
+  background: #F6F3ED;
+  color: #1E1A16;
+  font-feature-settings: 'tnum' 1;
+}
+
+:focus-visible {
+  outline: 2px solid #5B2C6F;
+  outline-offset: 2px;
+}
+
+/* Controls are 40 px high, primary actions on login and in the shop use size "lg" (48 px). */
+.mantine-Button-root {
+  --button-height-sm: 40px;
+  --button-height-md: 40px;
+  --button-height-lg: 48px;
+  font-weight: 600;
+}
+
+.mantine-Input-input {
+  --input-height-sm: 40px;
+  --input-height-md: 40px;
+  --input-height-lg: 44px;
+}
+
+.mantine-Input-input:focus,
+.mantine-Input-input:focus-within {
+  border-color: #5B2C6F;
+  box-shadow: 0 0 0 3px #F2EAF4;
+}
+
+.mantine-Input-input[data-error] {
+  border-color: #A12A1F;
+}
+
+/* Table headers sit on the sunk tone, as in every list of the design. */
+.mantine-Table-thead {
+  background: #EFEAE1;
+}
+
+.mantine-Table-th {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4D463D;
+  white-space: nowrap;
+}
+
+.display-font {
+  font-family: var(--font-display);
+}

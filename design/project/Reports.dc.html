@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Звіти — продажі мережі</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F6F3ED}
+a{color:#5B2C6F}a:hover{color:#4A2259}
+.root{font-family:'Commissioner',system-ui,sans-serif;font-feature-settings:'tnum' 1;color:#1E1A16}
+button,input{font-family:inherit}
+.i{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:square;stroke-linejoin:miter;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;font-size:14px;font-weight:600;line-height:1;border:1px solid transparent;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-secondary{background:#FFFFFF;color:#1E1A16;border-color:#CFC6B7}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #5B2C6F;outline-offset:2px}
+.rail{flex:0 0 64px;background:#FBF9F5;border-right:1px solid #E3DCD0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 0}
+.rl{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;color:#4D463D}
+.rl-on{background:#F2EAF4;color:#5B2C6F;box-shadow:inset 3px 0 0 #5B2C6F}
+.top{min-height:56px;box-sizing:border-box;padding:8px 28px;background:#FFFFFF;border-bottom:1px solid #E3DCD0;display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.chipf{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid #CFC6B7;background:#FFFFFF;font-size:13px;font-weight:500;color:#1E1A16;cursor:pointer;white-space:nowrap}
+.seg{height:30px;padding:0 12px;border:0;background:transparent;font-size:13px;font-weight:500;color:#4D463D;cursor:pointer}
+.seg-on{background:#FFFFFF;color:#1E1A16;font-weight:600;box-shadow:0 0 0 1px #E3DCD0}
+.card{background:#FFFFFF;border:1px solid #E3DCD0}
+.tile{background:#FFFFFF;border:1px solid #E3DCD0;padding:18px;display:flex;flex-direction:column;gap:6px}
+.cap{font-size:12px;font-weight:600;color:#4D463D}
+.up{font-size:13px;font-weight:600;color:#1D6A3A}
+.dn{font-size:13px;font-weight:600;color:#855100}
+.h2{margin:0;font-size:16px;font-weight:600}
+.bar{display:grid;grid-template-columns:180px minmax(0,1fr) 120px;gap:12px;align-items:center;font-size:14px;height:30px}
+.track{height:16px;background:#F6F3ED}
+.fill{height:16px;background:#5B2C6F}
+.t{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+.t th{background:#EFEAE1;text-align:left;font-size:12px;font-weight:600;color:#4D463D;padding:0 12px;height:36px;border-bottom:1px solid #E3DCD0;white-space:nowrap}
+.t td{padding:10px 12px;border-bottom:1px solid #EFEAE1}
+.n{text-align:right;white-space:nowrap}
+.abc{display:inline-flex;align-items:center;justify-content:center;width:24px;height:22px;font-size:12px;font-weight:700}
+.abc-a{background:#5B2C6F;color:#FFFFFF}
+.abc-b{background:#D3BEDD;color:#3D1A4C}
+.abc-c{background:#EFEAE1;color:#4D463D}
+</style>
+</helmet>
+<div class="root" style="min-height: 1500px; display: flex; background: #F6F3ED">
+  <nav class="rail" aria-label="Розділи">
+    <svg width="28" height="28" viewBox="0 0 36 36" aria-hidden="true" style="margin-bottom: 14px"><rect x="4" y="6" width="6" height="24" fill="#5B2C6F"></rect><rect x="12" y="9" width="6" height="21" fill="#8E5BA3"></rect><rect x="20" y="7" width="5" height="23" fill="#5B2C6F" transform="rotate(-12 22 30)"></rect><rect x="2" y="30" width="32" height="2.5" fill="#1E1A16"></rect></svg>
+    <a class="rl rl-on" href="#" aria-label="Звіти" aria-current="page"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg></a>
+    <a class="rl" href="#" aria-label="Каталог"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v16H4zM10 4h5v16h-5zM15 5l4-1 3 15-4 1z"></path></svg></a>
+    <a class="rl" href="#" aria-label="Залишки"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l9-5 9 5v8l-9 5-9-5V8z"></path><path d="M3 8l9 5 9-5M12 13v8"></path></svg></a>
+    <a class="rl" href="#" aria-label="Клієнти"><svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.5a3.5 3.5 0 0 1 0 7M21 20c0-2.6-1.6-4.8-4-5.6"></path></svg></a>
+  </nav>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+    <header class="top">
+      <h1 style="margin: 0; font-size: 22px; font-weight: 600">Продажі мережі</h1>
+      <span style="font-size: 14px; color: #4D463D">оновлено 15.11.2026, 14:00</span>
+      <button class="btn btn-secondary" type="button" style="margin-left: auto"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"></path></svg>Експорт CSV</button>
+      <span style="width: 32px; height: 32px; background: #1E1A16; color: #FFFFFF; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center" aria-label="Роман Захарченко, менеджер мережі">РЗ</span>
+    </header>
+
+    <main style="box-sizing: border-box; padding: 20px 28px 40px; display: flex; flex-direction: column; gap: 20px; max-width: 1376px; width: 100%">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+        <div role="tablist" aria-label="Період" style="display: inline-flex; gap: 2px; padding: 3px; background: #EFEAE1">
+          <button class="seg" type="button" role="tab">Сьогодні</button><button class="seg" type="button" role="tab">7 днів</button><button class="seg seg-on" type="button" role="tab" aria-selected="true">Місяць</button><button class="seg" type="button" role="tab">Квартал</button><button class="seg" type="button" role="tab">Свій</button>
+        </div>
+        <button class="chipf" type="button"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>01.11 – 15.11.2026</button>
+        <button class="chipf" type="button">Магазини: усі 5<svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <button class="chipf" type="button">Категорія: усі<svg class="i" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <label style="width: 240px; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border: 1px solid #CFC6B7; background: #FFFFFF; color: #6E665A"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4-4"></path></svg><input type="search" placeholder="Книга або ISBN" aria-label="Фільтр за книгою" style="flex: 1; min-width: 0; border: 0; outline: none; font-size: 13px; background: transparent"></label>
+        <span style="font-size: 13px; color: #4D463D">порівняння з 17–31.10</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px">
+        <div class="tile"><span class="cap">Виручка</span><span style="font-size: 28px; font-weight: 700">1 284 560 ₴</span><span class="up">▲ 8,4%</span></div>
+        <div class="tile"><span class="cap">Маржа</span><span style="font-size: 28px; font-weight: 700">31,2%</span><span class="up">▲ 1,1 п.п. · 400 783 ₴</span></div>
+        <div class="tile"><span class="cap">Чеки</span><span style="font-size: 28px; font-weight: 700">3 418</span><span class="up">▲ 5,2%</span></div>
+        <div class="tile"><span class="cap">Середній чек</span><span style="font-size: 28px; font-weight: 700">375,82 ₴</span><span class="up">▲ 3,0%</span></div>
+        <div class="tile" style="box-shadow: inset 0 3px 0 #D98B0B"><span class="cap">Днів запасу</span><span style="font-size: 28px; font-weight: 700">46</span><span class="dn">▼ 4 дні · 37 назв закінчуються</span></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 16px">
+        <section class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px">
+          <h2 class="h2">Виручка за магазинами</h2>
+          <sc-for list="{{ stores }}" as="b" hint-placeholder-count="5">
+            <div class="bar"><span>{{ b.label }}</span><span class="track"><span class="fill" style="display: block; width: {{ b.w }}"></span></span><span class="n" style="font-weight: 600">{{ b.v }}</span></div>
+          </sc-for>
+        </section>
+        <section class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px">
+          <h2 class="h2">Виручка за категоріями</h2>
+          <sc-for list="{{ cats }}" as="b" hint-placeholder-count="6">
+            <div class="bar"><span>{{ b.label }}</span><span class="track"><span class="fill" style="display: block; width: {{ b.w }}"></span></span><span class="n" style="font-weight: 600">{{ b.v }}</span></div>
+          </sc-for>
+        </section>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 16px">
+        <section class="card">
+          <div style="padding: 16px 20px"><h2 class="h2">Топ книжок</h2></div>
+          <table class="t">
+            <thead><tr><th>№</th><th>Книга</th><th class="n">Продано</th><th class="n">Виручка</th><th class="n">Маржа</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ top }}" as="r" hint-placeholder-count="6">
+                <tr><td style="color: #6E665A">{{ r.i }}</td><td><strong style="font-weight: 600">{{ r.title }}</strong><br><span style="font-size: 13px; color: #4D463D">{{ r.author }}</span></td><td class="n">{{ r.qty }}</td><td class="n" style="font-weight: 600">{{ r.rev }}</td><td class="n">{{ r.m }}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </section>
+        <section class="card">
+          <div style="padding: 16px 20px; display: flex; justify-content: space-between; align-items: baseline"><h2 class="h2">ABC-аналіз за виручкою</h2><span style="font-size: 12px; color: #4D463D">A — 80%, B — 15%, C — 5% виручки</span></div>
+          <table class="t">
+            <thead><tr><th>Клас</th><th>Книга</th><th class="n">Частка</th><th class="n">Накопичено</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ abc }}" as="r" hint-placeholder-count="7">
+                <tr><td><span class="abc {{ r.cls }}">{{ r.k }}</span></td><td>{{ r.title }}</td><td class="n">{{ r.share }}</td><td class="n" style="color: #4D463D">{{ r.cum }}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="padding: 10px 20px; font-size: 13px; color: #4D463D">Усього 1 862 назви · A: 214 · B: 431 · C: 1 217</div>
+        </section>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 16px">
+        <section class="card">
+          <div style="padding: 16px 20px; display: flex; align-items: center; gap: 10px"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="color: #855100"><path d="M12 3.5l9.5 16.5h-19L12 3.5z"></path><path d="M12 10v4.5M12 17.5h.01"></path></svg><h2 class="h2">Закінчуються</h2><span style="margin-left: auto; font-size: 13px; color: #4D463D">менше 7 днів запасу</span></div>
+          <table class="t">
+            <thead><tr><th>Книга</th><th>Де</th><th class="n">Залишок</th><th class="n">Днів запасу</th></tr></thead>
+            <tbody>
+              <tr><td>Інтернат · Жадан</td><td>Хрещатик</td><td class="n">2</td><td class="n" style="color: #A12A1F; font-weight: 700">1</td></tr>
+              <tr><td>Felix Austria · Андрухович</td><td>Львів, пл. Ринок</td><td class="n">3</td><td class="n" style="color: #A12A1F; font-weight: 700">2</td></tr>
+              <tr><td>Абетка · Малкович</td><td>Поділ</td><td class="n">4</td><td class="n" style="color: #855100; font-weight: 700">4</td></tr>
+              <tr><td>Тигролови · Багряний</td><td>Лівий берег</td><td class="n">5</td><td class="n" style="color: #855100; font-weight: 700">6</td></tr>
+            </tbody>
+          </table>
+        </section>
+        <section class="card">
+          <div style="padding: 16px 20px; display: flex; align-items: center; gap: 10px"><h2 class="h2">Не продаються</h2><span style="margin-left: auto; font-size: 13px; color: #4D463D">без продажів понад 90 днів</span></div>
+          <table class="t">
+            <thead><tr><th>Книга</th><th>Де</th><th class="n">Залишок</th><th class="n">Останній продаж</th></tr></thead>
+            <tbody>
+              <tr><td>Атлас вин України</td><td>Хрещатик</td><td class="n">9</td><td class="n">02.06.2026</td></tr>
+              <tr><td>Історія Галичини, т. 2</td><td>Центральний склад</td><td class="n">34</td><td class="n">18.05.2026</td></tr>
+              <tr><td>Календар-щоденник 2026</td><td>Поділ</td><td class="n">22</td><td class="n">11.07.2026</td></tr>
+              <tr><td>Довідник садівника</td><td>Лівий берег</td><td class="n">7</td><td class="n">29.04.2026</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const bars = (rows) => {
+      const max = Math.max(...rows.map((r) => r[1]));
+      return rows.map(([label, v]) => ({ label, w: (v / max * 100).toFixed(1) + '%', v: v.toLocaleString('uk-UA') + ' ₴' }));
+    };
+    return {
+      stores: bars([['Хрещатик', 412300], ['Львів, пл. Ринок', 296160], ['Поділ', 268900], ['Лівий берег', 231400], ['Онлайн', 75800]]),
+      cats: bars([['Сучасна укр. проза', 348200], ['Дитяча', 296500], ['Нон-фікшн', 254860], ['Класика', 188400], ['Інше', 135300], ['Поезія', 61300]]),
+      top: [
+        { i: 1, title: 'Інтернат', author: 'Сергій Жадан', qty: 182, rev: '62 993 ₴', m: '33%' },
+        { i: 2, title: 'Амадока', author: 'Софія Андрухович', qty: 74, rev: '48 100 ₴', m: '37%' },
+        { i: 3, title: 'Абетка', author: 'Іван Малкович', qty: 151, rev: '43 790 ₴', m: '29%' },
+        { i: 4, title: 'Felix Austria', author: 'Софія Андрухович', qty: 88, rev: '39 600 ₴', m: '34%' },
+        { i: 5, title: 'Тигролови', author: 'Іван Багряний', qty: 117, rev: '37 440 ₴', m: '31%' },
+        { i: 6, title: 'Ворошиловград', author: 'Сергій Жадан', qty: 96, rev: '34 560 ₴', m: '32%' }
+      ],
+      abc: [
+        { k: 'A', cls: 'abc-a', title: 'Інтернат', share: '4,9%', cum: '4,9%' },
+        { k: 'A', cls: 'abc-a', title: 'Амадока', share: '3,7%', cum: '8,6%' },
+        { k: 'A', cls: 'abc-a', title: 'Абетка', share: '3,4%', cum: '12,0%' },
+        { k: 'B', cls: 'abc-b', title: 'Лісова пісня', share: '0,21%', cum: '80,4%' },
+        { k: 'B', cls: 'abc-b', title: 'Солодка Даруся', share: '0,19%', cum: '80,6%' },
+        { k: 'C', cls: 'abc-c', title: 'Довідник садівника', share: '0,01%', cum: '95,2%' },
+        { k: 'C', cls: 'abc-c', title: 'Атлас вин України', share: '0,00%', cum: '100%' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
