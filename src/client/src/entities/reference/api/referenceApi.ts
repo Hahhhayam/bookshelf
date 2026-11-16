@@ -26,9 +26,20 @@ async function createRemembered<T extends { id: string }>(
   return id
 }
 
-function update<T extends { id: string }>(keep: { find: (id: string) => T | undefined; save: (item: T) => void }, id: string, patch: Partial<T>) {
-  const existing = keep.find(id)
+/**
+ * Applies a change the server accepted to the local copy, upserting it: an item the caller already knows (a location
+ * seen only through /auth/me) is remembered with the change even if it was not remembered before.
+ */
+function update<T extends { id: string }>(
+  keep: { find: (id: string) => T | undefined; save: (item: T) => void }, id: string, patch: Partial<T>, known?: T,
+) {
+  const existing = keep.find(id) ?? known
   if (existing) keep.save({ ...existing, ...patch })
+}
+
+/** Only the Location fields are remembered, whatever the caller passed (a known location carries more). */
+function locationOf({ id, name, type, address, active }: Location): Location {
+  return { id, name, type, address, active }
 }
 
 export const referenceApi = {
@@ -65,12 +76,14 @@ export const referenceApi = {
 
   createLocation: (name: string, type: Location['type'], address: string) =>
     createRemembered<Location>(http.post('locations', { name, type, address }), store.locations, { name, type, address, active: true }),
-  updateLocation: async (id: string, name: string, address: string) => {
-    await http.put(`locations/${id}`, { name, address }); update(store.locations, id, { name, address })
+  updateLocation: async (location: Location, name: string, address: string) => {
+    await http.put(`locations/${location.id}`, { name, address })
+    update(store.locations, location.id, { name, address }, locationOf(location))
   },
-  setLocationActive: async (id: string, active: boolean) => { await http.put(`locations/${id}/active`, { active }); update(store.locations, id, { active }) },
-  /** Locations seen through /auth/me are remembered too, so their names resolve elsewhere. */
-  rememberLocation: (location: Location) => store.locations.save(location),
+  setLocationActive: async (location: Location, active: boolean) => {
+    await http.put(`locations/${location.id}/active`, { active })
+    update(store.locations, location.id, { active }, locationOf(location))
+  },
 
   createRole: (name: string, permissions: string[]) =>
     createRemembered<Role>(http.post('roles', { name, permissions }), store.roles, { name, permissions }),

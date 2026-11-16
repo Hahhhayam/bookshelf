@@ -2,18 +2,32 @@ import { Stack } from '@mantine/core'
 import { CustomerPanel } from '@/features/till-customer'
 import { ClosedReceipt, PayButtons } from '@/features/till-payment'
 import { ReceiptLines, ReceiptTotals } from '@/features/till-receipt'
-import { ScanStatus, TillScanInput } from '@/features/till-scan'
+import { ScanStatus } from '@/features/till-scan'
 import { tokens } from '@/shared/config/tokens'
+import { ScanField, type ScanHint } from '@/shared/ui'
 import { useTillController, type TillController } from '../model/useTillController'
 import { KeyHints } from './KeyHints'
 import { TillDialogs } from './TillDialogs'
 import { TillHeader } from './TillHeader'
 
+const scanHints: ScanHint[] = [{ key: 'Enter', label: 'додати' }, { key: 'F2', label: 'пошук за назвою' }]
+
+function TillScan({ till, error, placeholder = 'Скануйте штрихкод або введіть ISBN' }: {
+  till: TillController
+  error?: boolean
+  placeholder?: string
+}) {
+  return (
+    <ScanField ref={till.scanRef} size="xl" autoFocus aria-label="Штрихкод, ISBN або назва" placeholder={placeholder}
+      hints={scanHints} onScan={till.scanCode} busy={till.scan.busy} error={error} />
+  )
+}
+
 function ReceiptSection({ till }: { till: TillController }) {
   const { receipt, controls, scan } = till
   return (
     <Stack component="section" aria-label="Чек" gap={12} p={20} style={{ flex: 1, minWidth: 0 }}>
-      <TillScanInput ref={till.scanRef} onScan={till.scanCode} busy={scan.busy} error={scan.message?.tone === 'error'} />
+      <TillScan till={till} error={scan.message?.tone === 'error'} />
       <ScanStatus message={scan.message} />
       <div style={{ flex: 1, minHeight: 0, background: tokens.color.surface, border: `1px solid ${tokens.color.line}`, overflow: 'auto' }}>
         <ReceiptLines lines={receipt.lines} selected={receipt.selected} onSelect={controls.select} onStep={controls.step} />
@@ -46,8 +60,7 @@ export function TillScreen({ locationId, store, cashier }: { locationId: string;
       <TillHeader store={store} cashier={cashier} onExit={till.exit} />
       {closed ? (
         <ClosedReceipt sale={closed} onNew={till.newReceipt}
-          scanSlot={<TillScanInput ref={till.scanRef} onScan={till.scanCode} busy={till.scan.busy}
-            placeholder="Скануйте наступну книгу — відкриється новий чек" />} />
+          scanSlot={<TillScan till={till} placeholder="Скануйте наступну книгу — відкриється новий чек" />} />
       ) : (
         <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
           <ReceiptSection till={till} />

@@ -1,10 +1,8 @@
 import { Anchor, Group, Stack } from '@mantine/core'
 import { Link } from 'react-router'
-import type { BookHit } from '@/entities/book'
+import { availabilityStatusTone, availabilitySummary, BookCover, type BookHit } from '@/entities/book'
 import { AddToCartButton } from '@/features/shop-add-to-cart'
-import { availabilitySummary } from '@/features/shop-my-store'
-import { MoneyText } from '@/shared/ui'
-import { AvailabilityNote, BookCover } from '@/widgets/shop-kit'
+import { MoneyText, StatusNote } from '@/shared/ui'
 
 export function BookResultCard({ hit, myStore }: { hit: BookHit; myStore: string | null }) {
   const availability = availabilitySummary(hit.availability, myStore)
@@ -19,7 +17,7 @@ export function BookResultCard({ hit, myStore }: { hit: BookHit; myStore: string
         </Anchor>
         <Group justify="space-between" align="baseline" gap="xs">
           <MoneyText value={hit.price} variant="strong" size={18} />
-          <AvailabilityNote tone={availability.tone}>{availability.label}</AvailabilityNote>
+          <StatusNote tone={availabilityStatusTone[availability.tone]}>{availability.label}</StatusNote>
         </Group>
       </Stack>
       <AddToCartButton book={hit} fullWidth disabled={availability.tone === 'none'} />

@@ -1,10 +1,10 @@
 import { Button, Group, Text } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useState } from 'react'
-import type { TransferCard } from '@/entities/transfer'
-import { transferStep, useReceiveTransfer } from '@/features/ops-transfer-steps'
+import { transferStep, type TransferCard } from '@/entities/transfer'
+import { useReceiveTransfer } from '@/features/ops-transfer-steps'
 import { ConfirmDialog, Panel, errorMessage } from '@/shared/ui'
-import { LineEditor, type EditorLine } from '@/widgets/ops-line-editor'
+import { LineEditor, type EditorLine } from '@/widgets/line-editor'
 
 /** The receiver's form: pre-filled with the shipped quantities, so only the differences are typed. */
 export function ReceivePanel({ transfer }: { transfer: TransferCard }) {

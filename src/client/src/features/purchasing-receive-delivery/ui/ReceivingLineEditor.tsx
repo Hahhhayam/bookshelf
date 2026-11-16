@@ -5,11 +5,9 @@ import { useBookTitles } from '@/entities/book'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { difference, lineKind, type LineKind, type ReceivingLine } from '../model/receivingLines'
 
-const tint = (bg: string) => `color-mix(in srgb, ${bg} 40%, ${tokens.color.surface})`
-
 const rowStyle: Record<LineKind, CSSProperties> = {
-  neg: { background: tint(statusTone.problem.bg) },
-  pos: { background: tint(statusTone.progress.bg) },
+  neg: { background: statusTone.problem.row },
+  pos: { background: statusTone.progress.row },
   none: {},
   zero: {},
 }

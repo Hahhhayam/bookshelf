@@ -1,12 +1,11 @@
 import { Anchor } from '@mantine/core'
 import { Link, useParams } from 'react-router'
-import { orderStatus, useOrder, type OrderCard, type OrderStatus } from '@/entities/order'
-import { useCan } from '@/entities/viewer'
-import { useLocationName } from '@/features/ops-names'
-import { fulfilmentLabel, orderTypeLabel } from '@/features/ops-order-status'
+import { fulfilmentLabel, orderStatus, orderTypeLabel, useOrder, type OrderCard, type OrderStatus } from '@/entities/order'
+import { locationNames } from '@/entities/reference'
+import { useCan, useViewer } from '@/entities/viewer'
 import { Perm, shortId } from '@/shared/lib'
 import { MoneyText, QueryView } from '@/shared/ui'
-import { DocumentCard, type Fact } from '@/widgets/ops-document-card'
+import { DocumentCard, type Fact } from '@/widgets/document-card'
 import { OrderActions } from './ui/OrderActions'
 import { OrderLines } from './ui/OrderLines'
 
@@ -35,7 +34,7 @@ function OrderDocument({ order }: { order: OrderCard }) {
 
 function useOrderFacts(order: OrderCard): Fact[] {
   const can = useCan()
-  const locationName = useLocationName()
+  const locationName = locationNames(useViewer().data?.locations)
   const units = order.lines.reduce((sum, line) => sum + line.quantity, 0)
   const { kind, pickupLocation, deliveryAddress } = order.fulfilment
   const customer = can(Perm.CrmManage, Perm.SalesCreate)

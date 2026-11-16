@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { saleApi, saleKeys, type Payment } from '@/entities/sale'
-import { fromCents, toCents } from './money'
+import { fromCents, toCents } from '@/shared/lib'
 
 export interface SaleAttempt {
   /** The receipt's operation key, the same on every retry of this receipt. */

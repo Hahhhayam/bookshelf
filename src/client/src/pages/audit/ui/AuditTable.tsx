@@ -1,10 +1,10 @@
 import { ActionIcon, Group, Table, Text } from '@mantine/core'
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react'
 import { useState } from 'react'
-import type { AuditRecord } from '@/entities/audit'
+import { auditActionBadge, auditSubjectLabel, type AuditRecord } from '@/entities/audit'
+import { referenceName } from '@/entities/reference'
 import { formatDateTime } from '@/shared/lib'
 import { Initials, StatusBadge } from '@/shared/ui'
-import { actionLabel, actionTone, subjectLabel } from '../model/presentation'
 import { AuditChange } from './AuditChange'
 
 /** Audit records: time, who, action and subject, before → after; a row expands to the full values. */
@@ -48,8 +48,8 @@ export function AuditTable({ records, userName }: { records: AuditRecord[]; user
                 </Table.Td>
                 <Table.Td>
                   <Group gap={8}>
-                    <StatusBadge tone={actionTone(record.action)} label={actionLabel(record.action)} />
-                    <Text size="sm" fw={500} truncate>{subjectLabel(record.action, record.subject)}</Text>
+                    <StatusBadge {...auditActionBadge(record.action)} />
+                    <Text size="sm" fw={500} truncate>{auditSubjectLabel(record.action, record.subject, referenceName)}</Text>
                   </Group>
                 </Table.Td>
                 <Table.Td><AuditChange before={record.before} after={record.after} expanded={expanded} /></Table.Td>

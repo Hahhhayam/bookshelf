@@ -1,7 +1,7 @@
 import { Button, Stack } from '@mantine/core'
 import { IconPlus } from '@tabler/icons-react'
 import { Link } from 'react-router'
-import { type PurchaseOrderSummary } from '@/entities/purchase-order'
+import { purchaseOrderNumber, type PurchaseOrderSummary } from '@/entities/purchase-order'
 import { referenceName } from '@/entities/reference'
 import { useCan, useViewer } from '@/entities/viewer'
 import {
@@ -10,7 +10,7 @@ import {
 } from '@/features/purchasing-order-filters'
 import { Perm } from '@/shared/lib'
 import { PageHeader, Panel, QueryView } from '@/shared/ui'
-import { PurchaseOrderTable, purchaseOrderNumber } from '@/widgets/purchasing-order-list'
+import { PurchaseOrderTable } from '@/widgets/purchasing-order-list'
 import { AllClosedState, NothingFoundState } from './ui/ListEmptyStates'
 
 const haystack = (row: PurchaseOrderSummary) => `${purchaseOrderNumber(row.id)} ${referenceName('suppliers', row.supplier)}`

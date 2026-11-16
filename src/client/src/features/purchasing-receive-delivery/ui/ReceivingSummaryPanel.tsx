@@ -1,17 +1,9 @@
 import { Group, Progress, Stack, Text } from '@mantine/core'
 import { statusTone, tokens } from '@/shared/config/tokens'
+import { plural } from '@/shared/lib'
 import type { ReceivingSummary, Tally } from '../model/receivingLines'
 
-function titlesWord(n: number): string {
-  const tens = n % 100
-  const ones = n % 10
-  if (tens >= 11 && tens <= 14) return 'назв'
-  if (ones === 1) return 'назва'
-  if (ones >= 2 && ones <= 4) return 'назви'
-  return 'назв'
-}
-
-const tallyText = (t: Tally, sign = '') => `${sign}${t.units} од. · ${t.titles} ${titlesWord(t.titles)}`
+const tallyText = (t: Tally, sign = '') => `${sign}${t.units} од. · ${t.titles} ${plural(t.titles, ['назва', 'назви', 'назв'])}`
 
 function Row({ label, value, color, strong }: { label: string; value: string; color?: string; strong?: boolean }) {
   return (

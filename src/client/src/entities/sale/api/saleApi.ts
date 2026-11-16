@@ -1,6 +1,6 @@
 import { http, stub, uah, type Created, type Money } from '@/shared/api'
 import { readJson, session, writeJson } from '@/shared/lib'
-import type { ItemCondition, SaleDraft, SaleQuote, ShiftReceipt } from '../model/types'
+import type { SaleDraft, SaleQuote, ShiftReceipt } from '../model/types'
 
 const shiftKey = 'bookshelf.shift-receipts'
 
@@ -32,10 +32,6 @@ export const saleApi = {
   shiftReceipts: () => stub('GAP-07', () => readJson<ShiftReceipt[]>(session, shiftKey, [])),
   rememberReceipt: (receipt: ShiftReceipt) =>
     writeJson(session, shiftKey, [receipt, ...readJson<ShiftReceipt[]>(session, shiftKey, [])]),
-
-  createReturn: (sale: string, items: { book: string; quantity: number }[], reason: string, condition: ItemCondition) =>
-    http.post<Created>('returns', { sale, items, reason, condition }),
-  confirmReturn: (id: string) => http.post(`returns/${id}/confirm`),
 
   issueGiftCertificate: (number: string, value: Money) => http.post<Created>('gift-certificates', { number, value }),
 }

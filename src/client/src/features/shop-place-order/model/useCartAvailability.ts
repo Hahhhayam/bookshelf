@@ -1,5 +1,4 @@
-import { useQueries } from '@tanstack/react-query'
-import { bookApi, bookKeys, type Availability } from '@/entities/book'
+import { useBookCards, type Availability } from '@/entities/book'
 import type { CartLine } from '@/entities/cart'
 
 /** A location that has at least one cart book, and the titles it cannot supply in the wanted quantity. */
@@ -23,19 +22,12 @@ function coverage(lines: readonly CartLine[], byBook: Map<string, Availability[]
 }
 
 /**
- * Live availability of every cart book, one cached card request each (GAP-13). Stores are only the locations that
+ * Live availability of every cart book and the stores that can supply them. Stores are only the locations that
  * appear here, since the API has no public store list (GAP-14).
  */
 export function useCartAvailability(lines: readonly CartLine[]) {
-  const results = useQueries({
-    queries: lines.map((line) => ({ queryKey: bookKeys.card(line.book), queryFn: () => bookApi.card(line.book) })),
-  })
-  const byBook = new Map(lines.map((line, i) => [line.book, results[i]?.data?.availability ?? []]))
-  return {
-    isPending: results.some((r) => r.isPending),
-    error: results.find((r) => r.isError)?.error ?? null,
-    refetch: () => results.forEach((r) => void r.refetch()),
-    stores: coverage(lines, byBook),
-    availabilityOf: (book: string) => byBook.get(book) ?? [],
-  }
+  const cards = useBookCards(lines.map((line) => line.book))
+  const availabilityOf = (book: string) => cards.cardOf(book)?.availability ?? []
+  const byBook = new Map(lines.map((line) => [line.book, availabilityOf(line.book)]))
+  return { isPending: cards.isPending, error: cards.error, refetch: cards.refetch, stores: coverage(lines, byBook), availabilityOf }
 }

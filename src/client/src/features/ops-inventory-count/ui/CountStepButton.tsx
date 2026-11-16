@@ -1,10 +1,11 @@
 import { Button, Text } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useState } from 'react'
+import type { CountStatus } from '@/entities/inventory-count'
 import { useCan } from '@/entities/viewer'
 import { Perm } from '@/shared/lib'
 import { ConfirmDialog, errorMessage } from '@/shared/ui'
-import { useCountStep, type CountStatus } from '../model/counts'
+import { useCountStep } from '../model/counts'
 
 const steps = {
   complete: {

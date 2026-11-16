@@ -1,7 +1,7 @@
 import { Alert, Button, Group, Stack, Text } from '@mantine/core'
 import { IconAlertTriangle } from '@tabler/icons-react'
 import { useState } from 'react'
-import { BookLookup } from '@/features/purchasing-book-lookup'
+import { BookLookup } from '@/entities/book'
 import {
   ConfirmReceiptDialog, difference, ReceivingLineEditor, ReceivingSummaryPanel, remaining, summarize, useReceiveDelivery,
   useReceivingLines, type ReceivingLine,

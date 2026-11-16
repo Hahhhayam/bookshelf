@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { ReportFilter } from '@/entities/report'
-import { monthStart, periodOf, toInputDate, type Preset } from './period'
+import { toInputDate } from '@/shared/lib'
+import { monthStart, periodOf, type Preset } from './period'
 
 /**
  * The dashboard's filters. No stores means the whole chain, which needs `reports.chain`; without it an empty choice

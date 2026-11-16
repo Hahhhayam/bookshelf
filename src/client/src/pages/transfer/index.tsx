@@ -1,11 +1,12 @@
 import { useParams } from 'react-router'
-import { transferBadge, transferStatus, useTransfer, type TransferCard, type TransferStatus } from '@/entities/transfer'
-import { useCan, useWorkingLocation } from '@/entities/viewer'
-import { useLocationName, userName } from '@/features/ops-names'
-import { transferSide, type TransferSide } from '@/features/ops-transfer-steps'
+import { locationNames, userNames } from '@/entities/reference'
+import {
+  transferBadge, transferSide, transferStatus, useTransfer, type TransferCard, type TransferSide, type TransferStatus,
+} from '@/entities/transfer'
+import { useCan, useViewer, useWorkingLocation } from '@/entities/viewer'
 import { formatDateTime, Perm, shortId } from '@/shared/lib'
 import { QueryView } from '@/shared/ui'
-import { DocumentCard, type Fact } from '@/widgets/ops-document-card'
+import { DocumentCard, type Fact } from '@/widgets/document-card'
 import { DiscrepancyPanel } from './ui/DiscrepancyPanel'
 import { ReceivePanel } from './ui/ReceivePanel'
 import { TransferActions } from './ui/TransferActions'
@@ -45,7 +46,9 @@ function TransferDocument({ transfer }: { transfer: TransferCard }) {
 }
 
 function useTransferFacts(transfer: TransferCard, side: TransferSide): Fact[] {
-  const locationName = useLocationName()
+  const viewer = useViewer().data
+  const locationName = locationNames(viewer?.locations)
+  const userName = userNames(viewer)
   const units = transfer.lines.reduce((sum, line) => sum + line.shipped, 0)
   const at = (status: TransferStatus) => {
     const entry = transfer.history.find((h) => h.to === status)

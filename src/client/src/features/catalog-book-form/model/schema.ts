@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { uah } from '@/shared/api'
-import type { BookCard, BookDraft } from '@/entities/book'
-import { compactIsbn, isValidIsbn } from './isbn'
+import { compactIsbn, isValidIsbn, type BookCard, type BookDraft } from '@/entities/book'
 
 export const bookFormSchema = z.object({
   title: z.string().trim().min(1, 'Вкажіть назву'),

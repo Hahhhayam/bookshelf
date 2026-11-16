@@ -1,13 +1,11 @@
 import { Anchor, Stack, Table, Text } from '@mantine/core'
 import { IconAlertTriangle, IconClockHour4 } from '@tabler/icons-react'
 import { Link } from 'react-router'
-import { purchaseOrderStatus, type PurchaseOrderSummary } from '@/entities/purchase-order'
+import { purchaseOrderNumber, purchaseOrderStatus, useOrderTotals, type PurchaseOrderSummary } from '@/entities/purchase-order'
 import { referenceName } from '@/entities/reference'
 import { statusTone, tokens } from '@/shared/config/tokens'
-import { formatDate } from '@/shared/lib'
+import { formatDate, overdueText } from '@/shared/lib'
 import { MoneyText, StatusBadge } from '@/shared/ui'
-import { overdueText, purchaseOrderNumber } from '../lib/labels'
-import { useOrderTotals } from '../model/useOrderTotals'
 import { LastChange } from './LastChange'
 
 type RowKind = 'overdue' | 'problem' | 'normal'
@@ -18,8 +16,8 @@ function rowKind(row: PurchaseOrderSummary): RowKind {
 }
 
 const rowBackground: Record<RowKind, string | undefined> = {
-  overdue: `color-mix(in srgb, ${statusTone.attention.bg} 40%, ${tokens.color.surface})`,
-  problem: `color-mix(in srgb, ${statusTone.problem.bg} 40%, ${tokens.color.surface})`,
+  overdue: statusTone.attention.row,
+  problem: statusTone.problem.row,
   normal: undefined,
 }
 

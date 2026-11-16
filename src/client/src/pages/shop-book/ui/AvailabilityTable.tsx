@@ -3,7 +3,7 @@ import type { Availability } from '@/entities/book'
 import { referenceName } from '@/entities/reference'
 import { myStore as myStoreModel } from '@/features/shop-my-store'
 import { tokens } from '@/shared/config/tokens'
-import { AvailabilityNote } from '@/widgets/shop-kit'
+import { StatusNote } from '@/shared/ui'
 
 /** «Наявність у магазинах»: every location in the book's availability (GAP-14: no public store list). */
 export function AvailabilityTable({ availability, myStore }: { availability: readonly Availability[]; myStore: string | null }) {
@@ -36,8 +36,8 @@ function AvailabilityRow({ row, mine }: { row: Availability; mine: boolean }) {
       </Table.Td>
       <Table.Td ta="right">
         {row.available > 0
-          ? <AvailabilityNote tone="ok" size={14}>{row.available} шт. · сьогодні</AvailabilityNote>
-          : <AvailabilityNote tone="none" size={14}>Немає</AvailabilityNote>}
+          ? <StatusNote tone="ready" size={14}>{row.available} шт. · сьогодні</StatusNote>
+          : <StatusNote tone="draft" size={14}>Немає</StatusNote>}
       </Table.Td>
     </Table.Tr>
   )

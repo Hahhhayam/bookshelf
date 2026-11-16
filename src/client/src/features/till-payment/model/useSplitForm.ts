@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { formatAmount, parseAmount } from './money'
+import { formatAmount, parseAmount } from '@/shared/lib'
 import { noTender, remaining, type PaymentPlan, type Tender, type TenderMethod } from './paymentPlan'
 
 const empty: Record<TenderMethod, string> = { Bonus: '', GiftCertificate: '', Cash: '', Card: '' }

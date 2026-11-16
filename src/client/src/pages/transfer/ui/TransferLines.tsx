@@ -1,7 +1,7 @@
 import { Table, Text } from '@mantine/core'
 import { useBookTitles } from '@/entities/book'
 import type { TransferCard } from '@/entities/transfer'
-import { DifferenceText, differenceRowStyle } from '@/features/ops-difference'
+import { DifferenceText, differenceRowStyle } from '@/shared/ui'
 
 const diffOf = (line: TransferCard['lines'][number]) => (line.received === null ? null : line.received - line.shipped)
 

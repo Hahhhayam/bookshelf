@@ -1,7 +1,6 @@
 import { Chip, Group, SegmentedControl, Select, Text, TextInput } from '@mantine/core'
 import { IconClock, IconSearch } from '@tabler/icons-react'
-import { orderStatus, type OrderStatus } from '@/entities/order'
-import { waitingNormText } from '@/features/ops-order-status'
+import { orderStatus, waitingNormText, type OrderStatus } from '@/entities/order'
 import { tokens } from '@/shared/config/tokens'
 
 export type BoardView = 'board' | 'list'

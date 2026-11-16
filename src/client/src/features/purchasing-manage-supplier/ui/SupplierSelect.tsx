@@ -15,9 +15,9 @@ export function SupplierSelect({ value, onChange, label = 'Постачальн�
   error?: string
   canCreate?: boolean
 }) {
-  const suppliers = useReferenceList('suppliers')
+  const suppliers = useReferenceList('suppliers', { active: true })
   const [dialog, setDialog] = useState(0)
-  const options = (suppliers.data ?? []).filter((s) => s.active).map((s) => ({ value: s.id, label: s.name }))
+  const options = (suppliers.data ?? []).map((s) => ({ value: s.id, label: s.name }))
 
   return (
     <>

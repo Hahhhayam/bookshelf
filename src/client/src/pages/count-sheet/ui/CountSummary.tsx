@@ -1,5 +1,5 @@
 import { SimpleGrid } from '@mantine/core'
-import type { EditorLine } from '@/widgets/ops-line-editor'
+import type { EditorLine } from '@/widgets/line-editor'
 import { StatTile } from '@/shared/ui'
 
 export function summarize(lines: EditorLine[]) {

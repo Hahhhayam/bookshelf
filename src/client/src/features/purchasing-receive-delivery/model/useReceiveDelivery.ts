@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { purchaseOrderApi, purchaseOrderKeys } from '@/entities/purchase-order'
+import { stockKeys } from '@/entities/stock'
 import { receivedItems, type ReceivingLine } from './receivingLines'
 
 export interface DeliveryInput {
@@ -20,7 +21,7 @@ export function useReceiveDelivery() {
       purchaseOrderApi.receiveDelivery(location, order, order ? null : supplier, receivedItems(lines)),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: purchaseOrderKeys.all })
-      void client.invalidateQueries({ queryKey: ['stock'] })
+      void client.invalidateQueries({ queryKey: stockKeys.all })
     },
   })
 }

@@ -9,11 +9,19 @@ export const referenceKeys = {
 type Lists = typeof referenceApi.list
 type ListData = { [K in ReferenceKind]: Awaited<ReturnType<Lists[K]>> }
 
-/** A reference list (locally remembered until the API can list it: GAP-03, GAP-10, GAP-12). */
-export function useReferenceList<K extends ReferenceKind>(kind: K) {
+function onlyActive<T>(items: T[]): T[] {
+  return items.filter((item) => (item as { active?: boolean }).active !== false)
+}
+
+/**
+ * A reference list (locally remembered until the API can list it: GAP-03, GAP-10, GAP-12).
+ * `active` leaves out deactivated items, for pickers of new documents.
+ */
+export function useReferenceList<K extends ReferenceKind>(kind: K, options: { active?: boolean } = {}) {
   return useQuery<ListData[K]>({
     queryKey: referenceKeys.list(kind),
     queryFn: () => referenceApi.list[kind]() as Promise<ListData[K]>,
+    select: options.active ? (onlyActive as (items: ListData[K]) => ListData[K]) : undefined,
   })
 }
 

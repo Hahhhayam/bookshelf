@@ -1,11 +1,13 @@
 import { Button, Flex, SimpleGrid, Stack, Text, Title } from '@mantine/core'
 import { IconSearchOff } from '@tabler/icons-react'
-import { useBookSearch, type BookHit } from '@/entities/book'
-import { stockedLocations, useMyStore } from '@/features/shop-my-store'
+import { stockedLocations, useBookSearch, type BookHit } from '@/entities/book'
+import { useMyStore } from '@/features/shop-my-store'
+import { plural } from '@/shared/lib'
 import { EmptyState, QueryView } from '@/shared/ui'
-import { pluralBooks } from '@/widgets/shop-kit'
 import { BookResultCard } from './BookResultCard'
 import { StoreFilter } from './StoreFilter'
+
+const bookForms = ['книжка', 'книжки', 'книжок'] as const
 
 export function CatalogSearch({ text, onlyMyStore, onOnlyMyStoreChange }: {
   text: string
@@ -25,7 +27,7 @@ export function CatalogSearch({ text, onlyMyStore, onOnlyMyStoreChange }: {
       <Stack gap={4}>
         <Text size="md" c="dimmed">Результати пошуку</Text>
         <Title order={1} ff="var(--font-display)" fz={{ base: 28, sm: 38 }}>
-          «{text}»{results.data ? ` — ${pluralBooks(results.data.length)}` : ''}
+          «{text}»{results.data ? ` — ${results.data.length} ${plural(results.data.length, bookForms)}` : ''}
         </Title>
       </Stack>
       <Flex gap="xl" direction={{ base: 'column', md: 'row' }} align="flex-start">

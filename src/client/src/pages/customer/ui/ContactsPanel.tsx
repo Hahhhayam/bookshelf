@@ -5,9 +5,8 @@ import { referenceName } from '@/entities/reference'
 import { useCan } from '@/entities/viewer'
 import { ChangeSegmentsButton } from '@/features/crm-change-segments'
 import { tokens } from '@/shared/config/tokens'
-import { Perm } from '@/shared/lib'
+import { maskEmail, maskPhone, Perm } from '@/shared/lib'
 import { Panel } from '@/shared/ui'
-import { maskEmail, maskPhone } from './mask'
 
 function Hidden({ value, mask, mono }: { value: string | null; mask: (v: string) => string; mono?: boolean }) {
   const [shown, setShown] = useState(false)

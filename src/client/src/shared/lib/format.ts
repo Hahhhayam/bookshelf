@@ -50,3 +50,66 @@ export function initials(name: string): string {
 export function shortId(id: string): string {
   return id.split('-')[0]!.toUpperCase()
 }
+
+const pluralRules = new Intl.PluralRules(locale)
+
+/** The Ukrainian word form for a count: `plural(3, ['книжка', 'книжки', 'книжок'])` → «книжки». */
+export function plural(count: number, [one, few, many]: readonly [one: string, few: string, many: string]): string {
+  const rule = pluralRules.select(count)
+  if (rule === 'one') return one
+  return rule === 'many' ? many : few
+}
+
+/** Whole days past an expected date, for «Прострочено на N днів». */
+export function overdueDays(expectedDate: string, now = new Date()): number {
+  const expected = new Date(`${expectedDate.slice(0, 10)}T00:00:00`)
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  return Math.max(0, Math.round((today.getTime() - expected.getTime()) / 86_400_000))
+}
+
+export function overdueText(expectedDate: string): string {
+  const days = overdueDays(expectedDate)
+  return `Прострочено на ${days} ${plural(days, ['день', 'дні', 'днів'])}`
+}
+
+/** «12 хв», «1 год 05 хв», «2 дн». */
+export function formatWaited(minutes: number): string {
+  if (minutes < 60) return `${Math.max(minutes, 0)} хв`
+  if (minutes < 24 * 60) return `${Math.floor(minutes / 60)} год ${String(minutes % 60).padStart(2, '0')} хв`
+  return `${Math.floor(minutes / (24 * 60))} дн`
+}
+
+/** Personal data is hidden until asked for (Customer artboard): «+380 67 ••• •• 08», «i.sav•••@example.com». */
+export function maskPhone(phone: string): string {
+  const digits = phone.replace(/\s/g, '')
+  return digits.length <= 6 ? '•••' : `${digits.slice(0, 6)} ••• •• ${digits.slice(-2)}`
+}
+
+export function maskEmail(email: string): string {
+  const [local = '', domain = ''] = email.split('@')
+  return `${local.slice(0, Math.min(5, Math.max(1, local.length - 2)))}•••@${domain}`
+}
+
+export function maskCard(card: string): string {
+  return `•••• ${card.slice(-4)}`
+}
+
+/** A day as the date input holds it: «2026-11-15», in local time. */
+export type InputDate = string
+
+const pad = (n: number) => String(n).padStart(2, '0')
+
+export const toInputDate = (date: Date): InputDate => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+
+export const endOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999)
+
+/** Local midnight of an input day; null when the text is not a whole date. */
+export function dayStart(value: InputDate): Date | null {
+  const [y, m, d] = value.split('-').map(Number)
+  return y && m && d ? new Date(y, m - 1, d) : null
+}
+
+export function dayEnd(value: InputDate): Date | null {
+  const start = dayStart(value)
+  return start && endOfDay(start)
+}

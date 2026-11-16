@@ -1,19 +1,11 @@
 import { useDebouncedValue } from '@mantine/hooks'
 import { useMemo, useState } from 'react'
 import type { AuditFilter } from '@/entities/audit'
-
-const pad = (n: number) => String(n).padStart(2, '0')
-const inputDate = (date: Date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
-
-function localDay(value: string, end: boolean): Date | null {
-  const [y, m, d] = value.split('-').map(Number)
-  if (!y || !m || !d) return null
-  return end ? new Date(y, m - 1, d, 23, 59, 59, 999) : new Date(y, m - 1, d)
-}
+import { dayEnd, dayStart, toInputDate } from '@/shared/lib'
 
 function lastWeek() {
   const today = new Date()
-  return { from: inputDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6)), to: inputDate(today) }
+  return { from: toInputDate(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6)), to: toInputDate(today) }
 }
 
 /**
@@ -26,8 +18,8 @@ export function useAuditFilter() {
   const [period, setPeriod] = useState(lastWeek)
   const [debouncedSubject] = useDebouncedValue(subject.trim(), 400)
 
-  const from = localDay(period.from, false)
-  const to = localDay(period.to, true)
+  const from = dayStart(period.from)
+  const to = dayEnd(period.to)
   const periodValid = from !== null && to !== null && from <= to
   const fromIso = from?.toISOString()
   const toIso = to?.toISOString()

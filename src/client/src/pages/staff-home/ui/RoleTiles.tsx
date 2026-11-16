@@ -5,8 +5,7 @@ import {
 } from '@tabler/icons-react'
 import { useCan } from '@/entities/viewer'
 import { Perm, type PermissionCode } from '@/shared/lib'
-import { EmptyState } from '@/shared/ui'
-import { HomeTile } from './HomeTile'
+import { EmptyState, HomeTile } from '@/shared/ui'
 
 interface Area {
   perm: PermissionCode

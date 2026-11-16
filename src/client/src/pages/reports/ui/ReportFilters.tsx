@@ -1,7 +1,8 @@
 import { Group, MultiSelect, SegmentedControl, Select, TextInput } from '@mantine/core'
+import { IconSearch } from '@tabler/icons-react'
+import { BookPicker } from '@/entities/book'
 import { presets, type Preset } from '../model/period'
 import type { ReportFilterState } from '../model/useReportFilter'
-import { BookFilter } from './BookFilter'
 
 interface Option {
   value: string
@@ -44,7 +45,10 @@ export function ReportFilters({ state, storeOptions, categoryOptions, chainWide 
         placeholder="Категорія: усі" clearable searchable w={{ base: '100%', sm: 200 }}
         nothingFoundMessage="Категорії з’являються тут, коли їх створюють у цьому браузері"
       />
-      <BookFilter value={state.book} onChange={state.setBook} />
+      <BookPicker
+        aria-label="Фільтр за книгою" placeholder="Книга або ISBN" leftSection={<IconSearch size={16} stroke={1.75} />}
+        value={state.book} onChange={state.setBook} w={{ base: '100%', sm: 240 }}
+      />
     </Group>
   )
 }

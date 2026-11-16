@@ -2,9 +2,9 @@ import { Modal, Stack, Text, TextInput } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import { IconSearch } from '@tabler/icons-react'
 import { useState } from 'react'
-import { useBookSearch, type BookHit } from '@/entities/book'
+import { BookHitList, useBookSearch, type BookHit } from '@/entities/book'
 import { EmptyState, QueryView } from '@/shared/ui'
-import { BookHitList } from './BookHitList'
+import { StockHere } from './StockHere'
 
 function Results({ text, locationId, onPick }: { text: string; locationId: string; onPick: (hit: BookHit) => void }) {
   const query = useBookSearch({ text }, text.length >= 2)
@@ -12,7 +12,9 @@ function Results({ text, locationId, onPick }: { text: string; locationId: strin
   return (
     <QueryView query={query} skeletonRows={3} isEmpty={(hits) => hits.length === 0}
       empty={<EmptyState title="Нічого не знайдено" text="Перевірте назву або скануйте штрихкод." />}>
-      {(hits) => <BookHitList hits={hits.slice(0, 20)} locationId={locationId} onPick={onPick} />}
+      {(hits) => (
+        <BookHitList hits={hits.slice(0, 20)} onPick={onPick} caption={(hit) => <StockHere hit={hit} locationId={locationId} />} />
+      )}
     </QueryView>
   )
 }

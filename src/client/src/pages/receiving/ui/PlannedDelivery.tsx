@@ -1,11 +1,10 @@
 import { Alert, Anchor, Stack, Text } from '@mantine/core'
 import { Link } from 'react-router'
-import { purchaseOrderStatus, usePurchaseOrder, type PurchaseOrderCard } from '@/entities/purchase-order'
+import { purchaseOrderNumber, purchaseOrderStatus, usePurchaseOrder, type PurchaseOrderCard } from '@/entities/purchase-order'
 import { referenceName } from '@/entities/reference'
 import type { ReceivingLine } from '@/features/purchasing-receive-delivery'
 import { formatDate } from '@/shared/lib'
 import { QueryView } from '@/shared/ui'
-import { purchaseOrderNumber } from '@/widgets/purchasing-order-list'
 import { ReceivingWorkspace } from './ReceivingWorkspace'
 
 const toLines = (order: PurchaseOrderCard): ReceivingLine[] =>

@@ -1,7 +1,8 @@
 import { NumberInput, SegmentedControl, Stack, Text } from '@mantine/core'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
+import { BookPicker } from '@/entities/book'
 import type { PromotionValues } from '@/features/crm-create-promotion'
-import { BookPicker, CategoryPicker } from '@/features/catalog-pickers'
+import { CategoryPicker } from '@/features/catalog-pickers'
 
 /** When the promotion applies: to every book, one book, or one category — from a minimum quantity in the receipt. */
 export function ConditionFields() {
@@ -16,7 +17,7 @@ export function ConditionFields() {
       )} />
       {scope === 'book' && (
         <Controller control={control} name="book" render={({ field }) => (
-          <BookPicker value={field.value} onChange={field.onChange} required error={errors.book?.message} />
+          <BookPicker label="Книга" value={field.value} onChange={field.onChange} required error={errors.book?.message} />
         )} />
       )}
       {scope === 'category' && (

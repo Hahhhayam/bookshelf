@@ -1,8 +1,9 @@
 import { Anchor, Badge, Stack, Tabs } from '@mantine/core'
 import { Link, useParams } from 'react-router'
 import { purchaseOrderStatus, usePurchaseOrder, type PurchaseOrderStatus } from '@/entities/purchase-order'
+import { userNames } from '@/entities/reference'
+import { useViewer } from '@/entities/viewer'
 import { HistoryTimeline, Panel, QueryView } from '@/shared/ui'
-import { useUserLabel } from '@/widgets/purchasing-order-list'
 import { OrderFacts } from './ui/OrderFacts'
 import { OrderHeader } from './ui/OrderHeader'
 import { OrderLinesTable } from './ui/OrderLinesTable'
@@ -13,7 +14,7 @@ const statusLabel = (status: string) => purchaseOrderStatus[status as PurchaseOr
 export default function PurchaseOrderPage() {
   const { id } = useParams()
   const query = usePurchaseOrder(id)
-  const userLabel = useUserLabel()
+  const userName = userNames(useViewer().data)
 
   return (
     <Stack gap={20}>
@@ -35,7 +36,7 @@ export default function PurchaseOrderPage() {
                 </Tabs.List>
                 <Tabs.Panel value="lines"><OrderLinesTable order={order} /></Tabs.Panel>
                 <Tabs.Panel value="history" p="lg">
-                  <HistoryTimeline entries={order.history} label={statusLabel} userName={(by) => userLabel(by)} />
+                  <HistoryTimeline entries={order.history} label={statusLabel} userName={userName} />
                 </Tabs.Panel>
               </Tabs>
             </Panel>

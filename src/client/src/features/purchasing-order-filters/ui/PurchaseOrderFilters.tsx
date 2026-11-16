@@ -2,8 +2,8 @@ import { Group, Menu, TextInput } from '@mantine/core'
 import { IconCheck, IconChevronDown, IconClockHour4, IconSearch } from '@tabler/icons-react'
 import { statusTone } from '@/shared/config/tokens'
 import type { Named } from '@/shared/lib'
+import { FilterChip } from '@/shared/ui'
 import { statusFilterLabel, statusFilterOptions, type OrderListFilter } from '../model/filter'
-import { FilterChip } from './FilterChip'
 
 /** Status, supplier, overdue and text filters above the purchase order list. */
 export function PurchaseOrderFilters({ filter, onChange, statusCount, overdueCount, suppliers }: {

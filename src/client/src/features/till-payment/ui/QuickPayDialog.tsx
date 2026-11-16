@@ -1,8 +1,8 @@
 import { Alert, Button, Group, Modal, Stack, Text, TextInput } from '@mantine/core'
 import { useState, type KeyboardEvent } from 'react'
 import { tokens } from '@/shared/config/tokens'
+import { formatAmount, fromCents, parseAmount } from '@/shared/lib'
 import { Key, MoneyText } from '@/shared/ui'
-import { formatAmount, fromCents, parseAmount } from '../model/money'
 import { change, planProblem, wholeBy, type PaymentPlan } from '../model/paymentPlan'
 
 export type QuickMethod = 'Cash' | 'Card' | 'GiftCertificate'

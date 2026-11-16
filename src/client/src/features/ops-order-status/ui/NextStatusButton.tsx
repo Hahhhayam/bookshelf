@@ -1,9 +1,8 @@
 import { Button } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconArrowRight } from '@tabler/icons-react'
-import { nextOrderStatus, orderStatus, type OrderStatus } from '@/entities/order'
+import { nextOrderStatus, orderStatus, orderStepLabel, type OrderStatus } from '@/entities/order'
 import { errorMessage } from '@/shared/ui'
-import { orderStepLabel } from '../model/orderSteps'
 import { useChangeOrderStatus } from '../model/useChangeOrderStatus'
 
 /** One click moves the order along its route (FR-08); nothing is shown once the route has ended. */

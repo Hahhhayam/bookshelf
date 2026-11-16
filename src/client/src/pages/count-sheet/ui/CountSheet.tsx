@@ -1,14 +1,14 @@
 import { Alert, Group, SegmentedControl, Stack } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useState } from 'react'
-import type { CountSession } from '@/entities/inventory-count'
+import { countStatus, type CountSession } from '@/entities/inventory-count'
+import { locationNames } from '@/entities/reference'
 import { useLocationStock } from '@/entities/stock'
-import { useCan } from '@/entities/viewer'
-import { countStatus, CountStepButton, useRecordCount } from '@/features/ops-inventory-count'
-import { useLocationName } from '@/features/ops-names'
+import { useCan, useViewer } from '@/entities/viewer'
+import { CountStepButton, useRecordCount } from '@/features/ops-inventory-count'
 import { formatDateTime, Perm, shortId } from '@/shared/lib'
 import { EmptyState, PageHeader, Panel, QueryView, StatusBadge, errorMessage } from '@/shared/ui'
-import { LineEditor, type EditorLine } from '@/widgets/ops-line-editor'
+import { LineEditor, type EditorLine } from '@/widgets/line-editor'
 import { CountSummary, summarize } from './CountSummary'
 
 type Show = 'all' | 'differing' | 'uncounted'
@@ -31,7 +31,7 @@ function sheetLines(stock: { book: string; onHand: number }[], counted: Record<s
 
 export function CountSheet({ count }: { count: CountSession }) {
   const can = useCan()
-  const locationName = useLocationName()
+  const locationName = locationNames(useViewer().data?.locations)
   const stock = useLocationStock(count.location)
   const record = useRecordCount(count.id)
   const [show, setShow] = useState<Show>('all')

@@ -1,10 +1,9 @@
 import { Text } from '@mantine/core'
 import { tierLabel } from '@/entities/customer'
 import { CustomerCardDialog } from '@/features/till-customer'
-import {
-  PaymentProblemDialog, QuickPayDialog, SplitPaymentDialog, toCents, type ProblemAction,
-} from '@/features/till-payment'
+import { PaymentProblemDialog, QuickPayDialog, SplitPaymentDialog, type ProblemAction } from '@/features/till-payment'
 import { BookPickDialog, TitleSearchDialog } from '@/features/till-scan'
+import { toCents } from '@/shared/lib'
 import { ConfirmDialog } from '@/shared/ui'
 import type { TillController } from '../model/useTillController'
 

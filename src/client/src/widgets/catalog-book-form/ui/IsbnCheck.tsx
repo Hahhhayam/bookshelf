@@ -1,9 +1,8 @@
 import { Anchor, Text } from '@mantine/core'
 import { IconCheck } from '@tabler/icons-react'
 import { Link } from 'react-router'
-import { useBookSearch } from '@/entities/book'
+import { compactIsbn, isValidIsbn, useBookSearch } from '@/entities/book'
 import { tokens } from '@/shared/config/tokens'
-import { compactIsbn, isValidIsbn } from '@/features/catalog-book-form'
 
 /** Under the ISBN field: whether the number is valid and not yet in the catalog (the server checks again). */
 export function IsbnCheck({ isbn }: { isbn: string }) {

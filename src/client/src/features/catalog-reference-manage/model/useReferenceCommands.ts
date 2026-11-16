@@ -1,24 +1,16 @@
 import { notifications } from '@mantine/notifications'
 import { useMutation } from '@tanstack/react-query'
-import { referenceApi, useRefreshReference } from '@/entities/reference'
+import { referenceApi, useCreateReference, useRefreshReference, type CatalogReferenceKind } from '@/entities/reference'
 import { errorMessage } from '@/shared/ui'
 
-export type ManagedReferenceKind = 'authors' | 'publishers' | 'categories'
-
-const create: Record<ManagedReferenceKind, (name: string) => Promise<string>> = {
-  authors: referenceApi.createAuthor,
-  publishers: referenceApi.createPublisher,
-  categories: referenceApi.createCategory,
-}
-
-const rename: Record<ManagedReferenceKind, (id: string, name: string) => Promise<void>> = {
+const rename: Record<CatalogReferenceKind, (id: string, name: string) => Promise<void>> = {
   authors: referenceApi.renameAuthor,
   publishers: referenceApi.renamePublisher,
   categories: referenceApi.renameCategory,
 }
 
 /** Categories can only be renamed (FR-02), so they have no active switch. */
-const setActive: Partial<Record<ManagedReferenceKind, (id: string, active: boolean) => Promise<void>>> = {
+const setActive: Partial<Record<CatalogReferenceKind, (id: string, active: boolean) => Promise<void>>> = {
   authors: referenceApi.setAuthorActive,
   publishers: referenceApi.setPublisherActive,
 }
@@ -31,13 +23,9 @@ function saved(message: string) {
   notifications.show({ color: 'green', message })
 }
 
-export function useReferenceCommands(kind: ManagedReferenceKind) {
+export function useReferenceCommands(kind: CatalogReferenceKind) {
   const refresh = useRefreshReference()
-  const createOne = useMutation({
-    mutationFn: (name: string) => create[kind](name.trim()),
-    onSuccess: async (_id, name) => { await refresh(kind); saved(`Додано: ${name.trim()}`) },
-    onError: failed,
-  })
+  const createOne = useCreateReference(kind)
   const renameOne = useMutation({
     mutationFn: ({ id, name }: { id: string; name: string }) => rename[kind](id, name.trim()),
     onSuccess: async () => { await refresh(kind); saved('Назву змінено') },

@@ -1,6 +1,5 @@
 import type { Payment } from '@/entities/sale'
-import { formatMoney } from '@/shared/lib'
-import { fromCents } from './money'
+import { formatMoney, fromCents } from '@/shared/lib'
 
 export type TenderMethod = 'Bonus' | 'GiftCertificate' | 'Cash' | 'Card'
 

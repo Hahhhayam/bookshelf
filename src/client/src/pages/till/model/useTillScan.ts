@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import type { BookHit } from '@/entities/book'
+import { availableAt, elsewhere, useFindBook, type BookHit } from '@/entities/book'
 import { referenceName } from '@/entities/reference'
-import { availableAt, elsewhere, type ReceiptLine } from '@/features/till-receipt'
-import { useBookLookup, type ScanMessage } from '@/features/till-scan'
+import type { ReceiptLine } from '@/features/till-receipt'
+import type { ScanMessage } from '@/features/till-scan'
 import { formatMoney } from '@/shared/lib'
 import { errorMessage } from '@/shared/ui'
 
@@ -18,7 +18,7 @@ function notEnough(hit: BookHit, inReceipt: number, here: number, locationId: st
 
 /** A scan: one book is added, several open a pick list, none says so; stock is checked against the search result. */
 export function useTillScan(locationId: string, lines: ReceiptLine[], add: (line: Omit<ReceiptLine, 'quantity'>) => void) {
-  const lookup = useBookLookup()
+  const lookup = useFindBook()
   const [message, setMessage] = useState<ScanMessage | null>(null)
   const [pick, setPick] = useState<{ hits: BookHit[]; code: string } | null>(null)
 

@@ -5,6 +5,7 @@ The web client of «Полиця»: online shop at `/`, staff workspace at `/sta
 - Behaviour: [UI_Design.md](../../UI_Design.md) · Look: [design/README.md](../../design/README.md) (canvas link and tokens)
 - Code rules (Feature-Sliced Design, SOLID): [CONVENTIONS.md](CONVENTIONS.md)
 - What the API lacks and how the client works around it: [API_GAPS.md](API_GAPS.md)
+- Client technical debt (moves to lower layers, client-side flaws): [REFACTORING.md](REFACTORING.md)
 
 ```bash
 npm install

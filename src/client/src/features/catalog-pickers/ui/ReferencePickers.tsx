@@ -1,7 +1,5 @@
-import { useReferenceList } from '@/entities/reference'
-import { toOptions } from '../model/options'
-import { useCreateReference, type CatalogReferenceKind } from '../model/useCreateReference'
-import { CreatableMultiSelect, CreatableSelect } from './CreatableSelect'
+import { toOptions, useCreateReference, useReferenceList, type CatalogReferenceKind } from '@/entities/reference'
+import { CreatableMultiSelect, CreatableSelect } from '@/shared/ui'
 
 interface PickerProps {
   label?: string

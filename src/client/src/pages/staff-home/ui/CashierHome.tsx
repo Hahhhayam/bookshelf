@@ -3,8 +3,8 @@ import { IconArrowBackUp, IconReceipt2, IconSearch } from '@tabler/icons-react'
 import { useEffect, useRef } from 'react'
 import { useCan } from '@/entities/viewer'
 import { Perm } from '@/shared/lib'
+import { HomeTile } from '@/shared/ui'
 import { BookLookup } from './BookLookup'
-import { HomeTile } from './HomeTile'
 import { ShiftReceiptsTable } from './ShiftReceiptsTable'
 
 /** The cashier's start page (ShellCashier artboard): open the till with Enter, returns, book lookup, my receipts. */

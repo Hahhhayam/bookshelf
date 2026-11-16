@@ -2,16 +2,17 @@ import { Alert, Button, Group, Stack, Text } from '@mantine/core'
 import { IconBooks } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { LocationSelect } from '@/entities/reference'
 import { useLocationStock } from '@/entities/stock'
-import { useWorkingLocation } from '@/entities/viewer'
-import { LocationSelect } from '@/features/ops-names'
+import { useViewer, useWorkingLocation } from '@/entities/viewer'
 import { useCreateTransfer } from '@/features/ops-transfer-steps'
 import { EmptyState, PageHeader, Panel, errorMessage } from '@/shared/ui'
-import { LineEditor, type EditorLine } from '@/widgets/ops-line-editor'
+import { LineEditor, type EditorLine } from '@/widgets/line-editor'
 import { useTransferDraft } from './model/useTransferDraft'
 
 export default function TransferNewPage() {
   const from = useWorkingLocation()
+  const own = useViewer().data?.locations
   const navigate = useNavigate()
   const [to, setTo] = useState<string | null>(null)
   const draft = useTransferDraft()
@@ -34,7 +35,7 @@ export default function TransferNewPage() {
       <PageHeader eyebrow={`Відправник: ${from?.name ?? '—'}`} title="Нове переміщення" />
       <Panel padding={20}>
         <div style={{ maxWidth: 420 }}>
-          <LocationSelect label="Куди" value={to} onChange={setTo} exclude={from?.id} />
+          <LocationSelect own={own} label="Куди" value={to} onChange={setTo} exclude={from?.id} />
         </div>
       </Panel>
       <Panel title="Позиції" padding={16}>

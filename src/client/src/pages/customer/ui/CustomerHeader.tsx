@@ -2,8 +2,8 @@ import { Anchor, Group, Stack, Text, Title } from '@mantine/core'
 import { Link } from 'react-router'
 import { tierLabel, type CustomerCard } from '@/entities/customer'
 import { tokens } from '@/shared/config/tokens'
+import { maskCard } from '@/shared/lib'
 import { Initials, StatusBadge } from '@/shared/ui'
-import { maskCard } from './mask'
 
 export function CustomerHeader({ customer }: { customer: CustomerCard }) {
   return (

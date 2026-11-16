@@ -2,10 +2,10 @@ import { ActionIcon, Anchor, Group, Menu, Stack, Text } from '@mantine/core'
 import { IconClock, IconDots } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { cancellable, type OrderSummary } from '@/entities/order'
-import { CancelOrderDialog, formatWaited, isWaitingTooLong, NextStatusButton, orderTypeLabel } from '@/features/ops-order-status'
+import { cancellable, isWaitingTooLong, orderTypeLabel, type OrderSummary } from '@/entities/order'
+import { CancelOrderDialog, NextStatusButton } from '@/features/ops-order-status'
 import { statusTone, tokens } from '@/shared/config/tokens'
-import { minutesSince, shortId } from '@/shared/lib'
+import { formatWaited, minutesSince, shortId } from '@/shared/lib'
 
 /** One order on the board: number, customer, waiting time (amber when over the norm), the next step and a menu. */
 export function OrderTile({ order }: { order: OrderSummary }) {

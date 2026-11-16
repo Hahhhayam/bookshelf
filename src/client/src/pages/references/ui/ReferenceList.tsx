@@ -1,8 +1,8 @@
 import { Button, Group, Stack, Switch, Table, Text } from '@mantine/core'
 import { IconPencil } from '@tabler/icons-react'
 import { useState } from 'react'
-import { useReferenceList } from '@/entities/reference'
-import { CreateNameForm, RenameDialog, useReferenceCommands, type ManagedReferenceKind } from '@/features/catalog-reference-manage'
+import { useReferenceList, type CatalogReferenceKind } from '@/entities/reference'
+import { CreateNameForm, RenameDialog, useReferenceCommands } from '@/features/catalog-reference-manage'
 import { EmptyState, Panel, QueryView } from '@/shared/ui'
 
 interface Row {
@@ -11,13 +11,13 @@ interface Row {
   active?: boolean
 }
 
-const copy: Record<ManagedReferenceKind, { add: string; placeholder: string; empty: string }> = {
+const copy: Record<CatalogReferenceKind, { add: string; placeholder: string; empty: string }> = {
   authors: { add: 'Новий автор', placeholder: 'Ім’я та прізвище', empty: 'Авторів тут ще не створювали' },
   publishers: { add: 'Нове видавництво', placeholder: 'Назва видавництва', empty: 'Видавництв тут ще не створювали' },
   categories: { add: 'Нова категорія', placeholder: 'Назва категорії', empty: 'Категорій тут ще не створювали' },
 }
 
-export function ReferenceList({ kind }: { kind: ManagedReferenceKind }) {
+export function ReferenceList({ kind }: { kind: CatalogReferenceKind }) {
   const list = useReferenceList(kind)
   const commands = useReferenceCommands(kind)
   const [renaming, setRenaming] = useState<Row | null>(null)

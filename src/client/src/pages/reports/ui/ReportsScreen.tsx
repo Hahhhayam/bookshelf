@@ -1,7 +1,6 @@
 import { Alert, Stack } from '@mantine/core'
-import { useReferenceList } from '@/entities/reference'
+import { useKnownLocations, useReferenceList } from '@/entities/reference'
 import type { Viewer } from '@/entities/viewer'
-import { useKnownLocations } from '@/features/admin-location-lookup'
 import { ExportCsvButton } from '@/features/reports-export'
 import { PageHeader } from '@/shared/ui'
 import { useReportFilter } from '../model/useReportFilter'
@@ -11,7 +10,7 @@ import { ReportFilters } from './ReportFilters'
 export function ReportsScreen({ viewer, chainWide }: { viewer: Viewer; chainWide: boolean }) {
   const own = viewer.locations.map((location) => location.id)
   const state = useReportFilter(own, chainWide)
-  const locations = useKnownLocations()
+  const locations = useKnownLocations(viewer.locations)
   const categories = useReferenceList('categories')
 
   const storeOptions = (chainWide ? locations.list : locations.list.filter((l) => l.own))

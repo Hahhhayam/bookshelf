@@ -1,13 +1,13 @@
 import { Alert, Anchor, Stack, Text } from '@mantine/core'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { useBookCard, type BookCard, type RemovalMode } from '@/entities/book'
+import { saleStatus, useBookCard, type BookCard, type RemovalMode } from '@/entities/book'
 import { useCan } from '@/entities/viewer'
-import { BookStatusBadge, fromCard, useUpdateBook } from '@/features/catalog-book-form'
+import { fromCard, useUpdateBook } from '@/features/catalog-book-form'
 import { ChangePriceButton } from '@/features/catalog-price-change'
 import { removalText, RemoveBookButton } from '@/features/catalog-remove-book'
 import { Perm } from '@/shared/lib'
-import { PageHeader, QueryView } from '@/shared/ui'
+import { PageHeader, QueryView, StatusBadge } from '@/shared/ui'
 import { BookForm } from '@/widgets/catalog-book-form'
 import { PriceHistoryPanel } from '@/widgets/catalog-price-history'
 
@@ -36,7 +36,7 @@ function Editor({ book }: { book: BookCard }) {
   return (
     <Stack gap="lg">
       <PageHeader eyebrow={<Anchor component={Link} to="/staff/catalog" size="sm">Каталог</Anchor>}
-        title={book.title} after={<BookStatusBadge status={book.status} />}
+        title={book.title} after={<StatusBadge {...saleStatus[book.status]} />}
         actions={canEdit && book.status === 'Active' && <RemoveBookButton bookId={book.id} title={book.title} onRemoved={onRemoved} />} />
       {removed && <Alert color="yellow" title="Деактивовано, а не видалено">{removalText[removed]}</Alert>}
       <BookForm mode="edit" defaultValues={fromCard(book)} readOnly={!canEdit} submitting={update.isPending}

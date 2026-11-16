@@ -1,14 +1,15 @@
 import { Stack } from '@mantine/core'
 import { IconBuildingStore } from '@tabler/icons-react'
 import { RememberedNote } from '@/shared/ui'
-import { useKnownLocations } from '@/features/admin-location-lookup'
+import { useKnownLocations } from '@/entities/reference'
+import { useViewer } from '@/entities/viewer'
 import { LocationFormButton } from '@/features/admin-locations'
 import { EmptyState, PageHeader, Panel, QueryView } from '@/shared/ui'
 import { LocationsTable } from './ui/LocationsTable'
 
 /** Stores and warehouses: create, edit, deactivate (UI_Design 6.9, FR-19). */
 export default function LocationsPage() {
-  const locations = useKnownLocations()
+  const locations = useKnownLocations(useViewer().data?.locations)
   return (
     <Stack gap="lg">
       <PageHeader eyebrow="Адміністрування" title="Локації" actions={<LocationFormButton />} />

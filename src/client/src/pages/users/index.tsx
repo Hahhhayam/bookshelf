@@ -2,8 +2,8 @@ import { Stack, TextInput } from '@mantine/core'
 import { IconSearch, IconUsers } from '@tabler/icons-react'
 import { useState } from 'react'
 import { RememberedNote } from '@/shared/ui'
-import { useReferenceList } from '@/entities/reference'
-import { useKnownLocations } from '@/features/admin-location-lookup'
+import { useKnownLocations, useReferenceList } from '@/entities/reference'
+import { useViewer } from '@/entities/viewer'
 import { CreateUserButton, type AccessOptions } from '@/features/admin-users'
 import { EmptyState, PageHeader, Panel, QueryView } from '@/shared/ui'
 import { UsersTable } from './ui/UsersTable'
@@ -12,7 +12,7 @@ import { UsersTable } from './ui/UsersTable'
 export default function UsersPage() {
   const users = useReferenceList('users')
   const roles = useReferenceList('roles')
-  const locations = useKnownLocations()
+  const locations = useKnownLocations(useViewer().data?.locations)
   const [search, setSearch] = useState('')
 
   const options: AccessOptions = {

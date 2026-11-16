@@ -1,7 +1,7 @@
 import { Table, Text } from '@mantine/core'
 import { useBookTitles } from '@/entities/book'
 import type { PurchaseOrderCard } from '@/entities/purchase-order'
-import { statusTone, tokens } from '@/shared/config/tokens'
+import { statusTone } from '@/shared/config/tokens'
 import { MoneyText } from '@/shared/ui'
 
 type Line = PurchaseOrderCard['lines'][number]
@@ -35,7 +35,7 @@ export function OrderLinesTable({ order }: { order: PurchaseOrderCard }) {
 function LineRow({ line, title, short }: { line: Line; title: string; short: boolean }) {
   const sum = { amount: line.ordered * line.purchasePrice.amount, currency: line.purchasePrice.currency }
   return (
-    <Table.Tr style={{ background: short ? `color-mix(in srgb, ${statusTone.problem.bg} 40%, ${tokens.color.surface})` : undefined }}>
+    <Table.Tr style={{ background: short ? statusTone.problem.row : undefined }}>
       <Table.Td><Text fw={600} size="sm">{title}</Text></Table.Td>
       <Table.Td ta="right">{line.ordered}</Table.Td>
       <Table.Td ta="right" style={{ color: short ? statusTone.problem.text : undefined, fontWeight: short ? 700 : undefined }}>

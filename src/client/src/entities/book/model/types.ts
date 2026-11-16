@@ -1,4 +1,5 @@
 import type { Money } from '@/shared/api'
+import type { StatusTone } from '@/shared/config/tokens'
 
 export interface Availability {
   location: string
@@ -14,6 +15,11 @@ export interface BookHit {
 
 export type ItemType = 'Book' | 'Other'
 export type SaleStatus = 'Active' | 'Deactivated'
+
+export const saleStatus: Record<SaleStatus, { label: string; tone: StatusTone }> = {
+  Active: { label: 'Активна', tone: 'ready' },
+  Deactivated: { label: 'Деактивована', tone: 'done' },
+}
 
 export interface BookCard {
   id: string

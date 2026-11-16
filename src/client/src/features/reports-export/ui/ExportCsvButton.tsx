@@ -3,8 +3,8 @@ import { notifications } from '@mantine/notifications'
 import { IconDownload } from '@tabler/icons-react'
 import { useMutation } from '@tanstack/react-query'
 import { reportApi, type ReportFilter } from '@/entities/report'
+import { downloadBlob } from '@/shared/lib'
 import { errorMessage } from '@/shared/ui'
-import { downloadBlob } from '../lib/downloadBlob'
 
 const day = (iso: string) => iso.slice(0, 10).replaceAll('-', '')
 

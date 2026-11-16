@@ -1,11 +1,10 @@
 import { Button, Group, Stack, Table, Text, UnstyledButton } from '@mantine/core'
 import { IconPackageImport } from '@tabler/icons-react'
-import { purchaseOrderStatus, usePurchaseOrders, type PurchaseOrderSummary } from '@/entities/purchase-order'
+import { purchaseOrderNumber, purchaseOrderStatus, usePurchaseOrders, type PurchaseOrderSummary } from '@/entities/purchase-order'
 import { referenceName } from '@/entities/reference'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { formatDate } from '@/shared/lib'
 import { EmptyState, ErrorView, Panel, StatusBadge } from '@/shared/ui'
-import { purchaseOrderNumber } from '@/widgets/purchasing-order-list'
 
 /** Expected deliveries are the orders sent to suppliers and not yet fully received. */
 function useExpectedDeliveries() {

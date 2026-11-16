@@ -34,6 +34,7 @@ Slices on the same layer do not import each other. A page slice is `pages/<name>
 - Commands that change stock or money keep their operation key across retries (`newKey`, `Idempotency-Key`).
 - **Missing endpoint** → implement a stub in the entity with `stub('GAP-NN', …)` and record it in `API_GAPS.md`.
   **Redundant** API → record it (R-NN). **Broken** → stub around it and record it (B-NN).
+- Client-side debt (code in the wrong layer, a client flaw with a workaround) → `REFACTORING.md` (C-NN for a flaw, MS/ME/MW-NN for a move), not `API_GAPS.md`.
 
 ## UI
 

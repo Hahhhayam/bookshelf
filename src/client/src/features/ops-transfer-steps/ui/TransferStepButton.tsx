@@ -1,9 +1,9 @@
 import { Button, Text } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useState } from 'react'
+import type { TransferStep } from '@/entities/transfer'
 import { ConfirmDialog, errorMessage } from '@/shared/ui'
 import { useApproveOrShip } from '../model/mutations'
-import type { TransferStep } from '../model/transferSteps'
 
 /** Approve or ship, after a confirmation that says what will happen. */
 export function TransferStepButton({ id, step }: { id: string; step: TransferStep & { kind: 'approve' | 'ship' } }) {

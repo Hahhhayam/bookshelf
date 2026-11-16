@@ -1,8 +1,7 @@
 import { Group, Text } from '@mantine/core'
 import { IconAlertTriangle } from '@tabler/icons-react'
 import { formatNumber } from '@/shared/lib'
-import { Panel } from '@/shared/ui'
-import { SimpleTable } from './SimpleTable'
+import { Panel, SimpleTable } from '@/shared/ui'
 
 export interface ShortageRow {
   key: string

@@ -4,7 +4,6 @@ import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { referenceApi, useRefreshReference, type Location } from '@/entities/reference'
 import { ConfirmDialog, errorMessage } from '@/shared/ui'
-import { rememberBeforeChange } from '../model/remember'
 
 /** Deactivates or reactivates a location after confirmation. */
 export function LocationActiveButton({ location }: { location: Location }) {
@@ -12,10 +11,7 @@ export function LocationActiveButton({ location }: { location: Location }) {
   const refresh = useRefreshReference()
   const next = !location.active
   const toggle = useMutation({
-    mutationFn: async () => {
-      rememberBeforeChange(location)
-      await referenceApi.setLocationActive(location.id, next)
-    },
+    mutationFn: () => referenceApi.setLocationActive(location, next),
     onSuccess: () => {
       void refresh('locations')
       notifications.show({ color: 'green', message: next ? `«${location.name}» активовано` : `«${location.name}» деактивовано` })

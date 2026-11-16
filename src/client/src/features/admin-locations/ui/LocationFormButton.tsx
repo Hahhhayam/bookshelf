@@ -7,7 +7,6 @@ import { FormModal } from '@/shared/ui'
 import { locationTypeLabel, locationTypes } from '@/entities/reference'
 import { referenceApi, useRefreshReference, type Location } from '@/entities/reference'
 import { errorMessage } from '@/shared/ui'
-import { rememberBeforeChange } from '../model/remember'
 
 type Draft = Pick<Location, 'name' | 'type' | 'address'>
 
@@ -15,8 +14,7 @@ const typeOptions = locationTypes.map((type) => ({ value: type, label: locationT
 
 async function saveLocation(existing: Location | undefined, draft: Draft) {
   if (!existing) return referenceApi.createLocation(draft.name, draft.type, draft.address)
-  rememberBeforeChange(existing)
-  await referenceApi.updateLocation(existing.id, draft.name, draft.address)
+  await referenceApi.updateLocation(existing, draft.name, draft.address)
   return existing.id
 }
 

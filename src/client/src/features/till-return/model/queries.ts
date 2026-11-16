@@ -1,12 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { saleApi, type ItemCondition } from '@/entities/sale'
-import { pendingReturns } from './pendingReturns'
-
-const pendingKey = ['till-returns', 'pending'] as const
-
-export function usePendingReturns() {
-  return useQuery({ queryKey: pendingKey, queryFn: pendingReturns.list })
-}
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { returnApi, saleKeys, type ItemCondition } from '@/entities/sale'
 
 export interface ReturnDraft {
   sale: string
@@ -21,11 +14,11 @@ export function useCreateReturn() {
   const client = useQueryClient()
   return useMutation({
     mutationFn: async (draft: ReturnDraft) => {
-      const { id } = await saleApi.createReturn(draft.sale, [{ book: draft.book, quantity: draft.quantity }], draft.reason, draft.condition)
-      pendingReturns.remember({ ...draft, id, at: new Date().toISOString() })
+      const { id } = await returnApi.create(draft.sale, [{ book: draft.book, quantity: draft.quantity }], draft.reason, draft.condition)
+      returnApi.rememberPending({ ...draft, id, at: new Date().toISOString() })
       return id
     },
-    onSuccess: () => client.invalidateQueries({ queryKey: pendingKey }),
+    onSuccess: () => client.invalidateQueries({ queryKey: saleKeys.pendingReturns }),
   })
 }
 
@@ -33,9 +26,9 @@ export function useConfirmReturn() {
   const client = useQueryClient()
   return useMutation({
     mutationFn: async (id: string) => {
-      await saleApi.confirmReturn(id)
-      pendingReturns.forget(id)
+      await returnApi.confirm(id)
+      returnApi.forgetPending(id)
     },
-    onSuccess: () => client.invalidateQueries({ queryKey: pendingKey }),
+    onSuccess: () => client.invalidateQueries({ queryKey: saleKeys.pendingReturns }),
   })
 }

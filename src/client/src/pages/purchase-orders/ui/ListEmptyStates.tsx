@@ -1,9 +1,9 @@
 import { Button, Group } from '@mantine/core'
 import { IconX } from '@tabler/icons-react'
 import { Link } from 'react-router'
-import { FilterChip, statusFilterLabel, type OrderListFilter } from '@/features/purchasing-order-filters'
+import { statusFilterLabel, type OrderListFilter } from '@/features/purchasing-order-filters'
 import { tokens } from '@/shared/config/tokens'
-import { EmptyState, Panel } from '@/shared/ui'
+import { EmptyState, FilterChip, Panel } from '@/shared/ui'
 
 function EnvelopeArt() {
   return (

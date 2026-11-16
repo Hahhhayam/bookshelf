@@ -1,12 +1,10 @@
 import { Anchor, Button, Group, Stack, Text } from '@mantine/core'
 import { IconX } from '@tabler/icons-react'
 import { Link } from 'react-router'
-import type { Availability } from '@/entities/book'
+import { availabilityStatusTone, availabilitySummary, BookCover, type Availability } from '@/entities/book'
 import { cart, type CartLine } from '@/entities/cart'
-import { availabilitySummary } from '@/features/shop-my-store'
 import { tokens } from '@/shared/config/tokens'
-import { MoneyText } from '@/shared/ui'
-import { AvailabilityNote, BookCover, QuantityStepper } from '@/widgets/shop-kit'
+import { MoneyText, QuantityStepper, StatusNote } from '@/shared/ui'
 
 export function CartLineRow({ line, myStore, availability }: {
   line: CartLine
@@ -22,7 +20,7 @@ export function CartLineRow({ line, myStore, availability }: {
       <Group justify="space-between" align="flex-start" gap="md" style={{ flex: 1, minWidth: 0 }}>
         <Stack gap={4} style={{ flex: '1 1 200px', minWidth: 0 }}>
           <Anchor component={Link} to={`/books/${line.book}`} c="var(--mantine-color-text)" fw={600} fz={17}>{line.title}</Anchor>
-          {hint && <AvailabilityNote tone={hint.tone}>{hint.label}</AvailabilityNote>}
+          {hint && <StatusNote tone={availabilityStatusTone[hint.tone]}>{hint.label}</StatusNote>}
           <Button variant="subtle" size="compact-sm" px={0} w="fit-content" leftSection={<IconX size={14} />}
             onClick={() => cart.remove(line.book)}>
             Прибрати

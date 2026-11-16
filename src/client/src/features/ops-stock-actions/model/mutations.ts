@@ -1,14 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { stockApi, stockKeys } from '@/entities/stock'
 
-/** Every cached stock list of the location, whatever its filter. */
-const locationStock = (location: string) => stockKeys.location(location).slice(0, 2)
-
 function useStockMutation<T>(location: string, call: (input: T) => Promise<unknown>) {
   const client = useQueryClient()
   return useMutation({
     mutationFn: call,
-    onSettled: () => client.invalidateQueries({ queryKey: locationStock(location) }),
+    onSettled: () => client.invalidateQueries({ queryKey: stockKeys.atLocation(location) }),
   })
 }
 

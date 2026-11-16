@@ -1,7 +1,6 @@
 import { Text } from '@mantine/core'
 import { formatNumber } from '@/shared/lib'
-import { Panel } from '@/shared/ui'
-import { SimpleTable } from './SimpleTable'
+import { Panel, SimpleTable } from '@/shared/ui'
 
 /** Books that do not sell (surplus); the API returns only their ids (API_GAPS.md, GAP-49). */
 export function SlowMovingTable({ rows, more }: { rows: { book: string; title: string }[]; more: number }) {

@@ -1,8 +1,7 @@
 import { Text } from '@mantine/core'
 import { tokens } from '@/shared/config/tokens'
 import { formatNumber } from '@/shared/lib'
-import { Panel } from '@/shared/ui'
-import { SimpleTable } from './SimpleTable'
+import { Panel, SimpleTable } from '@/shared/ui'
 
 export type AbcClass = 'A' | 'B' | 'C'
 
@@ -39,6 +38,7 @@ export function AbcTable({ rows, counts }: { rows: AbcRow[]; counts: Record<AbcC
   return (
     <Panel title="ABC-аналіз за виручкою" extra={<Text size="sm" c="dimmed">A — 80%, B — 15%, C — 5% виручки</Text>}>
       <SimpleTable
+        empty="Немає даних за цей період"
         columns={[{ label: 'Клас' }, { label: 'Книга' }, { label: 'Частка', numeric: true }, { label: 'Накопичено', numeric: true }]}
         rows={rows.map((row) => ({
           key: row.book,

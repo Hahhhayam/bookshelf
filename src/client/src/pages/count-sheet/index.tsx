@@ -1,7 +1,7 @@
 import { Button } from '@mantine/core'
 import { IconClipboardOff } from '@tabler/icons-react'
 import { Link, useParams } from 'react-router'
-import { useCount } from '@/features/ops-inventory-count'
+import { useCount } from '@/entities/inventory-count'
 import { EmptyState, Panel, QueryView } from '@/shared/ui'
 import { CountSheet } from './ui/CountSheet'
 

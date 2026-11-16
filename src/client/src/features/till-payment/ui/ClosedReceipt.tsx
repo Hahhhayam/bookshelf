@@ -3,9 +3,8 @@ import { IconCheck } from '@tabler/icons-react'
 import type { ReactNode } from 'react'
 import { paymentLabel, type Payment } from '@/entities/sale'
 import { statusTone, tokens } from '@/shared/config/tokens'
-import { formatDateTime, shortId } from '@/shared/lib'
+import { formatDateTime, fromCents, shortId } from '@/shared/lib'
 import { Key, MoneyText } from '@/shared/ui'
-import { fromCents } from '../model/money'
 
 export interface ClosedSale {
   id: string

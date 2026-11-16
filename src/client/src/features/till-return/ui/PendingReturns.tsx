@@ -1,12 +1,11 @@
 import { Alert, Button, Table, Text } from '@mantine/core'
 import { IconArrowBackUp } from '@tabler/icons-react'
 import { useState } from 'react'
-import { conditionLabel } from '@/entities/sale'
+import { conditionLabel, usePendingReturns, type PendingReturn } from '@/entities/sale'
 import { useCan } from '@/entities/viewer'
 import { formatDateTime, Perm, shortId } from '@/shared/lib'
 import { ConfirmDialog, EmptyState, errorMessage, Panel, QueryView, StatusBadge } from '@/shared/ui'
-import type { PendingReturn } from '../model/pendingReturns'
-import { useConfirmReturn, usePendingReturns } from '../model/queries'
+import { useConfirmReturn } from '../model/queries'
 
 function Row({ item, canConfirm, onConfirm }: { item: PendingReturn; canConfirm: boolean; onConfirm: () => void }) {
   return (

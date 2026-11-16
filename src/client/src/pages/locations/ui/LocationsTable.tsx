@@ -1,6 +1,5 @@
 import { Group, Table, Text } from '@mantine/core'
-import { locationTypeLabel } from '@/entities/reference'
-import type { KnownLocation } from '@/features/admin-location-lookup'
+import { locationTypeLabel, type KnownLocation } from '@/entities/reference'
 import { LocationActiveButton, LocationFormButton } from '@/features/admin-locations'
 import { StatusBadge } from '@/shared/ui'
 

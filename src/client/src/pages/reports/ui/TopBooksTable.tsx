@@ -1,7 +1,6 @@
 import type { Money } from '@/shared/api'
 import { formatNumber } from '@/shared/lib'
-import { MoneyText, Panel } from '@/shared/ui'
-import { SimpleTable } from './SimpleTable'
+import { MoneyText, Panel, SimpleTable } from '@/shared/ui'
 
 export interface TopBookRow {
   book: string
@@ -14,6 +13,7 @@ export function TopBooksTable({ rows }: { rows: TopBookRow[] }) {
   return (
     <Panel title="Топ книжок">
       <SimpleTable
+        empty="Немає даних за цей період"
         columns={[{ label: '№' }, { label: 'Книга' }, { label: 'Продано', numeric: true }, { label: 'Виручка', numeric: true }]}
         rows={rows.map((row, i) => ({
           key: row.book,

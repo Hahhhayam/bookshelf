@@ -1,7 +1,7 @@
 import { Text } from '@mantine/core'
-import type { TransferCard } from '@/entities/transfer'
+import { transferStep, type TransferCard, type TransferSide } from '@/entities/transfer'
 import { useCan } from '@/entities/viewer'
-import { TransferStepButton, transferStep, type TransferSide } from '@/features/ops-transfer-steps'
+import { TransferStepButton } from '@/features/ops-transfer-steps'
 import { Perm } from '@/shared/lib'
 
 /** The step button for this side of the route, or a note of whose turn it is; receiving has its own form. */

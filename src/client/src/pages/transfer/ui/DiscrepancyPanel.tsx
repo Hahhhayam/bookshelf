@@ -2,9 +2,8 @@ import { Group, Stack, Table, Text, Title } from '@mantine/core'
 import { IconAlertTriangle } from '@tabler/icons-react'
 import { useBookTitles } from '@/entities/book'
 import type { TransferCard } from '@/entities/transfer'
-import { DifferenceText } from '@/features/ops-difference'
 import { statusTone, tokens } from '@/shared/config/tokens'
-import { StatusBadge } from '@/shared/ui'
+import { DifferenceText, StatusBadge } from '@/shared/ui'
 
 /**
  * Discrepancies found at receiving, expected against actual. The API cannot resolve them yet (GAP-31), so the

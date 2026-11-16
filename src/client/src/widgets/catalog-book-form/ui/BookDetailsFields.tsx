@@ -1,9 +1,9 @@
 import { SegmentedControl, Stack, Text, TextInput } from '@mantine/core'
 import { useEffect } from 'react'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
+import { compactIsbn, isValidIsbn } from '@/entities/book'
 import { AuthorsPicker, CategoryPicker, PublisherPicker } from '@/features/catalog-pickers'
 import { tokens } from '@/shared/config/tokens'
-import { compactIsbn, isValidIsbn } from '@/features/catalog-book-form'
 import type { BookFormValues } from '@/features/catalog-book-form'
 import { IsbnCheck } from './IsbnCheck'
 

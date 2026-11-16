@@ -1,8 +1,6 @@
 import { http, type Created, type Money } from '@/shared/api'
+import { compactIsbn, looksLikeIsbn } from '../model/isbn'
 import type { BookCard, BookDraft, BookHit, BookSearch, PricePoint, RemovalMode } from '../model/types'
-
-/** ISBN-13 or ISBN-10 digits, the way the scan field receives them. */
-const isbnLike = /^(97[89])?\d{9}[\dX]$/i
 
 export const bookApi = {
   search: (query: BookSearch) => http.get<BookHit[]>('books', { query: { ...query } }),
@@ -14,9 +12,8 @@ export const bookApi = {
    * no barcode filter (API_GAPS.md, GAP-06), so a shop barcode that is not an ISBN is found only through its title.
    */
   findByCode: async (code: string): Promise<BookHit[]> => {
-    const compact = code.replace(/[-\s]/g, '')
-    if (isbnLike.test(compact)) {
-      const byIsbn = await http.get<BookHit[]>('books', { query: { isbn: compact } }).catch(() => [])
+    if (looksLikeIsbn(code)) {
+      const byIsbn = await http.get<BookHit[]>('books', { query: { isbn: compactIsbn(code) } }).catch(() => [])
       if (byIsbn.length > 0) return byIsbn
     }
     return http.get<BookHit[]>('books', { query: { text: code } })

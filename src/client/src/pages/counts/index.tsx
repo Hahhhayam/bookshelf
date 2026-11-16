@@ -1,10 +1,10 @@
 import { Alert, Anchor, Stack, Table } from '@mantine/core'
 import { IconClipboardCheck, IconInfoCircle } from '@tabler/icons-react'
 import { Link, useNavigate } from 'react-router'
-import type { CountSession } from '@/entities/inventory-count'
-import { useCan, useWorkingLocation } from '@/entities/viewer'
-import { countStatus, StartCountButton, useCounts } from '@/features/ops-inventory-count'
-import { useLocationName } from '@/features/ops-names'
+import { countStatus, useCounts, type CountSession } from '@/entities/inventory-count'
+import { locationNames } from '@/entities/reference'
+import { useCan, useViewer, useWorkingLocation } from '@/entities/viewer'
+import { StartCountButton } from '@/features/ops-inventory-count'
 import { formatDateTime, Perm, shortId } from '@/shared/lib'
 import { EmptyState, PageHeader, Panel, QueryView, StatusBadge } from '@/shared/ui'
 
@@ -37,7 +37,7 @@ export default function CountsPage() {
 }
 
 function CountTable({ counts }: { counts: CountSession[] }) {
-  const locationName = useLocationName()
+  const locationName = locationNames(useViewer().data?.locations)
   return (
     <Table.ScrollContainer minWidth={600}>
       <Table verticalSpacing="sm" highlightOnHover>

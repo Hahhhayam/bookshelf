@@ -2,13 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { stockKeys } from '@/entities/stock'
 import { transferApi, transferKeys, type TransferItem } from '@/entities/transfer'
 
-const stockAll = stockKeys.location('').slice(0, 1)
-
 function useInvalidate() {
   const client = useQueryClient()
   return () => Promise.all([
     client.invalidateQueries({ queryKey: transferKeys.all }),
-    client.invalidateQueries({ queryKey: stockAll }),
+    client.invalidateQueries({ queryKey: stockKeys.all }),
   ])
 }
 

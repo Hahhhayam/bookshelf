@@ -1,6 +1,6 @@
 import { Button, Group, Select, TextInput } from '@mantine/core'
 import { IconSearch } from '@tabler/icons-react'
-import { actionOptions } from '../model/presentation'
+import { auditActionOptions } from '@/entities/audit'
 import type { AuditFilterState } from '../model/useAuditFilter'
 
 export function AuditFilters({ state }: { state: AuditFilterState }) {
@@ -11,7 +11,7 @@ export function AuditFilters({ state }: { state: AuditFilterState }) {
         value={state.subject} onChange={(e) => state.setSubject(e.currentTarget.value)} w={{ base: '100%', sm: 280 }}
       />
       <Select
-        aria-label="Дія" placeholder="Дія: усі" data={actionOptions} value={state.action} onChange={state.setAction}
+        aria-label="Дія" placeholder="Дія: усі" data={auditActionOptions} value={state.action} onChange={state.setAction}
         clearable searchable w={{ base: '100%', sm: 260 }}
       />
       <TextInput

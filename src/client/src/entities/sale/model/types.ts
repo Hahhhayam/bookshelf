@@ -32,6 +32,18 @@ export interface ShiftReceipt {
   methods: PaymentMethod[]
 }
 
+/** A return created in this browser and not yet confirmed (GAP-16). */
+export interface PendingReturn {
+  id: string
+  sale: string
+  book: string
+  title: string
+  quantity: number
+  reason: string
+  condition: ItemCondition
+  at: string
+}
+
 /** What the till shows before payment. `exact` is false while promotions are unknown to the client (GAP-05). */
 export interface SaleQuote {
   lines: { book: string; title: string; quantity: number; unitPrice: Money; total: Money }[]

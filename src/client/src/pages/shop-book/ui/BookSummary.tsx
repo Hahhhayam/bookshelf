@@ -1,11 +1,10 @@
 import { Alert, Group, Stack, Text, Title } from '@mantine/core'
 import { useState } from 'react'
-import type { BookCard } from '@/entities/book'
+import { availabilityStatusTone, availabilitySummary, type BookCard } from '@/entities/book'
 import { AddToCartButton } from '@/features/shop-add-to-cart'
-import { availabilitySummary, useMyStore } from '@/features/shop-my-store'
+import { useMyStore } from '@/features/shop-my-store'
 import { tokens } from '@/shared/config/tokens'
-import { MoneyText } from '@/shared/ui'
-import { AvailabilityNote, QuantityStepper } from '@/widgets/shop-kit'
+import { MoneyText, QuantityStepper, StatusNote } from '@/shared/ui'
 import { AvailabilityTable } from './AvailabilityTable'
 
 export function BookSummary({ book, authors }: { book: BookCard; authors: string }) {
@@ -29,7 +28,7 @@ export function BookSummary({ book, authors }: { book: BookCard; authors: string
       ) : (
         <Alert color="gray" title="Знято з продажу">Цю книжку зараз не можна замовити.</Alert>
       )}
-      <AvailabilityNote tone={availability.tone} size={15}>{availability.label}</AvailabilityNote>
+      <StatusNote tone={availabilityStatusTone[availability.tone]} size={15}>{availability.label}</StatusNote>
       <AvailabilityTable availability={book.availability} myStore={store} />
     </Stack>
   )

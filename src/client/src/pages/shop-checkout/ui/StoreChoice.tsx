@@ -1,8 +1,7 @@
 import { Group, Radio, Skeleton, Stack, Text } from '@mantine/core'
 import { referenceName } from '@/entities/reference'
 import type { StoreCoverage, useCartAvailability } from '@/features/shop-place-order'
-import { ErrorView } from '@/shared/ui'
-import { AvailabilityNote } from '@/widgets/shop-kit'
+import { ErrorView, StatusNote } from '@/shared/ui'
 import type { CheckoutForm } from '../model/useCheckoutForm'
 
 /** «Оберіть магазин»: stores from the cart books' availability (GAP-14); one missing a book cannot be chosen. */
@@ -31,7 +30,7 @@ function StoreRow({ store }: { store: StoreCoverage }) {
           <Text fw={600} fz={15}>{referenceName('locations', store.location)}</Text>
         </Group>
         <Stack gap={0} align="flex-end" ta="right">
-          <AvailabilityNote tone={complete ? 'ok' : 'elsewhere'} size={14}>{complete ? 'Усе є' : 'Не все є'}</AvailabilityNote>
+          <StatusNote tone={complete ? 'ready' : 'attention'} size={14}>{complete ? 'Усе є' : 'Не все є'}</StatusNote>
           {!complete && <Text size="sm" c="dimmed">Бракує: {store.missing.map((t) => `«${t}»`).join(', ')}</Text>}
         </Stack>
       </Group>

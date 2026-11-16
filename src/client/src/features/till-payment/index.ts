@@ -1,5 +1,4 @@
 export { describeFailure, type PaymentFailure } from './model/failure'
-export { formatAmount, fromCents, parseAmount, toCents } from './model/money'
 export { change, toPayments, wholeBy, type PaymentPlan, type Tender, type TenderMethod } from './model/paymentPlan'
 export { useCompleteSale, type SaleAttempt } from './model/useCompleteSale'
 export { ClosedReceipt, type ClosedSale } from './ui/ClosedReceipt'
