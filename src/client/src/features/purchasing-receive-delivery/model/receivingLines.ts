@@ -38,8 +38,6 @@ export interface ReceivingSummary {
   shortage: Tally
   surplus: Tally
   notCounted: Tally
-  /** Share of awaited units already counted, 0–100. */
-  progress: number
 }
 
 function tally(lines: readonly ReceivingLine[], units: (line: ReceivingLine) => number): Tally {
@@ -48,15 +46,12 @@ function tally(lines: readonly ReceivingLine[], units: (line: ReceivingLine) => 
 }
 
 export function summarize(lines: readonly ReceivingLine[], planned: boolean): ReceivingSummary {
-  const expected = tally(lines, remaining)
-  const notCounted = planned ? tally(lines, (l) => (l.now === null ? remaining(l) : 0)) : { units: 0, titles: 0 }
   return {
-    expected,
+    expected: tally(lines, remaining),
     received: tally(lines, (l) => l.now ?? 0),
     shortage: planned ? tally(lines, (l) => (l.now === null ? 0 : Math.max(0, -(difference(l) ?? 0)))) : { units: 0, titles: 0 },
     surplus: planned ? tally(lines, (l) => Math.max(0, difference(l) ?? 0)) : { units: 0, titles: 0 },
-    notCounted,
-    progress: expected.units === 0 ? 100 : Math.round(((expected.units - notCounted.units) / expected.units) * 100),
+    notCounted: planned ? tally(lines, (l) => (l.now === null ? remaining(l) : 0)) : { units: 0, titles: 0 },
   }
 }
 

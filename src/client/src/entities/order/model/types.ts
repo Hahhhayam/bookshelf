@@ -74,8 +74,6 @@ export const waitingNorm: Record<OrderStatus, number | null> = {
   Cancelled: null,
 }
 
-export const waitingNormText = 'Норма: нове — підтвердити за 30 хв, готове — видати за 3 дні'
-
 export function isWaitingTooLong(status: OrderStatus, waitedMinutes: number): boolean {
   const norm = waitingNorm[status]
   return norm !== null && waitedMinutes > norm

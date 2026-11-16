@@ -1,1 +1,1 @@
-export { FindByCardForm, OpenByIdForm } from './ui/FindCustomerForm'
+export { FindByCardForm } from './ui/FindCustomerForm'

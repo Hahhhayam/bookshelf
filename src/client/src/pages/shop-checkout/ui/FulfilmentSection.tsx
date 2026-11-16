@@ -8,7 +8,7 @@ import { CheckoutSection } from './CheckoutSection'
 import { StoreChoice } from './StoreChoice'
 
 const options: { kind: FulfilmentKind; title: string; text: string }[] = [
-  { kind: 'Pickup', title: 'Самовивіз з магазину', text: 'Безкоштовно · оплата на місці' },
+  { kind: 'Pickup', title: 'Самовивіз з магазину', text: 'Заберете в обраному магазині' },
   { kind: 'Delivery', title: 'Доставка', text: 'Відправимо з магазину, де є всі книжки' },
 ]
 
@@ -48,7 +48,7 @@ function DeliveryFields({ form }: { form: CheckoutForm }) {
         autosize minRows={2} value={form.address} onChange={(e) => form.setAddress(e.currentTarget.value)} required />
       <Text size="sm" c={tokens.color.ink2}>
         {form.deliveryStock
-          ? `Відправимо з: ${referenceName('locations', form.deliveryStock)}. Вартість доставки — за тарифом перевізника.`
+          ? `Відправимо з: ${referenceName('locations', form.deliveryStock)}.`
           : 'Зараз немає магазину, де є всі книжки разом.'}
       </Text>
     </Stack>

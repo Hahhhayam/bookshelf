@@ -15,7 +15,7 @@ export function StoreFilter({ locations, onlyMyStore, onChange }: {
       style={{ background: tokens.color.accentSoft, flex: 'none' }}>
       <Checkbox label="Є в моєму магазині" fw={700} checked={onlyMyStore} onChange={(e) => onChange(e.currentTarget.checked)} />
       <Text size="sm" c={tokens.color.ink2} pl={28}>
-        {store ? `${referenceName('locations', store)} · забрати сьогодні` : 'Оберіть магазин, щоб бачити, що є поруч.'}
+        {store ? referenceName('locations', store) : 'Оберіть магазин, щоб бачити, що є поруч.'}
       </Text>
       <StorePicker locations={locations} label="Змінити магазин" />
     </Stack>

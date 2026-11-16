@@ -2,7 +2,7 @@ import { Group, Stack, Title } from '@mantine/core'
 import type { ReactNode } from 'react'
 import { tokens } from '@/shared/config/tokens'
 
-/** A numbered checkout step: «1 Покупець», «2 Отримання», «3 Оплата». */
+/** A numbered checkout step: «1 Покупець», «2 Отримання». */
 export function CheckoutSection({ step, title, children }: { step: number; title: string; children: ReactNode }) {
   return (
     <Stack component="section" gap="md" p={{ base: 'md', sm: 'lg' }}

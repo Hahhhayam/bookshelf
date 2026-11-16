@@ -20,7 +20,7 @@ export function CashierHome() {
           title="Відкрити касу" text="Новий чек · сканер і клавіатура" />
         {can(Perm.ReturnsCreate, Perm.ReturnsConfirm) && (
           <HomeTile to="/staff/returns" icon={<IconArrowBackUp size={32} stroke={1.75} />}
-            title="Оформити повернення" text="За номером чека або скан книги" />
+            title="Оформити повернення" text="За чеком продажу" />
         )}
         <HomeTile to="#book-lookup" icon={<IconSearch size={32} stroke={1.75} />} title="Знайти книгу"
           text="Де є в мережі та скільки" onClick={() => lookup.current?.focus()} />

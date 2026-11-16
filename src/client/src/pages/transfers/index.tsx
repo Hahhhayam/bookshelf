@@ -25,11 +25,10 @@ export default function TransfersPage() {
 
   return (
     <Stack gap="lg">
-      <PageHeader eyebrow="Книжки між цим магазином, іншими магазинами мережі та центральним складом" title="Переміщення" actions={newButton} />
+      <PageHeader eyebrow={location?.name} title="Переміщення" actions={newButton} />
       {problems > 0 && (
         <Alert color="red" variant="light" icon={<IconAlertTriangle size={18} />}>
-          <strong>Переміщень, отриманих з розбіжністю: {problems}.</strong> Закрийте розбіжності до кінця дня, щоб залишки
-          магазину збігалися з обліком.{' '}
+          <strong>Переміщень, отриманих з розбіжністю: {problems}.</strong>{' '}
           {!filters.problemsOnly && <Anchor component="button" onClick={() => setFilters({ ...filters, problemsOnly: true })}>Показати лише їх</Anchor>}
         </Alert>
       )}

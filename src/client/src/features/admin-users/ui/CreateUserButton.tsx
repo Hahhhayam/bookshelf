@@ -53,7 +53,6 @@ export function CreateUserButton({ options }: { options: AccessOptions }) {
           label="Початковий пароль" required value={form.password} autoComplete="new-password"
           onChange={(e) => setForm({ ...form, password: e.currentTarget.value })}
           error={touched && !form.password ? 'Вкажіть пароль' : null}
-          description="Передайте його працівнику особисто"
         />
         <AccessFields
           options={options} roles={form.roles} locations={form.locations}

@@ -3,7 +3,7 @@ import { useBookTitles } from '@/entities/book'
 import { ConfirmDialog, errorMessage } from '@/shared/ui'
 import { difference, remaining, type ReceivingLine, type ReceivingSummary } from '../model/receivingLines'
 
-/** Lines whose count differs from what was awaited, in words: what will go into the discrepancy record. */
+/** Lines whose count differs from what was awaited, in words. */
 function describeDifferences(lines: readonly ReceivingLine[], title: (line: ReceivingLine) => string): string[] {
   return lines.flatMap((line) => {
     if (line.now === null) return remaining(line) > 0 ? [`«${title(line)}» не скановано — недостача ${remaining(line)} од.`] : []
@@ -41,7 +41,6 @@ export function ConfirmReceiptDialog({ opened, lines, planned, summary, loading,
         {differences.length > 0 && (
           <Alert color="yellow" variant="light" title={`Розбіжності: ${differences.length}`}>
             <List size="sm" spacing={4}>{differences.map((text) => <List.Item key={text}>{text}</List.Item>)}</List>
-            <Text size="sm" mt="xs">Акт розбіжностей піде менеджеру з закупівель.</Text>
           </Alert>
         )}
         {error !== null && error !== undefined && <Alert color="red" variant="light">{errorMessage(error)}</Alert>}

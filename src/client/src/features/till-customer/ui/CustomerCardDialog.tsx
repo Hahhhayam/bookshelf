@@ -11,7 +11,7 @@ function lookupError(error: unknown) {
   return error instanceof ApiError && error.status === 404 ? 'Клієнта з такою карткою не знайдено.' : errorMessage(error)
 }
 
-/** F4: the customer by loyalty card. Search by name or phone does not exist yet (GAP-11). */
+/** F4: the customer by loyalty card. */
 export function CustomerCardDialog({ opened, hasCustomer, onFound, onClear, onClose }: {
   opened: boolean
   hasCustomer: boolean
@@ -42,8 +42,7 @@ export function CustomerCardDialog({ opened, hasCustomer, onFound, onClear, onCl
       <Stack gap="md">
         <TextInput data-autofocus size="lg" label="Номер картки лояльності" placeholder="Скануйте картку"
           leftSection={<IconId size={20} stroke={1.75} />} value={card} onKeyDown={onKeyDown}
-          onChange={(e) => setCard(e.currentTarget.value)} styles={{ input: { fontFamily: tokens.font.mono } }}
-          description="Пошук за телефоном або ім’ям поки недоступний — лише за карткою." />
+          onChange={(e) => setCard(e.currentTarget.value)} styles={{ input: { fontFamily: tokens.font.mono } }} />
         {lookup.isError && <Alert color="red" variant="light">{lookupError(lookup.error)}</Alert>}
         <Group justify="space-between">
           {hasCustomer

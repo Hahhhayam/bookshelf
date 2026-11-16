@@ -1,6 +1,5 @@
 import type { HistoryEntry, Money } from '@/shared/api'
 import type { StatusTone } from '@/shared/config/tokens'
-import { shortId } from '@/shared/lib'
 
 export type PurchaseOrderStatus = 'Draft' | 'Sent' | 'PartlyReceived' | 'Received' | 'Cancelled'
 
@@ -32,7 +31,3 @@ export const purchaseOrderStatus: Record<PurchaseOrderStatus, { label: string; t
   Cancelled: { label: 'Скасовано', tone: 'problem' },
 }
 
-/** The API gives a purchase order no number of its own (GAP-36); its id's first block stands in. */
-export function purchaseOrderNumber(id: string): string {
-  return `ЗП-${shortId(id)}`
-}

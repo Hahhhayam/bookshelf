@@ -5,7 +5,7 @@ import { tokens } from '@/shared/config/tokens'
 
 /**
  * Shown while the browser is offline. Commands keep their operation keys, so they can be retried safely once the
- * connection is back; the client does not queue sales offline (API_GAPS.md, GAP-19).
+ * connection is back, which is all the report asks for («Інтернет у магазинах»).
  */
 export function OfflineBanner() {
   const { online } = useNetwork()

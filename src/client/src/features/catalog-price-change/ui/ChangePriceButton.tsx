@@ -1,16 +1,11 @@
 import { Alert, Button, Group, NumberInput, Stack, Text } from '@mantine/core'
-import { IconInfoCircle } from '@tabler/icons-react'
 import { useState } from 'react'
 import type { Money } from '@/shared/api'
-import { tokens } from '@/shared/config/tokens'
 import { formatMoney } from '@/shared/lib'
 import { ConfirmDialog, errorMessage, MoneyText } from '@/shared/ui'
 import { useChangePrice } from '../model/useChangePrice'
 
-/**
- * The FormDialogs price dialog: current vs new price and the difference; the button names the new sum.
- * The artboard's «Діє з» and «Причина» are left out: the API applies a price at once and takes no reason (R-41).
- */
+/** Scenario 3.3: the old and the new price side by side; the button names the new sum. The API applies a price at once (R-41). */
 export function ChangePriceButton({ bookId, subtitle, current }: { bookId: string; subtitle: string; current: Money }) {
   const [opened, setOpened] = useState(false)
   const [amount, setAmount] = useState<number | ''>('')
@@ -42,28 +37,9 @@ export function ChangePriceButton({ bookId, subtitle, current }: { bookId: strin
               hideControls rightSection="₴" value={amount} error={invalid}
               onChange={(v) => { setAmount(typeof v === 'number' ? v : ''); setInvalid(null) }} />
           </Group>
-          {next && <Difference current={current} next={next} />}
-          <Alert variant="light" color="gray" icon={<IconInfoCircle size={18} />}>
-            Нова ціна з’явиться на всіх касах і в онлайн-магазині одразу. Оформлені замовлення залишаться за старою ціною.
-          </Alert>
           {change.isError && <Alert color="red">{errorMessage(change.error)}</Alert>}
         </Stack>
       </ConfirmDialog>
     </>
-  )
-}
-
-function Difference({ current, next }: { current: Money; next: Money }) {
-  const delta = next.amount - current.amount
-  const percent = current.amount === 0 ? null : (delta / current.amount) * 100
-  const sign = delta > 0 ? '+' : delta < 0 ? '−' : ''
-  return (
-    <Text size="sm">
-      Різниця{' '}
-      <strong style={{ color: delta < 0 ? tokens.color.danger : tokens.color.positive }}>
-        {sign}{formatMoney({ amount: Math.abs(delta), currency: current.currency })}
-        {percent !== null && ` (${sign}${Math.abs(percent).toFixed(1).replace('.', ',')}%)`}
-      </strong>
-    </Text>
   )
 }

@@ -10,7 +10,6 @@ import { useCheckoutForm } from './model/useCheckoutForm'
 import { CheckoutSummary } from './ui/CheckoutSummary'
 import { CustomerSection } from './ui/CustomerSection'
 import { FulfilmentSection } from './ui/FulfilmentSection'
-import { PaymentSection } from './ui/PaymentSection'
 
 /** Checkout (artboard ShopCheckout): pickup store or delivery, then the order is placed and the cart cleared. */
 export default function ShopCheckoutPage() {
@@ -52,7 +51,6 @@ function Checkout({ lines }: { lines: CartLine[] }) {
             <Title order={1} ff="var(--font-display)" fz={{ base: 30, sm: 40 }}>Оформлення замовлення</Title>
             <CustomerSection form={form} />
             <FulfilmentSection form={form} availability={availability} />
-            <PaymentSection />
           </Stack>
           <CheckoutSummary lines={lines} form={form} problem={problem} pending={place.isPending} />
         </Flex>

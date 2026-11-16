@@ -1,7 +1,7 @@
 import { useParams } from 'react-router'
 import { locationNames, userNames } from '@/entities/reference'
 import {
-  transferBadge, transferSide, transferStatus, useTransfer, type TransferCard, type TransferSide, type TransferStatus,
+  transferBadge, transferSide, transferStatus, useTransfer, type TransferCard, type TransferStatus,
 } from '@/entities/transfer'
 import { useCan, useViewer, useWorkingLocation } from '@/entities/viewer'
 import { formatDateTime, Perm, shortId } from '@/shared/lib'
@@ -13,7 +13,6 @@ import { TransferActions } from './ui/TransferActions'
 import { TransferLines } from './ui/TransferLines'
 
 const statusLabel = (status: string) => transferStatus[status as TransferStatus]?.label ?? (status || 'Створено')
-const sideLabel: Record<TransferSide, string> = { sender: 'Відправник', receiver: 'Отримувач', none: 'Не учасник' }
 
 export default function TransferPage() {
   const { id } = useParams()
@@ -25,7 +24,7 @@ function TransferDocument({ transfer }: { transfer: TransferCard }) {
   const location = useWorkingLocation()
   const can = useCan()
   const side = transferSide(transfer, location?.id)
-  const facts = useTransferFacts(transfer, side)
+  const facts = useTransferFacts(transfer)
   const receiving = transfer.status === 'Shipped' && side === 'receiver' && can(Perm.TransfersManage)
   const hasOpen = transfer.discrepancies.some((d) => !d.isResolved)
 
@@ -45,7 +44,7 @@ function TransferDocument({ transfer }: { transfer: TransferCard }) {
   )
 }
 
-function useTransferFacts(transfer: TransferCard, side: TransferSide): Fact[] {
+function useTransferFacts(transfer: TransferCard): Fact[] {
   const viewer = useViewer().data
   const locationName = locationNames(viewer?.locations)
   const userName = userNames(viewer)
@@ -58,7 +57,6 @@ function useTransferFacts(transfer: TransferCard, side: TransferSide): Fact[] {
     { label: 'Звідки', value: locationName(transfer.from) },
     { label: 'Куди', value: locationName(transfer.to) },
     { label: 'Позицій / одиниць', value: `${transfer.lines.length} / ${units}` },
-    { label: 'Ваша сторона', value: sideLabel[side] },
     { label: 'Відправлено', value: at('Shipped') },
     { label: 'Отримано', value: at('Received') },
   ]

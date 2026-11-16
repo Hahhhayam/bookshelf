@@ -32,7 +32,7 @@ export function AllClosedState({ onShowAll, canCreate }: { onShowAll: () => void
       <EmptyState
         icon={<EnvelopeArt />}
         title="Усі замовлення закрито"
-        text="Відкритих замовлень постачальникам немає. Закриті — у фільтрі «Статус: усі». Нове варто створити, коли звіт «Закінчуються» покаже дефіцит."
+        text="Відкритих замовлень постачальникам немає. Закриті — у фільтрі «Статус: усі»."
         actions={(
           <>
             <Button variant="default" onClick={onShowAll}>Показати всі</Button>
@@ -73,7 +73,6 @@ function describe(filter: OrderListFilter, supplierName?: string): string {
   if (supplierName) parts.push(`«${supplierName}»`)
   if (filter.status !== 'open' && filter.status !== 'all') parts.push(`зі статусом «${statusFilterLabel(filter.status)}»`)
   if (filter.overdue) parts.push('серед прострочених')
-  if (filter.search.trim()) parts.push(`за запитом «${filter.search.trim()}»`)
   return `${parts.join(' ')}.`
 }
 
@@ -86,7 +85,6 @@ function ActiveFilterChips({ filter, supplierName, onChange }: {
   if (filter.supplier) chips.push({ label: supplierName ?? 'Постачальник', clear: { supplier: null } })
   if (filter.status !== 'open') chips.push({ label: statusFilterLabel(filter.status), clear: { status: 'open' } })
   if (filter.overdue) chips.push({ label: 'Прострочені', clear: { overdue: false } })
-  if (filter.search.trim()) chips.push({ label: `«${filter.search.trim()}»`, clear: { search: '' } })
   return (
     <Group gap={8} justify="center">
       {chips.map((chip) => (

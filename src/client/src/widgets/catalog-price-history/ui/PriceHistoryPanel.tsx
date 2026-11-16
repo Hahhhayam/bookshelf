@@ -3,9 +3,8 @@ import type { ReactNode } from 'react'
 import { usePriceHistory, type PricePoint } from '@/entities/book'
 import { formatDateTime, formatMoney } from '@/shared/lib'
 import { MoneyText, Panel, QueryView } from '@/shared/ui'
-import { PriceChart } from './PriceChart'
 
-/** The book's current price with the change action, and the append-only history under it (chart and table). */
+/** The book's current price with the change action, and the append-only history under it. */
 export function PriceHistoryPanel({ bookId, action }: { bookId: string; action?: ReactNode }) {
   const history = usePriceHistory(bookId)
   return (
@@ -27,7 +26,6 @@ function History({ points }: { points: PricePoint[] }) {
   return (
     <Stack gap="sm" p="md">
       <Text size="sm" c="dimmed">Зараз <MoneyText value={current.price} variant="strong" size={18} /></Text>
-      {points.length > 1 && <PriceChart points={points} />}
       <Table.ScrollContainer minWidth={320}>
         <Table striped={false} verticalSpacing={6}>
           <Table.Thead><Table.Tr><Table.Th>Діє з</Table.Th><Table.Th ta="right">Ціна</Table.Th><Table.Th ta="right">Зміна</Table.Th></Table.Tr></Table.Thead>

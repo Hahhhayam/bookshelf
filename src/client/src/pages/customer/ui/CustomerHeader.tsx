@@ -2,7 +2,6 @@ import { Anchor, Group, Stack, Text, Title } from '@mantine/core'
 import { Link } from 'react-router'
 import { tierLabel, type CustomerCard } from '@/entities/customer'
 import { tokens } from '@/shared/config/tokens'
-import { maskCard } from '@/shared/lib'
 import { Initials, StatusBadge } from '@/shared/ui'
 
 export function CustomerHeader({ customer }: { customer: CustomerCard }) {
@@ -17,7 +16,7 @@ export function CustomerHeader({ customer }: { customer: CustomerCard }) {
             <StatusBadge tone={customer.tier === 'Basic' ? 'draft' : 'attention'} label={`${tierLabel[customer.tier]} рівень`} />
           </Group>
           <Text size="sm" c="dimmed">
-            Картка лояльності <span style={{ fontFamily: tokens.font.mono }}>{maskCard(customer.card)}</span>
+            Картка лояльності <span style={{ fontFamily: tokens.font.mono }}>{customer.card}</span>
           </Text>
         </Stack>
       </Group>

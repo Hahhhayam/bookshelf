@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router'
 import { useCan, useWorkingLocation } from '@/entities/viewer'
 import { SupplierSelect } from '@/features/purchasing-manage-supplier'
 import { Perm } from '@/shared/lib'
-import { StatusBadge, PageHeader, Panel } from '@/shared/ui'
+import { PageHeader, Panel } from '@/shared/ui'
 import { DeliveryChooser, NoLocation } from './ui/DeliveryChooser'
 import { PlannedDelivery } from './ui/PlannedDelivery'
 import { ReceiptDone } from './ui/ReceiptDone'
@@ -32,11 +32,10 @@ export default function ReceivingPage() {
       <PageHeader
         eyebrow={chosen && <Anchor component="button" size="sm" onClick={restart}>← Очікувані поставки</Anchor>}
         title={unplanned ? 'Незапланована поставка' : 'Приймання поставки'}
-        after={chosen && !done && <StatusBadge tone="progress" label="Приймання триває" />}
         actions={location && <span>{location.name}</span>}
       />
       {!location ? <NoLocation />
-        : done ? <ReceiptDone receiptId={done} order={order} onNext={restart} />
+        : done ? <ReceiptDone order={order} onNext={restart} />
           : order ? <PlannedDelivery orderId={order} location={location.id} onDone={setDone} />
             : unplanned ? (
               <Stack gap={16}>

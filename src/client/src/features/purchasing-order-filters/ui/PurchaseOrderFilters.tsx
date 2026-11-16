@@ -1,11 +1,11 @@
-import { Group, Menu, TextInput } from '@mantine/core'
-import { IconCheck, IconChevronDown, IconClockHour4, IconSearch } from '@tabler/icons-react'
+import { Group, Menu } from '@mantine/core'
+import { IconCheck, IconChevronDown, IconClockHour4 } from '@tabler/icons-react'
 import { statusTone } from '@/shared/config/tokens'
 import type { Named } from '@/shared/lib'
 import { FilterChip } from '@/shared/ui'
 import { statusFilterLabel, statusFilterOptions, type OrderListFilter } from '../model/filter'
 
-/** Status, supplier, overdue and text filters above the purchase order list. */
+/** Status, supplier and overdue filters above the purchase order list. */
 export function PurchaseOrderFilters({ filter, onChange, statusCount, overdueCount, suppliers }: {
   filter: OrderListFilter
   onChange: (patch: Partial<OrderListFilter>) => void
@@ -55,17 +55,6 @@ export function PurchaseOrderFilters({ filter, onChange, statusCount, overdueCou
         <IconClockHour4 size={16} stroke={1.75} color={statusTone.attention.text} />
         Лише прострочені{overdueCount !== undefined && ` · ${overdueCount}`}
       </FilterChip>
-
-      <TextInput
-        ml="auto"
-        w={{ base: '100%', sm: 300 }}
-        type="search"
-        aria-label="Пошук замовлень"
-        placeholder="Номер або постачальник"
-        leftSection={<IconSearch size={16} stroke={1.75} />}
-        value={filter.search}
-        onChange={(event) => onChange({ search: event.currentTarget.value })}
-      />
     </Group>
   )
 }

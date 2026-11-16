@@ -31,7 +31,7 @@ export const tokens = {
     e2: '0 6px 16px rgba(30,26,22,.10)',
     e3: '0 20px 48px rgba(30,26,22,.18)',
   },
-  /** Cover boards from the shop artboards (classes c1–c8 in ShopCatalog): the API has no cover images (GAP-24). */
+  /** Cover boards from the shop artboards (classes c1–c8 in ShopCatalog); books carry no cover images. */
   cover: ['#3D2A4A', '#2F4A3E', '#7A3B2E', '#2E3F5C', '#8A6A35', '#4D463D', '#5B2C6F', '#1E1A16'],
 } as const
 

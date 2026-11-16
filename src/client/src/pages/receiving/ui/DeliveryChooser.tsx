@@ -1,6 +1,6 @@
 import { Button, Group, Stack, Table, Text, UnstyledButton } from '@mantine/core'
 import { IconPackageImport } from '@tabler/icons-react'
-import { purchaseOrderNumber, purchaseOrderStatus, usePurchaseOrders, type PurchaseOrderSummary } from '@/entities/purchase-order'
+import { purchaseOrderStatus, usePurchaseOrders, type PurchaseOrderSummary } from '@/entities/purchase-order'
 import { referenceName } from '@/entities/reference'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { formatDate } from '@/shared/lib'
@@ -37,18 +37,19 @@ export function DeliveryChooser({ onPickOrder, onUnplanned }: { onPickOrder: (id
 
 function DeliveryTable({ rows, onPick }: { rows: PurchaseOrderSummary[]; onPick: (id: string) => void }) {
   return (
-    <Table.ScrollContainer minWidth={620}>
+    <Table.ScrollContainer minWidth={520}>
       <Table highlightOnHover verticalSpacing={12} horizontalSpacing={12}>
         <Table.Thead>
-          <Table.Tr><Table.Th>Замовлення</Table.Th><Table.Th>Постачальник</Table.Th><Table.Th>Статус</Table.Th><Table.Th>Очікувана поставка</Table.Th></Table.Tr>
+          <Table.Tr><Table.Th>Постачальник</Table.Th><Table.Th>Статус</Table.Th><Table.Th>Очікувана поставка</Table.Th></Table.Tr>
         </Table.Thead>
         <Table.Tbody>
           {rows.map((row) => (
             <Table.Tr key={row.id} style={{ cursor: 'pointer' }} onClick={() => onPick(row.id)}>
               <Table.Td>
-                <UnstyledButton onClick={() => onPick(row.id)} fw={600} c={tokens.color.accent}>{purchaseOrderNumber(row.id)}</UnstyledButton>
+                <UnstyledButton onClick={() => onPick(row.id)} fw={600} c={tokens.color.accent}>
+                  {referenceName('suppliers', row.supplier)}
+                </UnstyledButton>
               </Table.Td>
-              <Table.Td>{referenceName('suppliers', row.supplier)}</Table.Td>
               <Table.Td><StatusBadge {...purchaseOrderStatus[row.status]} /></Table.Td>
               <Table.Td>
                 <Group gap={6} wrap="nowrap">

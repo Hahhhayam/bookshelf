@@ -1,5 +1,5 @@
 export { purchaseOrderApi, type PurchaseOrderLine } from './api/purchaseOrderApi'
-export { purchaseOrderKeys, useOrderTotals, usePurchaseOrder, usePurchaseOrders } from './model/queries'
+export { purchaseOrderKeys, usePurchaseOrder, usePurchaseOrders } from './model/queries'
 export {
-  purchaseOrderNumber, purchaseOrderStatus, type PurchaseOrderCard, type PurchaseOrderStatus, type PurchaseOrderSummary,
+  purchaseOrderStatus, type PurchaseOrderCard, type PurchaseOrderStatus, type PurchaseOrderSummary,
 } from './model/types'

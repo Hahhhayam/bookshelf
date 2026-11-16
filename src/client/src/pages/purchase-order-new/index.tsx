@@ -2,7 +2,6 @@ import { Anchor, SimpleGrid, Stack, Text, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { BookLookup } from '@/entities/book'
-import { referenceName } from '@/entities/reference'
 import { OrderLinesEditor, useCreateOrder, useOrderDraft, validateDraft } from '@/features/purchasing-create-order'
 import { SupplierSelect } from '@/features/purchasing-manage-supplier'
 import { PageHeader, Panel } from '@/shared/ui'
@@ -16,10 +15,10 @@ export default function PurchaseOrderNewPage() {
   const [submitted, setSubmitted] = useState(false)
   const errors = submitted ? validateDraft(order.draft) : {}
 
-  function submit(send: boolean) {
+  function submit() {
     setSubmitted(true)
     if (Object.keys(validateDraft(order.draft)).length > 0) return
-    create.mutate({ draft: order.draft, send }, { onSuccess: (id) => navigate(`/staff/purchase-orders/${id}`) })
+    create.mutate(order.draft, { onSuccess: (id) => navigate(`/staff/purchase-orders/${id}`) })
   }
 
   return (
@@ -43,12 +42,7 @@ export default function PurchaseOrderNewPage() {
           <OrderLinesEditor lines={order.draft.lines} onChange={order.updateLine} onRemove={order.removeLine} />
         </Stack>
       </Panel>
-      <SubmitBar
-        pending={create.isPending}
-        error={create.error}
-        supplierName={order.draft.supplier ? referenceName('suppliers', order.draft.supplier) : null}
-        onSubmit={submit}
-      />
+      <SubmitBar pending={create.isPending} error={create.error} onSubmit={submit} />
     </Stack>
   )
 }

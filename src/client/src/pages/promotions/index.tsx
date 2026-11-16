@@ -12,8 +12,8 @@ export default function PromotionsPage() {
     <Stack gap="lg">
       <PageHeader eyebrow="Клієнти" title="Акції" />
       <Alert variant="light" color="gray" icon={<IconInfoCircle size={18} />}>
-        Сервер поки не віддає список акцій і не дозволяє їх змінювати чи завершувати достроково — тут видно лише
-        акції, створені в цьому браузері. Каси застосовують акції автоматично.
+        Сервер поки не віддає список акцій, тож тут видно лише акції, створені в цьому браузері. Каси застосовують
+        акції автоматично.
       </Alert>
       <Grid gap="lg" align="flex-start">
         <Grid.Col span={{ base: 12, lg: 5 }}>

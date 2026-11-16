@@ -4,7 +4,6 @@ import { useWriteOff } from '../model/mutations'
 import type { StockTarget } from '../model/types'
 import { StockQuantityDialog } from './StockQuantityDialog'
 
-/** Writes off damaged or lost copies of one book; the API cannot list write-offs, so only the new id is shown (GAP-09). */
 export function WriteOffDialog({ location, target, onClose }: { location: string; target: StockTarget | null; onClose: () => void }) {
   const writeOff = useWriteOff(location)
   if (!target) return null

@@ -16,7 +16,7 @@ export function PlacedLines({ summary }: { summary: PlacedOrderSummary }) {
         </Group>
       ))}
       <Group justify="space-between" align="baseline" mt="xs" pt="sm" style={{ borderTop: `2px solid ${tokens.color.ink}` }}>
-        <Text fw={600}>Сплатити на місці</Text>
+        <Text fw={600}>Разом</Text>
         <MoneyText value={summary.total} variant="strong" size={24} />
       </Group>
     </Stack>

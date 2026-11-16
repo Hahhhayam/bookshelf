@@ -3,7 +3,7 @@ import { IconCheck } from '@tabler/icons-react'
 import type { ReactNode } from 'react'
 import { paymentLabel, type Payment } from '@/entities/sale'
 import { statusTone, tokens } from '@/shared/config/tokens'
-import { formatDateTime, fromCents, shortId } from '@/shared/lib'
+import { formatDateTime, fromCents } from '@/shared/lib'
 import { Key, MoneyText } from '@/shared/ui'
 
 export interface ClosedSale {
@@ -39,10 +39,7 @@ function PaymentSummary({ sale }: { sale: ClosedSale }) {
   )
 }
 
-/**
- * The paid receipt (TillStates artboard). Enter or the next scan opens a new receipt; the server returns no receipt
- * number, bonus accrual or printout (GAP-26, GAP-28), so the short sale id stands in for the number.
- */
+/** The paid receipt (TillStates artboard). Enter or the next scan opens a new receipt. */
 export function ClosedReceipt({ sale, onNew, scanSlot }: { sale: ClosedSale; onNew: () => void; scanSlot: ReactNode }) {
   return (
     <Group justify="center" align="center" gap={64} p={32} style={{ flex: 1 }}>
@@ -51,16 +48,15 @@ export function ClosedReceipt({ sale, onNew, scanSlot }: { sale: ClosedSale; onN
           <IconCheck size={40} stroke={2} />
         </span>
         <Stack role="status" gap={6}>
-          <Text fz={16} fw={600} c={statusTone.ready.text}>Оплачено · чек № {shortId(sale.id)}</Text>
+          <Text fz={16} fw={600} c={statusTone.ready.text}>Оплачено</Text>
           <span style={{ fontSize: 56, lineHeight: '64px', fontWeight: 700, letterSpacing: '-0.02em' }}><MoneyText value={fromCents(sale.total)} /></span>
           {sale.change > 0 && <Text fz={22} fw={600}>Видайте решту: <MoneyText value={fromCents(sale.change)} /></Text>}
         </Stack>
-        {sale.customerName && <Text fz={15} c={tokens.color.ink2}>Клієнт: {sale.customerName}. Бонуси нарахує сервер.</Text>}
+        {sale.customerName && <Text fz={15} c={tokens.color.ink2}>Клієнт: {sale.customerName}</Text>}
         <Group gap={10} mt={6}>
           <Button size="lg" onClick={onNew} rightSection={<Key inverted>Enter</Key>}>Новий чек</Button>
         </Group>
         {scanSlot}
-        <Text fz={13} c={tokens.color.ink3}>Наступний скан теж відкриває новий чек — касиру не треба нічого натискати.</Text>
       </Stack>
       <PaymentSummary sale={sale} />
     </Group>

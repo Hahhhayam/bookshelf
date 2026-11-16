@@ -4,7 +4,7 @@ import { paymentLabel, useShiftReceipts } from '@/entities/sale'
 import { uah } from '@/shared/api'
 import { tokens } from '@/shared/config/tokens'
 import { shortId } from '@/shared/lib'
-import { EmptyState, MoneyText, Panel, QueryView, StatusBadge } from '@/shared/ui'
+import { EmptyState, MoneyText, Panel, QueryView } from '@/shared/ui'
 
 const time = new Intl.DateTimeFormat('uk-UA', { hour: '2-digit', minute: '2-digit' })
 
@@ -30,7 +30,7 @@ export function ShiftReceiptsTable() {
             <Table verticalSpacing={11}>
               <Table.Thead>
                 <Table.Tr><Table.Th>Чек</Table.Th><Table.Th>Час</Table.Th><Table.Th>Книжок</Table.Th>
-                  <Table.Th style={{ textAlign: 'right' }}>Сума</Table.Th><Table.Th>Оплата</Table.Th><Table.Th>Стан</Table.Th></Table.Tr>
+                  <Table.Th style={{ textAlign: 'right' }}>Сума</Table.Th><Table.Th>Оплата</Table.Th></Table.Tr>
               </Table.Thead>
               <Table.Tbody>
                 {items.map((r) => (
@@ -39,9 +39,7 @@ export function ShiftReceiptsTable() {
                     <Table.Td>{time.format(new Date(r.at))}</Table.Td>
                     <Table.Td>{r.items}</Table.Td>
                     <Table.Td style={{ textAlign: 'right' }}><MoneyText value={r.total} variant="strong" /></Table.Td>
-                    <Table.Td>{r.methods.map((m) => paymentLabel[m]).join(', ')}</Table.Td>
-                    <Table.Td><StatusBadge tone="done" label="Проведено" /></Table.Td>
-                  </Table.Tr>
+                    <Table.Td>{r.methods.map((m) => paymentLabel[m]).join(', ')}</Table.Td>                  </Table.Tr>
                 ))}
               </Table.Tbody>
             </Table>

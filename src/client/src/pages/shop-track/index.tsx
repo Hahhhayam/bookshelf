@@ -13,7 +13,7 @@ export default function ShopTrackPage() {
       <Stack gap="sm">
         <Title order={1} ff="var(--font-display)" fz={{ base: 32, sm: 44 }}>Де моє замовлення?</Title>
         <TrackForm initial={code ?? ''} onSubmit={(next) => navigate(`/track/${encodeURIComponent(next)}`)} />
-        <Text size="md" c={tokens.color.ink2}>Код є на сторінці підтвердження. Особисті дані тут не показуємо.</Text>
+        <Text size="md" c={tokens.color.ink2}>Код є на сторінці підтвердження.</Text>
       </Stack>
       {code && <TrackResult code={code} />}
     </Stack>

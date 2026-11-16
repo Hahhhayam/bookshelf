@@ -41,11 +41,9 @@ export function ReceivingWorkspace({ initialLines, planned, location, order, sup
       <Stack gap={16} style={{ flex: '1 1 300px', maxWidth: 380 }}>
         <ReceivingSummaryPanel summary={summary} planned={planned} />
         <Button size="lg" disabled={blocked || receive.isSuccess} onClick={() => setConfirming(true)}>Завершити приймання</Button>
-        <Text fz={13} c={tokens.color.ink2} lh="19px">
-          {!planned && !supplier
-            ? 'Оберіть постачальника незапланованої поставки.'
-            : 'Перед завершенням система покаже розбіжності: нескановане буде записано як недостачу.'}
-        </Text>
+        {!planned && !supplier && (
+          <Text fz={13} c={tokens.color.ink2} lh="19px">Оберіть постачальника незапланованої поставки.</Text>
+        )}
       </Stack>
       <ConfirmReceiptDialog
         opened={confirming}
@@ -65,8 +63,8 @@ function SurplusNote({ line }: { line: ReceivingLine }) {
   const diff = difference(line) ?? 0
   if (diff <= 0) return null
   const text = line.ordered === 0
-    ? `${line.title ?? 'Книги'} немає в замовленні: прийнято ${line.now}. Вона буде в акті як надлишок.`
-    : `${line.title ? `«${line.title}»` : 'Позиція'}: прийнято ${line.now} при очікуваних ${remaining(line)}. Надлишок буде в акті — можна залишити або повернути.`
+    ? `${line.title ?? 'Книги'} немає в замовленні: прийнято ${line.now}. Її буде зафіксовано як надлишок.`
+    : `${line.title ? `«${line.title}»` : 'Позиція'}: прийнято ${line.now} при очікуваних ${remaining(line)}. Надлишок буде зафіксовано як розбіжність.`
   return (
     <Alert role="status" color="yellow" variant="light" icon={<IconAlertTriangle size={18} />} p="xs">{text}</Alert>
   )

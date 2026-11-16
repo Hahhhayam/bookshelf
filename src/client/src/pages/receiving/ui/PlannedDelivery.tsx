@@ -1,6 +1,6 @@
 import { Alert, Anchor, Stack, Text } from '@mantine/core'
 import { Link } from 'react-router'
-import { purchaseOrderNumber, purchaseOrderStatus, usePurchaseOrder, type PurchaseOrderCard } from '@/entities/purchase-order'
+import { purchaseOrderStatus, usePurchaseOrder, type PurchaseOrderCard } from '@/entities/purchase-order'
 import { referenceName } from '@/entities/reference'
 import type { ReceivingLine } from '@/features/purchasing-receive-delivery'
 import { formatDate } from '@/shared/lib'
@@ -18,8 +18,8 @@ export function PlannedDelivery({ orderId, location, onDone }: { orderId: string
       {(order) => (
         <Stack gap={16}>
           <Text size="sm" c="dimmed">
-            За замовленням{' '}
-            <Anchor component={Link} to={`/staff/purchase-orders/${order.id}`} size="sm">{purchaseOrderNumber(order.id)}</Anchor>
+            За{' '}
+            <Anchor component={Link} to={`/staff/purchase-orders/${order.id}`} size="sm">замовленням</Anchor>
             {' · '}{referenceName('suppliers', order.supplier)} · очікувалась {formatDate(order.expectedDate)}
           </Text>
           {order.status === 'Sent' || order.status === 'PartlyReceived'

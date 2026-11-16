@@ -3,7 +3,6 @@ import type { BookCard } from '@/entities/book'
 import { referenceName } from '@/entities/reference'
 import { tokens } from '@/shared/config/tokens'
 
-/** «Про книгу»: what the card carries; description, year and pages are not in the API (GAP-24). */
 export function BookDetails({ book }: { book: BookCard }) {
   const rows: [string, string, boolean?][] = [
     ['Видавництво', referenceName('publishers', book.publisher)],

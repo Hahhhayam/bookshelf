@@ -1,7 +1,6 @@
-import { Chip, Group, SegmentedControl, Select, Text, TextInput } from '@mantine/core'
+import { Chip, Group, SegmentedControl, Select, TextInput } from '@mantine/core'
 import { IconClock, IconSearch } from '@tabler/icons-react'
-import { orderStatus, waitingNormText, type OrderStatus } from '@/entities/order'
-import { tokens } from '@/shared/config/tokens'
+import { orderStatus, type OrderStatus } from '@/entities/order'
 
 export type BoardView = 'board' | 'list'
 
@@ -43,7 +42,6 @@ export function BoardToolbar({ filters, lateCount, onChange }: {
       <Chip checked={filters.lateOnly} onChange={(lateOnly) => onChange({ ...filters, lateOnly })} color="yellow" variant="outline">
         <Group gap={6} wrap="nowrap"><IconClock size={14} stroke={1.75} />Чекають задовго · {lateCount}</Group>
       </Chip>
-      <Text size="sm" c={tokens.color.ink2} ml="auto">{waitingNormText}</Text>
     </Group>
   )
 }

@@ -73,14 +73,14 @@ export const permissionGroups: PermissionGroup[] = [
     title: 'Звіти',
     items: [
       { code: Perm.ReportsView, label: 'Перегляд звітів' },
-      { code: Perm.ReportsChainWide, label: 'Звіти по всій мережі', warning: 'Видно дані всіх магазинів' },
+      { code: Perm.ReportsChainWide, label: 'Звіти по всій мережі' },
       { code: Perm.IntegrationsReport, label: 'Звіт інтеграцій' },
     ],
   },
   {
     title: 'Адміністрування',
     items: [
-      { code: Perm.UsersManage, label: 'Користувачі й ролі', warning: 'Дає змогу змінювати права, зокрема власні' },
+      { code: Perm.UsersManage, label: 'Користувачі й ролі' },
       { code: Perm.LocationsManage, label: 'Локації' },
       { code: Perm.IntegrationsManage, label: 'Інтеграції' },
       { code: Perm.AuditView, label: 'Журнал аудиту' },

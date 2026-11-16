@@ -1,4 +1,4 @@
-import { Group, Progress, Stack, Text } from '@mantine/core'
+import { Group, Stack, Text } from '@mantine/core'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { plural } from '@/shared/lib'
 import type { ReceivingSummary, Tally } from '../model/receivingLines'
@@ -26,8 +26,6 @@ export function ReceivingSummaryPanel({ summary, planned }: { summary: Receiving
           <Row label="Недостача" value={tallyText(summary.shortage, summary.shortage.units ? '−' : '')} color={statusTone.problem.text} strong />
           <Row label="Надлишок" value={tallyText(summary.surplus, summary.surplus.units ? '+' : '')} color={statusTone.progress.text} strong />
           <Row label="Ще не скановано" value={tallyText(summary.notCounted)} color={statusTone.attention.text} strong />
-          <Progress value={summary.progress} color={tokens.color.accent} radius={0} size={6} mt={10} aria-hidden="true" />
-          <Text fz={12} c={tokens.color.ink2} mt={4}>{summary.progress}% поставки перевірено</Text>
         </div>
       )}
     </Stack>

@@ -31,9 +31,6 @@ export function CheckoutSummary({ lines, form, problem, pending }: {
       </Group>
       {problem && <Alert color="red" icon={<IconAlertCircle size={18} />} mt="sm">{problem}</Alert>}
       <Button type="submit" size="lg" h={54} mt="md" fullWidth loading={pending}>Підтвердити замовлення</Button>
-      <Text size="sm" c={tokens.color.ink2} mt="xs">
-        Скасувати замовлення можна до видачі — зверніться в магазин і назвіть код отримання.
-      </Text>
     </Stack>
   )
 }
@@ -41,11 +38,8 @@ export function CheckoutSummary({ lines, form, problem, pending }: {
 function FulfilmentRow({ form }: { form: CheckoutForm }) {
   const pickup = form.kind === 'Pickup'
   return (
-    <Group justify="space-between" wrap="nowrap" py={5} mt={6} pt={10} gap="sm" style={{ borderTop: `1px solid ${tokens.color.sunk}` }}>
-      <Text fz={15} c={tokens.color.ink2}>
-        {pickup ? `Самовивіз · ${form.pickupStore ? referenceName('locations', form.pickupStore) : 'магазин не обрано'}` : 'Доставка'}
-      </Text>
-      {pickup ? <MoneyText value={uah(0)} /> : <Text fz={15}>за тарифом</Text>}
-    </Group>
+    <Text fz={15} c={tokens.color.ink2} pb={5} mt={6} pt={10} style={{ borderTop: `1px solid ${tokens.color.sunk}` }}>
+      {pickup ? `Самовивіз · ${form.pickupStore ? referenceName('locations', form.pickupStore) : 'магазин не обрано'}` : 'Доставка'}
+    </Text>
   )
 }

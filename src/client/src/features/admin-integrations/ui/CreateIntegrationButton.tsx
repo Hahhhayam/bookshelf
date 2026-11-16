@@ -48,7 +48,6 @@ export function CreateIntegrationButton() {
         <Select
           label="Тип" data={kindOptions} value={kind} allowDeselect={false}
           onChange={(value) => value && setKind(value as IntegrationKind)}
-          description="Можна мати кілька підключень одного типу, наприклад два платіжні сервіси"
         />
         <TextInput
           label="Назва" required data-autofocus value={name} placeholder="Напр., LiqPay — каси магазинів"

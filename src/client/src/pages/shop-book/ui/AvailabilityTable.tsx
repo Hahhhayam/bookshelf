@@ -36,7 +36,7 @@ function AvailabilityRow({ row, mine }: { row: Availability; mine: boolean }) {
       </Table.Td>
       <Table.Td ta="right">
         {row.available > 0
-          ? <StatusNote tone="ready" size={14}>{row.available} шт. · сьогодні</StatusNote>
+          ? <StatusNote tone="ready" size={14}>{row.available} шт.</StatusNote>
           : <StatusNote tone="draft" size={14}>Немає</StatusNote>}
       </Table.Td>
     </Table.Tr>

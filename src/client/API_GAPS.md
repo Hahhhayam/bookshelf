@@ -1,9 +1,10 @@
 # API gaps
 
-What the client needs from the API and works around. Every workaround in the code is a `stub('GAP-NN', …)` call
+What the client needs from the API to do what the project report (`Звіт_Книжковий магаз.md`) asks, and how it works around
+the lack. Every workaround in the code is a `stub('GAP-NN', …)` call
 or a comment naming the gap, so `GAP-NN` finds all of them. Remove a stub when the server closes its gap.
 
-- **Missing** — data or an endpoint the screens need that does not exist; the client stubs it or leaves the part out.
+- **Missing** — data or an endpoint the report requires that does not exist; the client stubs it or leaves the part out.
 - **Redundant** — something the API or the client has that no screen needs.
 - **Broken** — something that exists but cannot work as the screens need; the client stubs around it.
 
@@ -12,53 +13,36 @@ or a comment naming the gap, so `GAP-NN` finds all of them. Remove a stub when t
 | Id | Missing | Used by | Client workaround |
 |---|---|---|---|
 | GAP-01 | Read, change and remove cart lines (`GET/PUT/DELETE /customers/{id}/cart`); only "add" exists | shop cart, checkout | The cart lives in the browser (`entities/cart`) and is sent line by line right before `POST /orders` |
-| GAP-02 | Customer sign-in for the shop | shop checkout, tracking | The shop acts for a customer id from `VITE_SHOP_CUSTOMER_ID` or entered once at checkout (`entities/shopper`) |
 | GAP-03 | Lists of authors, publishers, categories, suppliers and all locations | catalog pickers, book form, references, suppliers, transfer destination, names in every list | The browser remembers what it created or saw (`shared/lib/remembered`, `entities/reference`); unseen ids show as `#xxxxxxxx` |
 | GAP-04 | User names for user ids (history "by", "last changed by") | every document card and list | Shows the login for users remembered here, else a short id |
 | GAP-05 | Pricing a receipt before payment (`POST /sales/quote`: promotions, discounts, total) | till | The till quotes catalog prices without promotions and marks the total as approximate; see B-01 |
 | GAP-06 | Finding a book by shop barcode (`barcode` filter on `GET /books`) | till, receiving, counts | An ISBN-looking code goes to the `isbn` filter, anything else to text search |
 | GAP-07 | Sales of a shift / day, and reading one sale (`GET /sales`, `GET /sales/{id}`) | cashier home "my receipts", returns | Receipts completed in this tab are remembered in session storage |
 | GAP-08 | Reading inventory counts (`GET /inventory-counts`, `GET /inventory-counts/{id}` with expected quantities) | counts, count sheet | Counts started here are remembered; the sheet's expected quantities come from current stock |
-| GAP-09 | Lists of write-offs and reservations | stock | Not shown; a write-off or reservation is confirmed by its id only |
 | GAP-10 | Lists of users, roles and integrations | administration | Remembered when created here |
-| GAP-11 | Customer search by name or phone | customers, till | Only by card number or id |
 | GAP-12 | Lists of promotions and segments | promotions, segments, customer card | Remembered when created here |
 | GAP-13 | Titles with book ids in lists (orders, transfers, purchase orders, reports), or a batch lookup | every list with books | One cached `GET /books/{id}` per book |
 | GAP-14 | A public list of stores for pickup | shop checkout, book page | Stores are the locations that appear in a book's availability; names are not public, so they show as "Магазин #xxxx" unless remembered |
-| GAP-15 | Order list with totals and item counts | order board | Cards show what the list returns; the total is on the order card |
 | GAP-16 | Pending returns to confirm (`GET /returns?status=Pending`) | returns | Returns created in this browser are remembered |
 | GAP-17 | Gift certificate balance check | till split payment | The balance is unknown until the server accepts or refuses the payment |
-| GAP-18 | Failed-attempt count and lockout for login | login | The design's "2 attempts left" line is not shown |
-| GAP-19 | Offline cash sales with a send queue | cashier shell, till | Offline banner only; a sale is retried by hand with the same operation key |
 | GAP-20 | Reading goods receipts (deliveries) | receiving | Only the created delivery's id is shown |
-| GAP-21 | Customer cancellation of their own order (by pickup code). `POST /orders/{id}/status` needs `OrdersManage` | shop confirmation («Скасувати замовлення»), checkout note | No cancel link; the checkout and confirmation tell the customer to cancel in the store with the pickup code |
-| GAP-22 | Payment method choice for an online order (pay in store / card online) on `POST /orders` | shop checkout, section «Оплата» | Only «У магазині при отриманні» is shown, as text, no choice |
-| GAP-23 | Delivery cost (a quote for a delivery order, or the cost in the order total) | shop checkout summary | Delivery line shows «за тарифом»; the total excludes delivery |
-| GAP-24 | Shop showcase data on books: effective price after promotions (old price, promotion name and end date), author names, description, year, pages, language, cover image; facets for search (categories, publishers, price range), sort and paging on `GET /books` | catalog cards and filters, book page, cart | Catalog prices only, no strike-through price or promo badge; typographic covers coloured by book id; author/publisher/category names via remembered references (GAP-03); only the «available in my store» filter (`availableAt`); no sort or pages |
+| GAP-24 | Search facets on `GET /books`: categories and publishers to filter by (FR-03, table 2.1 «Пошук») | shop catalog | Free text and the «available in my store» filter only |
 | GAP-25 | `POST /orders` returns only `id` and `pickupCode`; no anonymous read of the placed order (lines, total, store). `GET /orders/{id}` needs `OrdersManage`, `GET /orders/track/{code}` has no lines or total | shop confirmation, tracking («3 книжки», store, total) | The checkout hands its own summary (cart lines, client-summed total, chosen store) to the confirmation page in navigation state; a reload shows a link to tracking instead. Tracking shows status and history only |
-| GAP-26 | A receipt number and fiscal number for a sale, and printing / e-mailing a receipt (`POST /sales` returns only `id`) | till closed receipt, cashier home "my receipts" | The short sale id (`shortId`) stands in for «Чек №»; the full id is shown under the payment summary; «Друкувати ще раз» and «Надіслати на e-mail» from the artboard are not shown |
-| GAP-27 | Cashier shifts and registers (open/close a shift, its start time, register number «Каса 2») | till header, cashier home greeting | The header shows «Каса», store and login; the home page shows the date without «зміна з 09:00»; "my receipts" are the receipts of this browser tab (GAP-07) |
-| GAP-28 | The completed sale's outcome: the total after promotions, promotions per line, bonuses accrued and the new balance | till closed receipt, line table «Акція» column, totals «Знижки за акціями» / «Буде нараховано бонусів» | The closed receipt shows the total the cashier paid and «Бонуси нарахує сервер»; the «Акція» column and the discount/bonus rows of the totals are left out until GAP-05 / GAP-28 exist |
+| GAP-27 | Opening and closing a cashier shift, and refusing a sale without an open shift (3.5 «Каса відкрита», table 1.1 store admin «Контролює зміни») | till header, cashier home | No shift: the till sells whenever the cashier is signed in |
 | GAP-31 | Resolving transfer discrepancies with a reason (`POST /transfers/{id}/discrepancies/{d}/resolve`); the Document artboard has a reason per line and "Підтвердити розбіжності" | transfer card | Discrepancies are shown read-only (expected, actual, difference, open/closed); no resolve action, no stub, since faking success would hide a stock difference |
-| GAP-32 | Line and unit counts and the expected arrival date in the transfer list (artboard columns "Позиції", "Очікується") | transfers | Columns not shown; counts are on the card |
-| GAP-33 | Customer name and fulfilment kind (pickup / delivery, carrier) in the order list; the Kanban card shows both | order board | Cards show the customer's short id and the order type (Роздріб / B2B); fulfilment is on the order card |
-| GAP-34 | Staff search of orders by phone or pickup code (artboard search "Номер, клієнт або телефон") | order board | Loaded cards are filtered locally by short order id or customer id |
-| GAP-35 | Created at/by and the carrier waybill on the transfer card (artboard facts "Створено", "Накладна перевізника") | transfer card | "Відправлено" and "Отримано" are taken from the history; creation and waybill are not shown |
-| GAP-36 | A human-readable purchase order number (the artboard shows `ЗП-2026-0318`) | purchase order list, card, receiving | `ЗП-` + the first block of the GUID (`purchaseOrderNumber`). Search by number matches that form only. |
-| GAP-37 | Total, line count and creation date in `GET /purchase-orders` | purchase order list ("Сума" column, "Останні 30 днів" filter, search by ISBN) | The total comes from one `GET /purchase-orders/{id}` per row (`useOrderTotals`, shares the card cache). The period filter and ISBN search are not offered: search covers number and supplier only. |
+| GAP-34 | Finding an order by its pickup code to issue it (table 2.7 «Самовивіз… видача за номером або кодом») | order board | Loaded cards are filtered locally by short order id or customer id |
 | GAP-38 | "All statuses" on `GET /purchase-orders`: without `status` it returns open orders only | list filter "Статус: усі" (and the empty state's "Показати всі") | Three calls joined: open + `Received` + `Cancelled` (`stub('GAP-38', …)` in `features/purchasing-order-filters`) |
 | GAP-39 | Cancelling a purchase order (`POST /purchase-orders/{id}/cancel`). The domain has `PurchaseOrder.Cancel`, but there is no endpoint | purchase order card actions | Not shown. A draft that is not needed stays a draft. |
-| GAP-40 | Supplier confirmation and rejection of an order. The artboard has the statuses "Підтверджено" and "Відхилено частково" and the flag "Постачальник відхилив 4 позиції"; the API knows only Draft / Sent / PartlyReceived / Received / Cancelled | list "problem" rows, card | A row counts as a problem when its status tone in `purchaseOrderStatus` is `problem` (today only `Cancelled`, seen under "усі" or "скасовано"). There is no rejection flag text. |
 | GAP-41 | Finding deactivated books (`status` / `includeInactive` filter on `GET /books`) and reactivating one (`PUT /books/{id}/active`) | catalog list, book form | The list shows active books only; a deactivated book opens only by its link and cannot be put back on sale (see B-41) |
-| GAP-42 | Editing a customer's contact data (`PUT /customers/{id}`) and manual bonus accrual | customer card (artboard buttons «Редагувати», «Нарахувати бонуси вручну») | Buttons not shown; contacts are read-only after registration |
-| GAP-43 | Changing or ending a promotion early (`PUT /promotions/{id}`, `POST /promotions/{id}/end`) | promotions | Create only; the list says promotions cannot be changed |
-| GAP-44 | An audit entry when someone opens a customer card (the artboard says "viewing is recorded in the audit log"; `GetCustomerCardUseCase` records nothing) | customer card | The personal-data banner does not claim auditing; contacts are masked until «Показати» |
-| GAP-45 | Fields the artboards show but the API does not have: book purchase price / margin, year, pages, annotation, cover; customer registration date, favourite store, birthday, mailing consent; book titles and receipt numbers in the purchase history | book form, customer card | Not shown; purchases show the sale's short id, the location name if remembered (GAP-03), and the total |
-| GAP-46 | A role's description and the number of users who hold it (FormDialogs artboard: «Опис», «Роль мають 6 працівників») | roles | Not shown; the editor has the name and the permission checklist only |
+| GAP-42 | Editing a customer's contact data (`PUT /customers/{id}`; table 2.1 «Картка клієнта», scope «ведення клієнтської бази») | customer card | Contacts are read-only after registration |
 | GAP-47 | Integration connection state (last exchange, last error); UI_Design 6.9 lists "status" | integrations | The status column shows enabled / disabled only, and the note says the server does not report the connection state |
-| GAP-48 | Audit log: filter by user and by object type, the location of a change («Де»), server paging, CSV export, field-level before/after (they are free text) | audit | Filters by subject, action and period only; the whole answer is sorted and paged on the client (50 at a time); before/after are shown as text, collapsed to one line and expanded per row; no export button |
-| GAP-49 | Management report: margin per book and authors in "top books", comparison with the previous period (the artboard's ▲/▼ figures), location / on hand / last sale for slow-moving books (only ids come back), days of stock per shortage (the API gives the minimum instead) | reports | Top books show title, sold and revenue; tiles show no trend; slow-moving books are titles only; shortages show on hand and minimum |
+| GAP-48 | Field-level before/after in the audit log (FR-17 «значення ключових полів до і після»); today they are free text | audit, history tabs | Before/after are shown as text, collapsed to one line and expanded per row |
+| GAP-49 | Comparison with the previous period in the management report (table 1.1, Керівник мережі «порівняння періодів») | reports | Tiles show no trend |
 | GAP-50 | Address and active state of the user's own locations (`/auth/me` returns id, name and type only) | locations, users | Such a location shows the address as «невідома» and is assumed active until it is edited or (de)activated here |
+| GAP-51 | An effective moment for a price change on `POST /books/{id}/price` (3.3 «нова ціна стає активною з указаного моменту») | price dialog | The new price applies at once |
+| GAP-52 | The buyer's bonus balance, tier and history in the shop (table 1.1 Покупець «отримує інформацію про … бонуси», FR-14); `GET /customers/{id}` is staff-only | shop | Not shown |
+| GAP-53 | Personal offers: a promotion aimed at a segment or a customer (table 2.1 CRM, table 2.7 «персональні пропозиції»); `PromotionCondition` knows only book, category and quantity | promotions | Promotions apply to everybody |
+| GAP-54 | Need forming: what to order, from stock below minimum and missing-book requests (table 2.1 «Формування потреби», table 1.1 «Прогноз потреби») | purchasing | Not shown; the purchasing manager picks lines by hand |
 
 ## Redundant
 
@@ -68,10 +52,8 @@ or a comment naming the gap, so `GAP-NN` finds all of them. Remove a stub when t
 | R-02 | `shippedBy` / `receivedBy` on the transfer card | The same users are in the transfer's history. |
 | R-03 | `POST /sales/{id}/payments/{payment}/confirm` | The stub payment gateway always captures, so no payment is ever pending. |
 | R-36 | `supplier` in `POST /deliveries` when `purchaseOrder` is given | The server takes the supplier from the order. The client sends `null` in that case. |
-| R-41 | «Діє з» (effective date) and «Причина» (reason) in the FormDialogs price dialog | FR-02: a price change applies at once, scheduled prices are not supported, and `POST /books/{id}/price` takes no reason. The dialog shows old/new price and the difference only. |
 | R-42 | A separate barcode lookup for the catalog (GAP-06) | `GET /books?text=` already matches an exact barcode as well as the title (`CatalogSearch`), so the admin list's single "назва або штрихкод" field covers it; GAP-06 is effectively closed for exact codes and `bookApi.findByCode` could drop its ISBN branch for barcodes. |
 | R-46 | Permission `integrations.report` | No endpoint requires it. The role editor still lists it («Звіт інтеграцій» under «Звіти») so a role can carry every server code. |
-| R-47 | `stores[].margin`, `stores[].receipts`, `stores[].averageCheck` in `GET /reports/management` | The dashboard charts revenue per store only (Reports artboard); the extra figures reach the user through the CSV. |
 
 ## Broken
 
@@ -88,6 +70,7 @@ or a comment naming the gap, so `GAP-NN` finds all of them. Remove a stub when t
 | B-37 | A purchase order has no history entry for its creation; history starts at Draft → Sent | A fresh draft shows "Остання зміна: —" in the list and no history on the card | The card header says "Чернетка ще не відправлялась" instead of a last change |
 | B-41 | `GET /books` filters to `SaleStatus.Active` for every caller, staff included | After «Видалити / деактивувати» returns `Deactivate`, the book vanishes from the staff catalog; the add form's "ISBN already exists" hint cannot see a deactivated duplicate (the server still refuses it with 422 on save) | The list footnote says deactivated books are not shown; the book page stays open after deactivation with a «Деактивована» badge and an explanation |
 | B-46 | `GET /audit` applies a period only when both `from` and `to` are given, and silently ignores a half one | A filter "from 01.11" returns the whole history | The audit page sends a period only when both dates are valid, marks the inputs «Період не застосовано» otherwise, and asks for at least one filter before querying |
+| B-51 | `POST /returns` takes no `Idempotency-Key` (constraint «Інтернет у магазинах»: cash operations must not repeat on resend) | A retry after a lost answer creates a second return | The confirm button is disabled while the request is pending |
 
 ## Notes
 
@@ -99,3 +82,27 @@ or a comment naming the gap, so `GAP-NN` finds all of them. Remove a stub when t
 - Voiding a receipt (Ctrl+Del) after an unanswered attempt starts a new key; if that attempt did reach the server,
   the sale stays posted. An offline queue (GAP-19) would close this.
 - The stock check on scan uses the search result's availability (may lag 30 s); the server checks again.
+
+## Dropped
+
+The mock-up artboards showed features the report does not ask for; the client no longer shows them, so their gaps are
+closed: GAP-02 customer sign-in, GAP-09 write-off and reservation lists, GAP-11 customer search by name or phone,
+GAP-15/32/33 extra list columns, GAP-18 login lockout, GAP-19 offline sale queue, GAP-21 customer cancellation,
+GAP-22 online payment choice, GAP-23 delivery cost, GAP-26 receipt and fiscal numbers, GAP-28 sale outcome,
+GAP-35 transfer waybill, GAP-36 purchase order numbers, GAP-37 purchase order totals in the list, GAP-40 supplier
+confirmation, GAP-43 changing promotions, GAP-44 audit on viewing a customer, GAP-45 extra book and customer fields,
+GAP-46 role descriptions. R-41 was wrong (3.3 asks for an effective moment, now GAP-51); R-47 was wrong (3.12 asks for
+average check and margin, «ефективність магазинів»).
+
+## Client work the report requires (the API already allows it)
+
+Not API gaps: the endpoints exist, the screens do not use them yet.
+
+- Till: a permitted manual discount (FR-04; `manualDiscount` on `POST /sales`), cancelling a posted sale with the
+  rights check (table 2.1; `POST /sales/{id}/cancel`), selling a gift certificate (table 2.7; `POST /gift-certificates`),
+  and the bonus write-off the customer is allowed (3.5 step 3).
+- Purchasing: recording a missing-book request (table 2.7; `POST /missing-book-requests`).
+- Catalog: an «Історія» tab on the book card (3.10, FR-17; `GET /audit` by subject), and publisher / store
+  availability filters in the staff catalog (FR-03; `GET /books` takes `publisher` and `availableAt`).
+- Order board: who made the last change on the board tiles, as the list view already shows (3.11 step 2).
+- Reports: choosing which figures to show and drilling down from a figure to its details (3.12 steps 2 and 4).

@@ -7,10 +7,9 @@ export interface OrderListFilter {
   status: StatusFilter
   overdue: boolean
   supplier: string | null
-  search: string
 }
 
-export const defaultOrderFilter: OrderListFilter = { status: 'open', overdue: false, supplier: null, search: '' }
+export const defaultOrderFilter: OrderListFilter = { status: 'open', overdue: false, supplier: null }
 
 export const statusFilterOptions: { value: StatusFilter; label: string }[] = [
   { value: 'open', label: 'відкриті' },
@@ -25,19 +24,12 @@ export function statusFilterLabel(status: StatusFilter): string {
 }
 
 export function isDefaultFilter(filter: OrderListFilter): boolean {
-  return filter.status === 'open' && !filter.overdue && !filter.supplier && !filter.search.trim()
+  return filter.status === 'open' && !filter.overdue && !filter.supplier
 }
 
-/**
- * The supplier and text filters run here, on what the server returned: the API filters only by status and overdue.
- * `haystack` is what the text search looks in (number, supplier name).
- */
-export function applyClientFilter(
-  rows: readonly PurchaseOrderSummary[], filter: OrderListFilter, haystack: (row: PurchaseOrderSummary) => string,
-): PurchaseOrderSummary[] {
-  const needle = filter.search.trim().toLowerCase()
+/** The supplier filter runs here, on what the server returned: the API filters only by status and overdue. */
+export function applyClientFilter(rows: readonly PurchaseOrderSummary[], filter: OrderListFilter): PurchaseOrderSummary[] {
   return rows
     .filter((row) => !filter.supplier || row.supplier === filter.supplier)
-    .filter((row) => !needle || haystack(row).toLowerCase().includes(needle))
     .toSorted((a, b) => (b.lastChangedAt ?? '').localeCompare(a.lastChangedAt ?? ''))
 }

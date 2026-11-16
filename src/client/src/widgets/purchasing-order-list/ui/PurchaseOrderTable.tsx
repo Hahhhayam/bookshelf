@@ -1,11 +1,11 @@
 import { Anchor, Stack, Table, Text } from '@mantine/core'
 import { IconAlertTriangle, IconClockHour4 } from '@tabler/icons-react'
 import { Link } from 'react-router'
-import { purchaseOrderNumber, purchaseOrderStatus, useOrderTotals, type PurchaseOrderSummary } from '@/entities/purchase-order'
+import { purchaseOrderStatus, type PurchaseOrderSummary } from '@/entities/purchase-order'
 import { referenceName } from '@/entities/reference'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { formatDate, overdueText } from '@/shared/lib'
-import { MoneyText, StatusBadge } from '@/shared/ui'
+import { StatusBadge } from '@/shared/ui'
 import { LastChange } from './LastChange'
 
 type RowKind = 'overdue' | 'problem' | 'normal'
@@ -23,24 +23,21 @@ const rowBackground: Record<RowKind, string | undefined> = {
 
 /** The purchase order list: overdue rows amber, problem rows red, newest change first. */
 export function PurchaseOrderTable({ rows, footer }: { rows: readonly PurchaseOrderSummary[]; footer?: string }) {
-  const total = useOrderTotals(rows.map((row) => row.id))
   return (
     <div style={{ background: tokens.color.surface, border: `1px solid ${tokens.color.line}` }}>
-      <Table.ScrollContainer minWidth={880}>
+      <Table.ScrollContainer minWidth={720}>
         <Table verticalSpacing={12} horizontalSpacing={12}>
           <Table.Thead>
             <Table.Tr>
               <Table.Th w={28} />
-              <Table.Th>Номер</Table.Th>
               <Table.Th>Постачальник</Table.Th>
-              <Table.Th ta="right">Сума</Table.Th>
               <Table.Th>Статус</Table.Th>
               <Table.Th>Очікувана поставка</Table.Th>
               <Table.Th>Остання зміна</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {rows.map((row) => <OrderRow key={row.id} row={row} total={total(row.id)} />)}
+            {rows.map((row) => <OrderRow key={row.id} row={row} />)}
           </Table.Tbody>
         </Table>
       </Table.ScrollContainer>
@@ -51,7 +48,7 @@ export function PurchaseOrderTable({ rows, footer }: { rows: readonly PurchaseOr
   )
 }
 
-function OrderRow({ row, total }: { row: PurchaseOrderSummary; total: ReturnType<ReturnType<typeof useOrderTotals>> }) {
+function OrderRow({ row }: { row: PurchaseOrderSummary }) {
   const kind = rowKind(row)
   const status = purchaseOrderStatus[row.status]
   return (
@@ -60,13 +57,11 @@ function OrderRow({ row, total }: { row: PurchaseOrderSummary; total: ReturnType
       <Table.Td>
         <Stack gap={3}>
           <Anchor component={Link} to={`/staff/purchase-orders/${row.id}`} fw={600} underline="never">
-            {purchaseOrderNumber(row.id)}
+            {referenceName('suppliers', row.supplier)}
           </Anchor>
           {kind === 'overdue' && <Text fz={12} fw={600} c={statusTone.attention.text}>{overdueText(row.expectedDate)}</Text>}
         </Stack>
       </Table.Td>
-      <Table.Td>{referenceName('suppliers', row.supplier)}</Table.Td>
-      <Table.Td ta="right" fw={600}>{total ? <MoneyText value={total} /> : <Text span c="dimmed">…</Text>}</Table.Td>
       <Table.Td><StatusBadge tone={status.tone} label={status.label} /></Table.Td>
       <Table.Td style={{ whiteSpace: 'nowrap', color: row.isOverdue ? statusTone.attention.text : undefined, fontWeight: row.isOverdue ? 600 : undefined }}>
         {formatDate(row.expectedDate)}

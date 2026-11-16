@@ -25,10 +25,7 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
     <form onSubmit={submit} aria-label="Вхід">
       <Stack gap="lg">
         <Brand size={32} />
-        <Stack gap={4}>
-          <Text fw={700} fz={20}>Увійдіть, щоб почати зміну</Text>
-          <Text size="md" c="dimmed">Логін і пароль видає адміністратор магазину</Text>
-        </Stack>
+        <Text fw={700} fz={20}>Увійдіть, щоб почати зміну</Text>
         {login.isError && !blocked && (
           <Alert color="red" icon={<IconAlertCircle size={18} />} title="Невірний логін або пароль">
             Перевірте розкладку клавіатури та Caps Lock.
@@ -44,7 +41,6 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         <PasswordInput ref={passwordRef} label="Пароль" autoComplete="current-password" required value={password}
           onChange={(e) => setPassword(e.currentTarget.value)} error={login.isError && !blocked} disabled={blocked} />
         <Button type="submit" size="lg" loading={login.isPending} disabled={blocked}>Увійти</Button>
-        <Text size="sm" c="dimmed">Забули пароль? Зверніться до адміністратора свого магазину.</Text>
       </Stack>
     </form>
   )

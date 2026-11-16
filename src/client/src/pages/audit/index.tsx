@@ -25,7 +25,7 @@ export default function AuditPage() {
 
   return (
     <Stack gap="lg">
-      <PageHeader eyebrow="хто, що й коли змінив · записи не редагуються" title="Журнал аудиту" />
+      <PageHeader eyebrow="Адміністрування" title="Журнал аудиту" />
       <AuditFilters state={state} />
       {!state.enabled
         ? <Panel><EmptyState icon={<IconHistory size={32} stroke={1.5} />} title="Задайте фільтр" text="Вкажіть об’єкт, дію або період, щоб побачити записи." /></Panel>

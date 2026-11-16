@@ -8,7 +8,6 @@ export function useOrderListFilter() {
     status: (params.get('status') as StatusFilter | null) ?? defaultOrderFilter.status,
     overdue: params.get('overdue') === '1',
     supplier: params.get('supplier'),
-    search: params.get('q') ?? '',
   }
 
   function change(patch: Partial<OrderListFilter>) {
@@ -17,7 +16,6 @@ export function useOrderListFilter() {
     if (next.status !== defaultOrderFilter.status) search.set('status', next.status)
     if (next.overdue) search.set('overdue', '1')
     if (next.supplier) search.set('supplier', next.supplier)
-    if (next.search) search.set('q', next.search)
     setParams(search, { replace: true })
   }
 

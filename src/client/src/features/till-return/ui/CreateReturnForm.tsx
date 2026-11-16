@@ -2,7 +2,6 @@ import { Alert, Button, NumberInput, SegmentedControl, Stack, Text, TextInput } 
 import { useState } from 'react'
 import type { BookHit } from '@/entities/book'
 import { conditionLabel, type ItemCondition } from '@/entities/sale'
-import { shortId } from '@/shared/lib'
 import { errorMessage, Panel } from '@/shared/ui'
 import { useCreateReturn } from '../model/queries'
 import { BookPicker } from './BookPicker'
@@ -44,7 +43,7 @@ export function CreateReturnForm() {
         </Stack>
         {create.isError && <Alert color="red" variant="light" title="Повернення не оформлено">{errorMessage(create.error)}</Alert>}
         {create.isSuccess && (
-          <Alert color="green" variant="light">Повернення № {shortId(create.data)} створено й чекає підтвердження адміністратора.</Alert>
+          <Alert color="green" variant="light">Повернення створено й чекає підтвердження адміністратора.</Alert>
         )}
         <Button onClick={submit} disabled={!ready} loading={create.isPending} style={{ alignSelf: 'flex-start' }}>
           Оформити повернення

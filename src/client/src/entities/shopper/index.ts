@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react'
 import { local } from '@/shared/lib'
 
 /**
- * Who is shopping. Customers have no login yet (GAP-02), so the shop acts for a customer id set in the build
+ * Who is shopping. Customers have no login (the report gives them none), so the shop acts for a customer id set in the build
  * (VITE_SHOP_CUSTOMER_ID) or entered once on the checkout page and remembered in this browser.
  */
 const key = 'bookshelf.shopper'

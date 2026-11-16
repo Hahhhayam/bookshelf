@@ -13,7 +13,7 @@ function Connection() {
   )
 }
 
-/** The dark strip of the till: store, cashier, connection and the F12 exit. Shift and register number do not exist yet (GAP-27). */
+/** The dark strip of the till: store, cashier, connection and the F12 exit. Shift control does not exist yet (GAP-27). */
 export function TillHeader({ store, cashier, onExit }: { store: string; cashier: string; onExit: () => void }) {
   return (
     <Group component="header" h={52} px={20} gap={20} wrap="nowrap" fz={13}

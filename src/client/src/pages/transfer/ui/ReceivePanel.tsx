@@ -29,7 +29,7 @@ export function ReceivePanel({ transfer }: { transfer: TransferCard }) {
   }
 
   return (
-    <Panel title="Приймання" padding={16} extra={<Text size="sm" c="dimmed">Кількості заповнено за накладною — змініть лише ті рядки, де фактично інакше</Text>}>
+    <Panel title="Приймання" padding={16}>
       <LineEditor
         lines={lines}
         referenceLabel="Відправлено"

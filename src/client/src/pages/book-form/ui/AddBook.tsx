@@ -11,7 +11,7 @@ export function AddBook() {
     <Stack gap="lg">
       <PageHeader eyebrow={<Anchor component={Link} to="/staff/catalog" size="sm">Каталог</Anchor>} title="Нова книга" />
       <Text size="sm" c="dimmed">
-        Поля з <Text span c="red">*</Text> обов’язкові. Після збереження книга з’явиться на касах і в онлайн-магазині.
+        Поля з <Text span c="red">*</Text> обов’язкові.
       </Text>
       <BookForm mode="add" submitting={add.isPending} error={add.error ?? undefined}
         onSubmit={(values) => add.mutate(values, { onSuccess: ({ id }) => navigate(`/staff/catalog/${id}`) })}

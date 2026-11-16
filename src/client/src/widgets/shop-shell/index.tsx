@@ -1,4 +1,4 @@
-import { Anchor, AppShell, Badge, Button, Container, Group, Text, TextInput } from '@mantine/core'
+import { Anchor, AppShell, Badge, Button, Container, Group, TextInput } from '@mantine/core'
 import { IconSearch, IconShoppingCart, IconTruck } from '@tabler/icons-react'
 import { useState, type FormEvent } from 'react'
 import { Link, Outlet, useNavigate, useSearchParams } from 'react-router'
@@ -43,9 +43,6 @@ export function ShopShell() {
       <AppShell.Main>
         <Container size={1280} py="xl">
           <Outlet />
-        </Container>
-        <Container size={1280} py="lg">
-          <Text size="sm" c="dimmed">Полиця — мережа книгарень. Ціни й наявність оновлюються протягом 30 секунд.</Text>
         </Container>
       </AppShell.Main>
     </AppShell>
