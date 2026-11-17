@@ -1,3 +1,9 @@
+# Agent knowledge base
+
+At the start of every session or delegated task, invoke the `knowledge` skill (`.claude/skills/knowledge`). It loads
+[knowledge/INDEX.md](knowledge/INDEX.md), [rules.md](knowledge/rules.md) and [state.md](knowledge/state.md), and
+says how to keep them current during the session and before finishing.
+
 # Code conventions
 
 - One type per file (class, record, struct, enum, interface), file named after the type. Exceptions: a command or query record may share a file with the use case that executes it, an HTTP request record may share a file with the endpoint group that uses it, and a typed ID (e.g. `BookId`) sits at the top of its entity's file.

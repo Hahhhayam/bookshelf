@@ -10,5 +10,19 @@
       "Bash(npm install *)",
       "Bash(npm run *)"
     ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"Knowledge base: invoke the knowledge skill now, before planning or editing (CLAUDE.md). Rules and state are below; read knowledge/INDEX.md for the rest.\"; cat \"$CLAUDE_PROJECT_DIR/knowledge/rules.md\" \"$CLAUDE_PROJECT_DIR/knowledge/state.md\" 2>/dev/null || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }
