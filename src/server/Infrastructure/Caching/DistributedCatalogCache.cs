@@ -6,7 +6,7 @@ namespace Infrastructure.Caching;
 
 internal sealed class DistributedCatalogCache(IDistributedCache cache) : ICatalogCache
 {
-    /// <summary>Safety net for changes that raise no event, such as editing details or deactivating a book.</summary>
+    /// <summary>Safety net for changes that raise no event and do not invalidate, such as editing details.</summary>
     private static readonly DistributedCacheEntryOptions Expiry = new()
     {
         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15),

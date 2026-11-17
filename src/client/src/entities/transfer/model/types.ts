@@ -13,6 +13,17 @@ export interface TransferSummary {
   lastChangedBy: string | null
 }
 
+export interface TransferDiscrepancy {
+  id: string
+  book: string
+  expected: number
+  actual: number
+  isResolved: boolean
+  reason: string | null
+  resolvedBy: string | null
+  resolvedAt: string | null
+}
+
 export interface TransferCard {
   id: string
   from: string
@@ -21,7 +32,7 @@ export interface TransferCard {
   shippedBy: string | null
   receivedBy: string | null
   lines: { book: string; shipped: number; received: number | null }[]
-  discrepancies: { id: string; book: string; expected: number; actual: number; isResolved: boolean }[]
+  discrepancies: TransferDiscrepancy[]
   history: HistoryEntry[]
 }
 
@@ -31,6 +42,9 @@ export const transferStatus: Record<TransferStatus, { label: string; tone: Statu
   Shipped: { label: 'В дорозі', tone: 'progress' },
   Received: { label: 'Отримане', tone: 'done' },
 }
+
+/** Reasons offered when closing a discrepancy (Document artboard); any other reason can be typed. */
+export const discrepancyReasons = ['Недостача від складу', 'Пошкоджено при доставці']
 
 /** A received transfer with an open discrepancy is shown as a problem, whatever its status. */
 export function transferBadge(status: TransferStatus, hasOpenDiscrepancies: boolean) {

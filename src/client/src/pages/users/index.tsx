@@ -1,9 +1,7 @@
 import { Stack, TextInput } from '@mantine/core'
 import { IconSearch, IconUsers } from '@tabler/icons-react'
 import { useState } from 'react'
-import { RememberedNote } from '@/shared/ui'
-import { useKnownLocations, useReferenceList } from '@/entities/reference'
-import { useViewer } from '@/entities/viewer'
+import { useReferenceList } from '@/entities/reference'
 import { CreateUserButton, type AccessOptions } from '@/features/admin-users'
 import { EmptyState, PageHeader, Panel, QueryView } from '@/shared/ui'
 import { UsersTable } from './ui/UsersTable'
@@ -12,22 +10,18 @@ import { UsersTable } from './ui/UsersTable'
 export default function UsersPage() {
   const users = useReferenceList('users')
   const roles = useReferenceList('roles')
-  const locations = useKnownLocations(useViewer().data?.locations)
+  const locations = useReferenceList('locations')
   const [search, setSearch] = useState('')
 
   const options: AccessOptions = {
     roles: (roles.data ?? []).map((role) => ({ value: role.id, label: role.name })),
-    locations: locations.list.map((location) => ({ value: location.id, label: location.name })),
+    locations: (locations.data ?? []).map((location) => ({ value: location.id, label: location.name })),
   }
   const term = search.trim().toLowerCase()
 
   return (
     <Stack gap="lg">
       <PageHeader eyebrow="Адміністрування" title="Користувачі" actions={<CreateUserButton options={options} />} />
-      <RememberedNote>
-        Сервер поки не віддає список користувачів (GAP-10), тому тут лише ті, кого створили в цьому браузері. Ролі
-        й локації для вибору — так само: створені тут і ваші власні.
-      </RememberedNote>
       <TextInput
         aria-label="Пошук користувача" placeholder="Логін" leftSection={<IconSearch size={16} stroke={1.75} />}
         value={search} onChange={(e) => setSearch(e.currentTarget.value)} maw={320}
@@ -35,7 +29,7 @@ export default function UsersPage() {
       <Panel>
         <QueryView
           query={users} isEmpty={(list) => list.length === 0}
-          empty={<EmptyState icon={<IconUsers size={32} stroke={1.5} />} title="Користувачів ще немає" text="Створіть першого — він з’явиться в цьому списку." />}
+          empty={<EmptyState icon={<IconUsers size={32} stroke={1.5} />} title="Користувачів ще немає" text="Створіть першого користувача." />}
         >
           {(list) => {
             const shown = list.filter((user) => user.name.toLowerCase().includes(term))

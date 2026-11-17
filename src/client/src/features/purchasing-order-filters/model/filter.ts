@@ -1,6 +1,6 @@
 import { purchaseOrderStatus, type PurchaseOrderStatus, type PurchaseOrderSummary } from '@/entities/purchase-order'
 
-/** «Відкриті» is what the API returns without a status; «усі» joins the open and the closed ones (GAP-38). */
+/** «Відкриті» are the orders not yet received or cancelled; «усі» are orders of every status. */
 export type StatusFilter = PurchaseOrderStatus | 'open' | 'all'
 
 export interface OrderListFilter {

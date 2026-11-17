@@ -1,10 +1,10 @@
 import { Group, Radio, Skeleton, Stack, Text } from '@mantine/core'
-import { referenceName } from '@/entities/reference'
+import { storeName, useStores } from '@/entities/store'
 import type { StoreCoverage, useCartAvailability } from '@/features/shop-place-order'
 import { ErrorView, StatusNote } from '@/shared/ui'
 import type { CheckoutForm } from '../model/useCheckoutForm'
 
-/** «Оберіть магазин»: stores from the cart books' availability (GAP-14); one missing a book cannot be chosen. */
+/** «Оберіть магазин»: the stores that have any cart book; one missing a book cannot be chosen. */
 export function StoreChoice({ form, availability }: { form: CheckoutForm; availability: ReturnType<typeof useCartAvailability> }) {
   if (availability.isPending) {
     return <Stack gap="xs" aria-busy="true">{[0, 1, 2].map((i) => <Skeleton key={i} height={48} radius={0} />)}</Stack>
@@ -21,13 +21,17 @@ export function StoreChoice({ form, availability }: { form: CheckoutForm; availa
 }
 
 function StoreRow({ store }: { store: StoreCoverage }) {
+  const stores = useStores().data
   const complete = store.missing.length === 0
   return (
     <Radio.Card value={store.location} p="sm" disabled={!complete}>
       <Group wrap="nowrap" justify="space-between" align="flex-start" gap="sm">
         <Group wrap="nowrap" gap="sm" align="flex-start">
           <Radio.Indicator disabled={!complete} />
-          <Text fw={600} fz={15}>{referenceName('locations', store.location)}</Text>
+          <Stack gap={0}>
+            <Text fw={600} fz={15}>{storeName(stores, store.location)}</Text>
+            <Text size="sm" c="dimmed">{stores?.find((s) => s.id === store.location)?.address}</Text>
+          </Stack>
         </Group>
         <Stack gap={0} align="flex-end" ta="right">
           <StatusNote tone={complete ? 'ready' : 'attention'} size={14}>{complete ? 'Усе є' : 'Не все є'}</StatusNote>

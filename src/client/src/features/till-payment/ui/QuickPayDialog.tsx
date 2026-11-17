@@ -4,6 +4,7 @@ import { tokens } from '@/shared/config/tokens'
 import { formatAmount, fromCents, parseAmount } from '@/shared/lib'
 import { Key, MoneyText } from '@/shared/ui'
 import { change, planProblem, wholeBy, type PaymentPlan } from '../model/paymentPlan'
+import { CertificateBalance } from './CertificateBalance'
 
 export type QuickMethod = 'Cash' | 'Card' | 'GiftCertificate'
 
@@ -30,9 +31,11 @@ function CashBody({ total, received, setReceived }: { total: number; received: s
 
 function CertificateBody({ number, setNumber }: { number: string; setNumber: (v: string) => void }) {
   return (
-    <TextInput data-autofocus label="Номер сертифіката" size="lg" value={number}
-      onChange={(e) => setNumber(e.currentTarget.value)} styles={{ input: { fontFamily: tokens.font.mono } }}
-      description="Залишок на сертифікаті перевірить сервер під час оплати." />
+    <Stack gap="xs">
+      <TextInput data-autofocus label="Номер сертифіката" size="lg" value={number}
+        onChange={(e) => setNumber(e.currentTarget.value)} styles={{ input: { fontFamily: tokens.font.mono } }} />
+      <CertificateBalance number={number} />
+    </Stack>
   )
 }
 

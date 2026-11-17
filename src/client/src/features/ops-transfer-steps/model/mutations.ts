@@ -26,6 +26,17 @@ export function useReceiveTransfer(id: string) {
   })
 }
 
+/** Closes each discrepancy with its reason, one after another; the ones already closed stay closed on a retry. */
+export function useResolveDiscrepancies(id: string) {
+  const invalidate = useInvalidate()
+  return useMutation({
+    mutationFn: async (resolutions: { discrepancy: string; reason: string }[]) => {
+      for (const { discrepancy, reason } of resolutions) await transferApi.resolveDiscrepancy(id, discrepancy, reason)
+    },
+    onSettled: invalidate,
+  })
+}
+
 export function useCreateTransfer() {
   const invalidate = useInvalidate()
   return useMutation({

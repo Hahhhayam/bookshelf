@@ -20,6 +20,7 @@ export const permissionGroups: PermissionGroup[] = [
       { code: Perm.SalesCreate, label: 'Продаж' },
       { code: Perm.SalesDiscount, label: 'Ручна знижка' },
       { code: Perm.SalesCancel, label: 'Анулювання чека' },
+      { code: Perm.ShiftsManage, label: 'Відкриття й закриття зміни' },
     ],
   },
   {

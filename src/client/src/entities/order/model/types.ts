@@ -27,9 +27,15 @@ export interface OrderCard {
   history: HistoryEntry[]
 }
 
+/** The order as its pickup code shows it to anyone: contents and progress, never personal or staff data. */
 export interface TrackedOrder {
+  id: string
   status: OrderStatus
   kind: FulfilmentKind
+  /** The pickup store; null for delivery. */
+  store: string | null
+  total: Money
+  lines: { book: string; quantity: number; unitPrice: Money }[]
   history: { to: OrderStatus; at: string }[]
 }
 

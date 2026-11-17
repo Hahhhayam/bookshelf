@@ -1,7 +1,7 @@
 import { Button, Group, Stack, Table, Text, UnstyledButton } from '@mantine/core'
 import { IconPackageImport } from '@tabler/icons-react'
 import { purchaseOrderStatus, usePurchaseOrders, type PurchaseOrderSummary } from '@/entities/purchase-order'
-import { referenceName } from '@/entities/reference'
+import { useReferenceNames } from '@/entities/reference'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { formatDate } from '@/shared/lib'
 import { EmptyState, ErrorView, Panel, StatusBadge } from '@/shared/ui'
@@ -36,6 +36,7 @@ export function DeliveryChooser({ onPickOrder, onUnplanned }: { onPickOrder: (id
 }
 
 function DeliveryTable({ rows, onPick }: { rows: PurchaseOrderSummary[]; onPick: (id: string) => void }) {
+  const supplierName = useReferenceNames('suppliers')
   return (
     <Table.ScrollContainer minWidth={520}>
       <Table highlightOnHover verticalSpacing={12} horizontalSpacing={12}>
@@ -47,7 +48,7 @@ function DeliveryTable({ rows, onPick }: { rows: PurchaseOrderSummary[]; onPick:
             <Table.Tr key={row.id} style={{ cursor: 'pointer' }} onClick={() => onPick(row.id)}>
               <Table.Td>
                 <UnstyledButton onClick={() => onPick(row.id)} fw={600} c={tokens.color.accent}>
-                  {referenceName('suppliers', row.supplier)}
+                  {supplierName(row.supplier)}
                 </UnstyledButton>
               </Table.Td>
               <Table.Td><StatusBadge {...purchaseOrderStatus[row.status]} /></Table.Td>

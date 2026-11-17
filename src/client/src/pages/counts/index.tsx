@@ -1,9 +1,9 @@
-import { Alert, Anchor, Stack, Table } from '@mantine/core'
-import { IconClipboardCheck, IconInfoCircle } from '@tabler/icons-react'
+import { Anchor, Stack, Table } from '@mantine/core'
+import { IconClipboardCheck } from '@tabler/icons-react'
 import { Link, useNavigate } from 'react-router'
-import { countStatus, useCounts, type CountSession } from '@/entities/inventory-count'
-import { locationNames } from '@/entities/reference'
-import { useCan, useViewer, useWorkingLocation } from '@/entities/viewer'
+import { countStatus, useCounts, type CountSummary } from '@/entities/inventory-count'
+import { useLocationNames } from '@/entities/reference'
+import { useCan, useWorkingLocation } from '@/entities/viewer'
 import { StartCountButton } from '@/features/ops-inventory-count'
 import { formatDateTime, Perm, shortId } from '@/shared/lib'
 import { EmptyState, PageHeader, Panel, QueryView, StatusBadge } from '@/shared/ui'
@@ -12,7 +12,7 @@ export default function CountsPage() {
   const location = useWorkingLocation()
   const navigate = useNavigate()
   const can = useCan()
-  const counts = useCounts()
+  const counts = useCounts(location?.id)
   const start = location && can(Perm.InventoryCountManage)
     ? <StartCountButton location={location} onStarted={(id) => navigate(`/staff/counts/${id}`)} />
     : null
@@ -20,9 +20,6 @@ export default function CountsPage() {
   return (
     <Stack gap="lg">
       <PageHeader eyebrow={location?.name} title="Інвентаризація" actions={start} />
-      <Alert color="gray" variant="light" icon={<IconInfoCircle size={18} />}>
-        Показано інвентаризації, розпочаті в цьому браузері: система поки не повертає список інвентаризацій.
-      </Alert>
       <Panel>
         <QueryView
           query={counts}
@@ -36,8 +33,8 @@ export default function CountsPage() {
   )
 }
 
-function CountTable({ counts }: { counts: CountSession[] }) {
-  const locationName = locationNames(useViewer().data?.locations)
+function CountTable({ counts }: { counts: CountSummary[] }) {
+  const locationName = useLocationNames()
   return (
     <Table.ScrollContainer minWidth={600}>
       <Table verticalSpacing="sm" highlightOnHover>
@@ -56,7 +53,7 @@ function CountTable({ counts }: { counts: CountSession[] }) {
               <Table.Td><Anchor component={Link} to={`/staff/counts/${count.id}`} ff="monospace" fw={600}>{shortId(count.id)}</Anchor></Table.Td>
               <Table.Td>{locationName(count.location)}</Table.Td>
               <Table.Td>{formatDateTime(count.startedAt)}</Table.Td>
-              <Table.Td ta="right">{Object.keys(count.counted).length}</Table.Td>
+              <Table.Td ta="right">{count.counted} з {count.lines}</Table.Td>
               <Table.Td><StatusBadge {...countStatus[count.status]} /></Table.Td>
             </Table.Tr>
           ))}

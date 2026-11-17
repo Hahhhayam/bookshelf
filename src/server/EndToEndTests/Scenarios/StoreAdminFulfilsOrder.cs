@@ -18,7 +18,9 @@ public sealed class StoreAdminFulfilsOrder(SqlServerFixture sql) : EndToEndTest(
         await SeesStock(admin, World.StoreA, World.Kobzar, onHand: 10, reserved: 2);
         await MovesOrderThrough(admin, order.Id, "Confirmed", "Picking", "Ready");
         CustomerWasNotified(NotificationKind.OrderReady);
+        await FindsOrderByPickupCode(admin, World.StoreA, order);
         await MovesOrderThrough(admin, order.Id, "Issued");
+        await FindsOrderByPickupCode(admin, World.StoreA, order);
         await SeesStock(admin, World.StoreA, World.Kobzar, onHand: 8, reserved: 0);
         await SeesOrderHistoryBy(admin, order.Id, UserOf(SampleUsers.StoreAdmin), "Confirmed", "Picking", "Ready", "Issued");
         await CannotMoveOrderTo(admin, order.Id, "Picking");
@@ -35,6 +37,13 @@ public sealed class StoreAdminFulfilsOrder(SqlServerFixture sql) : EndToEndTest(
     {
         var orders = await admin.Get($"locations/{store.Value}/orders");
         Assert.Equal(status, orders.Items().With("id", order).Text("status"));
+    }
+
+    /// <summary>Table 2.7: the order is issued by its number or pickup code, so the code finds it in any status.</summary>
+    private static async Task FindsOrderByPickupCode(Api admin, LocationId store, PlacedOrderRef order)
+    {
+        var found = await admin.Get(Query.Of($"locations/{store.Value}/orders", ("pickupCode", order.PickupCode)));
+        Assert.Equal(order.Id, Assert.Single(found.Items()).Id());
     }
 
     private static async Task OpensOrder(Api admin, Guid order, decimal total, int historyEntries)
@@ -57,7 +66,7 @@ public sealed class StoreAdminFulfilsOrder(SqlServerFixture sql) : EndToEndTest(
         AssertHistory(await admin.Get($"orders/{order}"), statuses.Select(s => (s, by)).ToArray());
 
     private static Task CannotMoveOrderTo(Api admin, Guid order, string status) =>
-        admin.Refused(HttpStatusCode.UnprocessableEntity, HttpMethod.Post, $"orders/{order}/status", new { status });
+        admin.Rejected("order-transition-invalid", HttpMethod.Post, $"orders/{order}/status", new { status });
 
     private static Task CannotOpenOrder(Api admin, Guid order) =>
         admin.Refused(HttpStatusCode.Forbidden, HttpMethod.Get, $"orders/{order}");

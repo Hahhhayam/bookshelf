@@ -7,7 +7,7 @@ public readonly record struct BonusBalance
 
     public BonusBalance(int points)
     {
-        Guard.That(points >= 0, "The bonus balance cannot be negative.");
+        Guard.That(points >= 0, "bonus-balance-negative", "The bonus balance cannot be negative.");
         Points = points;
     }
 }

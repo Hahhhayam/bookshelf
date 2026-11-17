@@ -1,6 +1,7 @@
 import { Text } from '@mantine/core'
 import { tierLabel } from '@/entities/customer'
 import { CustomerCardDialog } from '@/features/till-customer'
+import { LineDiscountDialog } from '@/features/till-receipt'
 import { PaymentProblemDialog, QuickPayDialog, SplitPaymentDialog, type ProblemAction } from '@/features/till-payment'
 import { BookPickDialog, TitleSearchDialog } from '@/features/till-scan'
 import { toCents } from '@/shared/lib'
@@ -17,10 +18,6 @@ export function TillDialogs({ till, locationId }: { till: TillController; locati
 
   function onProblem(action: ProblemAction) {
     if (action === 'retry') return checkout.retry()
-    if (action === 'adjust') {
-      checkout.dismissFailure()
-      return setDialog({ kind: 'split', adjust: true })
-    }
     till.openPay(action)
   }
 
@@ -28,12 +25,15 @@ export function TillDialogs({ till, locationId }: { till: TillController; locati
     <>
       <QuickPayDialog method={dialog?.kind === 'quick' ? dialog.method : null} total={total} busy={checkout.busy}
         onClose={close} onSubmit={(plan) => { close(); checkout.pay(plan) }} />
-      <SplitPaymentDialog opened={dialog?.kind === 'split'} adjustTotal={dialog?.kind === 'split' && dialog.adjust}
+      <SplitPaymentDialog opened={dialog?.kind === 'split'}
         total={total} busy={checkout.busy} onClose={close} onSubmit={(plan) => { close(); checkout.pay(plan) }}
-        bonusBalance={customer ? toCents(customer.bonusBalance) : null}
+        bonusAllowed={customer && quote.bonusAllowed ? toCents(quote.bonusAllowed) : null}
+        bonusBalance={customer ? quote.bonusBalance ?? customer.bonusBalance : null}
         subtitle={customer ? `${customer.name}, ${tierLabel[customer.tier]} рівень` : 'Без клієнта'} />
       <PaymentProblemDialog failure={dialog ? null : checkout.failure} busy={checkout.busy} onAction={onProblem}
         onClose={checkout.dismissFailure} />
+      <LineDiscountDialog line={dialog?.kind === 'discount' ? selectedLine ?? null : null} onClose={close}
+        onApply={(amount) => controls.setDiscount(receipt.selected, amount)} />
       <CustomerCardDialog opened={dialog?.kind === 'customer'} hasCustomer={customer !== null} onClose={close}
         onFound={controls.setCustomer} onClear={() => controls.setCustomer(null)} />
       <TitleSearchDialog opened={dialog?.kind === 'search'} locationId={locationId} onClose={close}

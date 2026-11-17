@@ -43,7 +43,7 @@ export function ReportFilters({ state, storeOptions, categoryOptions, chainWide 
       <Select
         aria-label="Категорія" data={categoryOptions} value={state.category} onChange={state.setCategory}
         placeholder="Категорія: усі" clearable searchable w={{ base: '100%', sm: 200 }}
-        nothingFoundMessage="Категорії з’являються тут, коли їх створюють у цьому браузері"
+        nothingFoundMessage="Немає такої категорії"
       />
       <BookPicker
         aria-label="Фільтр за книгою" placeholder="Книга або ISBN" leftSection={<IconSearch size={16} stroke={1.75} />}

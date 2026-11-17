@@ -5,7 +5,7 @@ public sealed class RecordFailedLoginAudit(IAuditRecordRepository records) : IEv
     public Task HandleAsync(LoginFailed domainEvent, CancellationToken ct)
     {
         records.Add(AuditRecord.Record(domainEvent.UserId, domainEvent.OccurredAt, "login.failed",
-            domainEvent.Login, after: domainEvent.Reason.ToString()));
+            domainEvent.Login, FieldChange.Set("reason", domainEvent.Reason.ToString())));
         return Task.CompletedTask;
     }
 }

@@ -4,15 +4,17 @@ import type { OrderStatus } from './types'
 
 export const orderKeys = {
   all: ['orders'] as const,
-  list: (location: string, status?: OrderStatus) => ['orders', 'list', location, status ?? 'open'] as const,
+  list: (location: string, status?: OrderStatus, pickupCode?: string) =>
+    ['orders', 'list', location, status ?? 'open', pickupCode ?? ''] as const,
   card: (id: string) => ['orders', 'card', id] as const,
   track: (code: string) => ['orders', 'track', code] as const,
 }
 
-export function useOrders(location: string | undefined, status?: OrderStatus) {
+/** With a pickup code, only that order, in any status (handing an order over by its code). */
+export function useOrders(location: string | undefined, status?: OrderStatus, pickupCode?: string) {
   return useQuery({
-    queryKey: orderKeys.list(location ?? '', status),
-    queryFn: () => orderApi.list(location!, status),
+    queryKey: orderKeys.list(location ?? '', status, pickupCode),
+    queryFn: () => orderApi.list(location!, status, pickupCode),
     enabled: !!location,
     refetchInterval: 30_000,
   })

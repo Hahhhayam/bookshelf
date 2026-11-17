@@ -38,9 +38,9 @@ public sealed class Book : AggregateRoot<BookId>
         Money initialPrice, DateTimeOffset now, UserId createdBy, IIsbnRegistry isbnRegistry)
     {
         if (isbn is { } value)
-            Guard.That(!isbnRegistry.IsTaken(value), $"ISBN {value} already exists in the catalog.");
+            Guard.That(!isbnRegistry.IsTaken(value), "isbn-taken", $"ISBN {value} already exists in the catalog.");
 
-        Guard.That(!initialPrice.IsNegative, "Price cannot be negative.");
+        Guard.That(!initialPrice.IsNegative, "price-negative", "Price cannot be negative.");
 
         var book = new Book(BookId.New(), Guard.NotBlank(title), isbn, barcode, itemType, publisherId, categoryId)
         {
@@ -54,7 +54,7 @@ public sealed class Book : AggregateRoot<BookId>
     /// <summary>Takes effect at once. Only the current price is kept here; the history is written from the PriceChanged event.</summary>
     public void ChangePrice(Money newPrice, UserId changedBy, DateTimeOffset now)
     {
-        Guard.That(!newPrice.IsNegative, "Price cannot be negative.");
+        Guard.That(!newPrice.IsNegative, "price-negative", "Price cannot be negative.");
 
         var oldPrice = Price;
         Price = newPrice;

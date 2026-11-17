@@ -2,7 +2,7 @@ import { Button, Stack } from '@mantine/core'
 import { IconPlus } from '@tabler/icons-react'
 import { Link } from 'react-router'
 import type { PurchaseOrderSummary } from '@/entities/purchase-order'
-import { referenceName } from '@/entities/reference'
+import { useReferenceNames } from '@/entities/reference'
 import { useCan } from '@/entities/viewer'
 import {
   applyClientFilter, isDefaultFilter, PurchaseOrderFilters, statusFilterLabel, useOrderListFilter, usePurchaseOrderList,
@@ -13,9 +13,9 @@ import { PageHeader, Panel, QueryView } from '@/shared/ui'
 import { PurchaseOrderTable } from '@/widgets/purchasing-order-list'
 import { AllClosedState, NothingFoundState } from './ui/ListEmptyStates'
 
-function supplierOptions(rows: readonly PurchaseOrderSummary[]) {
+function supplierOptions(rows: readonly PurchaseOrderSummary[], supplierName: (id: string) => string) {
   return [...new Set(rows.map((row) => row.supplier))]
-    .map((id) => ({ id, name: referenceName('suppliers', id) }))
+    .map((id) => ({ id, name: supplierName(id) }))
     .sort((a, b) => a.name.localeCompare(b.name, 'uk'))
 }
 
@@ -25,7 +25,8 @@ export default function PurchaseOrdersPage() {
   const query = usePurchaseOrderList(filter.status, filter.overdue)
   const can = useCan()
   const canCreate = can(Perm.PurchasingManage)
-  const suppliers = supplierOptions(query.data ?? [])
+  const supplierName = useReferenceNames('suppliers')
+  const suppliers = supplierOptions(query.data ?? [], supplierName)
 
   return (
     <Stack gap={22}>
@@ -46,7 +47,7 @@ export default function PurchaseOrdersPage() {
       {query.isPending || query.isError
         ? <Panel><QueryView query={query} skeletonRows={7}>{() => null}</QueryView></Panel>
         : <OrderList rows={query.data} filter={filter} canCreate={canCreate}
-            supplierName={filter.supplier ? referenceName('suppliers', filter.supplier) : undefined} onChange={change} onReset={reset} />}
+            supplierName={filter.supplier ? supplierName(filter.supplier) : undefined} onChange={change} onReset={reset} />}
     </Stack>
   )
 }

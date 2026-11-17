@@ -52,7 +52,7 @@ public static class Sample
         Add(SampleUsers.Cashier, [storeA], Permissions.SalesCreate, Permissions.ReturnsCreate);
         Add(SampleUsers.StoreAdmin, [storeA], Permissions.OrdersManage, Permissions.SalesCreate,
             Permissions.ReturnsCreate, Permissions.ReturnsConfirm, Permissions.StockAdjust, Permissions.TransfersManage,
-            Permissions.ReportsView, Permissions.AuditView);
+            Permissions.ReportsView, Permissions.AuditView, Permissions.ShiftsManage);
         Add(SampleUsers.StoreAdminB, [storeB], Permissions.OrdersManage, Permissions.TransfersManage,
             Permissions.StockAdjust, Permissions.ReportsView);
         Add(SampleUsers.Keeper, [warehouse], Permissions.TransfersManage, Permissions.ReceivingConfirm,

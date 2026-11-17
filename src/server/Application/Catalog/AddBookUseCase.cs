@@ -20,16 +20,16 @@ public sealed class AddBookUseCase(
             new KnownIsbnRegistry(isbnTaken));
 
         books.Add(book);
-        audit.Record("book.created", book.Id.ToString(), after: book.Title);
+        audit.Record("book.created", book.Id.ToString(), FieldChange.Set("title", book.Title));
         await unitOfWork.CommitAsync(ct);
         return book.Id;
     }
 
     private async Task EnsureReferencesExistAsync(AddBookCommand command, CancellationToken ct)
     {
-        Guard.That(await references.CategoryExistsAsync(command.Category, ct), "The category does not exist.");
-        Guard.That(await references.AllAuthorsExistAsync(command.Authors, ct), "An author does not exist.");
+        Guard.That(await references.CategoryExistsAsync(command.Category, ct), "category-not-found", "The category does not exist.");
+        Guard.That(await references.AllAuthorsExistAsync(command.Authors, ct), "author-not-found", "An author does not exist.");
         if (command.Publisher is { } publisher)
-            Guard.That(await references.PublisherExistsAsync(publisher, ct), "The publisher does not exist.");
+            Guard.That(await references.PublisherExistsAsync(publisher, ct), "publisher-not-found", "The publisher does not exist.");
     }
 }

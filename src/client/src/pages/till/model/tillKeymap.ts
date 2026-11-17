@@ -1,12 +1,12 @@
 export type TillCommand =
-  | 'search' | 'customer' | 'split' | 'cash' | 'card' | 'certificate' | 'exit'
+  | 'search' | 'customer' | 'discount' | 'split' | 'cash' | 'card' | 'certificate' | 'exit'
   | 'up' | 'down' | 'plus' | 'minus' | 'remove' | 'void' | 'focusScan' | 'enter'
 
 /** What the till is showing decides which keys mean something (design/README.md, «Till keyboard flow»). */
 export type TillMode = 'receipt' | 'closed' | 'problem' | 'dialog'
 
 const functionKeys: Record<string, TillCommand> = {
-  F2: 'search', F4: 'customer', F7: 'split', F8: 'cash', F9: 'card', F10: 'certificate', F12: 'exit',
+  F2: 'search', F4: 'customer', F6: 'discount', F7: 'split', F8: 'cash', F9: 'card', F10: 'certificate', F12: 'exit',
 }
 
 /** Keys that also type into the scan field act on the receipt only while the field is empty (or from the numpad). */

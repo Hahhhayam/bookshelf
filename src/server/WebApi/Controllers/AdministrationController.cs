@@ -34,9 +34,16 @@ public sealed class AdministrationController : ControllerBase
         return outcome.Result switch
         {
             LoginResult.Success => Ok(outcome.Session),
-            LoginResult.Blocked => Problem(statusCode: StatusCodes.Status403Forbidden, detail: "The account is blocked."),
-            _ => Problem(statusCode: StatusCodes.Status401Unauthorized, detail: "Invalid login or password."),
+            LoginResult.Blocked => LoginRefused(StatusCodes.Status403Forbidden, "account-blocked", "The account is blocked."),
+            _ => LoginRefused(StatusCodes.Status401Unauthorized, "invalid-credentials", "Invalid login or password."),
         };
+    }
+
+    private ObjectResult LoginRefused(int status, string code, string detail)
+    {
+        var problem = ProblemDetailsFactory.CreateProblemDetails(HttpContext, status, detail: detail);
+        problem.Extensions["code"] = code;
+        return new ObjectResult(problem) { StatusCode = status };
     }
 
     [HttpGet("auth/me")]
@@ -46,7 +53,7 @@ public sealed class AdministrationController : ControllerBase
         return Ok(new
         {
             id = profile.User.Value, profile.Login, profile.Permissions,
-            locations = profile.Locations.Select(l => new { id = l.Location.Value, l.Name, l.Type }),
+            locations = profile.Locations.Select(l => new { id = l.Location.Value, l.Name, l.Type, address = l.Address.Value }),
         });
     }
 
@@ -56,6 +63,19 @@ public sealed class AdministrationController : ControllerBase
         await useCase.ExecuteAsync(Guid.Parse(User.FindFirstValue(BookstoreClaims.Session)!), ct);
         return NoContent();
     }
+
+    [RequirePermission(Permissions.UsersManage)]
+    [HttpGet("users")]
+    public async Task<IActionResult> Users([FromServices] ListUsersUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(u => new
+        {
+            id = u.Id.Value, u.Login, u.Status, roles = u.Roles.Select(r => r.Value),
+            locations = u.Access.Locations.Select(l => l.Value),
+        }));
+
+    [HttpGet("users/logins")]
+    public async Task<IActionResult> UserLogins([FromServices] ListUserLoginsUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(u => new { id = u.User.Value, u.Login }));
 
     [RequirePermission(Permissions.UsersManage)]
     [HttpPost("users")]
@@ -99,6 +119,14 @@ public sealed class AdministrationController : ControllerBase
     }
 
     [RequirePermission(Permissions.UsersManage)]
+    [HttpGet("roles")]
+    public async Task<IActionResult> Roles([FromServices] ListRolesUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(r => new
+        {
+            id = r.Id.Value, r.Name, permissions = r.Permissions.Select(p => p.Code).Order(),
+        }));
+
+    [RequirePermission(Permissions.UsersManage)]
     [HttpPost("roles")]
     public async Task<IActionResult> CreateRole(
         RoleRequest request, [FromServices] CreateRoleUseCase useCase, CancellationToken ct)
@@ -118,6 +146,13 @@ public sealed class AdministrationController : ControllerBase
 
     private static HashSet<Permission> ToPermissions(RoleRequest request) =>
         request.Permissions.Select(code => new Permission(code)).ToHashSet();
+
+    [HttpGet("locations")]
+    public async Task<IActionResult> Locations([FromServices] ListLocationsUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(l => new
+        {
+            id = l.Id.Value, l.Name, l.Type, address = l.Address.Value, active = l.IsActive,
+        }));
 
     [RequirePermission(Permissions.LocationsManage)]
     [HttpPost("locations")]
@@ -147,6 +182,19 @@ public sealed class AdministrationController : ControllerBase
         return NoContent();
     }
 
+    [AllowAnonymous]
+    [HttpGet("stores")]
+    public async Task<IActionResult> Stores([FromServices] ListStoresUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(l => new { id = l.Id.Value, l.Name, address = l.Address.Value }));
+
+    [RequirePermission(Permissions.IntegrationsManage)]
+    [HttpGet("integrations")]
+    public async Task<IActionResult> Integrations([FromServices] ListIntegrationsUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(i => new
+        {
+            id = i.Id.Value, i.Kind, i.Name, enabled = i.IsEnabled, i.Status, i.LastError, i.LastErrorAt, i.LastExchangeAt,
+        }));
+
     [RequirePermission(Permissions.IntegrationsManage)]
     [HttpPost("integrations")]
     public async Task<IActionResult> CreateIntegration(
@@ -171,11 +219,11 @@ public sealed class AdministrationController : ControllerBase
         string? subject, string? action, DateTimeOffset? from, DateTimeOffset? to,
         [FromServices] GetChangeHistoryUseCase useCase, CancellationToken ct)
     {
-        Period? period = from is { } start && to is { } end ? new Period(start, end) : null;
-        var records = await useCase.ExecuteAsync(new AuditHistoryFilter(subject, period, action), ct);
-        return Ok(records.Select(r => new
+        var entries = await useCase.ExecuteAsync(new AuditHistoryFilter(subject, from, to, action), ct);
+        return Ok(entries.Select(e => new
         {
-            id = r.Id.Value, by = r.By?.Value, r.At, r.Action, r.Subject, r.Before, r.After,
+            id = e.Record.Id.Value, by = e.Record.By?.Value, byLogin = e.ByLogin, e.Record.At, e.Record.Action,
+            e.Record.Subject, changes = e.Record.Changes.Select(c => new { c.Field, c.Before, c.After }),
         }));
     }
 }

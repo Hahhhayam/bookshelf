@@ -14,7 +14,7 @@ public sealed class ConfirmReturnUseCase(
         if (ret.Condition != ItemCondition.Damaged)
             await RestockAsync(ret, ct);
 
-        audit.Record("return.confirmed", returnId.ToString(), after: ret.RefundTotal.ToString());
+        audit.Record("return.confirmed", returnId.ToString(), FieldChange.Set("refund", ret.RefundTotal.ToString()));
         await unitOfWork.CommitAsync(ct);
     }
 

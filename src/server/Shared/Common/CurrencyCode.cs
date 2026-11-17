@@ -10,7 +10,7 @@ public readonly record struct CurrencyCode
     public CurrencyCode(string value)
     {
         var code = Guard.NotBlank(value).Trim().ToUpperInvariant();
-        Guard.That(code.Length == 3 && code.All(char.IsAsciiLetter), "Currency must be a three-letter ISO code.");
+        Guard.That(code.Length == 3 && code.All(char.IsAsciiLetter), "currency-invalid", "Currency must be a three-letter ISO code.");
         Value = code;
     }
 

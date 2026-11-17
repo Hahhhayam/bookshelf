@@ -1,7 +1,7 @@
 import { Group, Menu } from '@mantine/core'
 import { IconCheck, IconChevronDown, IconClockHour4 } from '@tabler/icons-react'
 import { statusTone } from '@/shared/config/tokens'
-import type { Named } from '@/shared/lib'
+import type { Named } from '@/entities/reference'
 import { FilterChip } from '@/shared/ui'
 import { statusFilterLabel, statusFilterOptions, type OrderListFilter } from '../model/filter'
 

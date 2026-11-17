@@ -1,14 +1,13 @@
 import { ActionIcon, Group, Table, Text } from '@mantine/core'
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react'
 import { useState } from 'react'
-import { auditActionBadge, auditSubjectLabel, type AuditRecord } from '@/entities/audit'
-import { referenceName } from '@/entities/reference'
+import { AuditChanges, auditActionBadge, auditSubjectLabel, type AuditRecord } from '@/entities/audit'
 import { formatDateTime } from '@/shared/lib'
 import { Initials, StatusBadge } from '@/shared/ui'
-import { AuditChange } from './AuditChange'
+import type { AuditNames } from '../model/useAuditNames'
 
-/** Audit records: time, who, action and subject, before → after; a row expands to the full values. */
-export function AuditTable({ records, userName }: { records: AuditRecord[]; userName: (id: string | null) => string }) {
+/** Audit records: time, who, action and subject, key fields before → after; a row expands to a field per row. */
+export function AuditTable({ records, names }: { records: AuditRecord[]; names: AuditNames }) {
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set())
   const toggle = (id: string) => setOpen((current) => {
     const next = new Set(current)
@@ -31,7 +30,7 @@ export function AuditTable({ records, userName }: { records: AuditRecord[]; user
         <Table.Tbody>
           {records.map((record) => {
             const expanded = open.has(record.id)
-            const who = userName(record.by)
+            const who = names.userName(record)
             return (
               <Table.Tr key={record.id} style={{ verticalAlign: 'top' }}>
                 <Table.Td>
@@ -49,10 +48,10 @@ export function AuditTable({ records, userName }: { records: AuditRecord[]; user
                 <Table.Td>
                   <Group gap={8}>
                     <StatusBadge {...auditActionBadge(record.action)} />
-                    <Text size="sm" fw={500} truncate>{auditSubjectLabel(record.action, record.subject, referenceName)}</Text>
+                    <Text size="sm" fw={500} truncate>{auditSubjectLabel(record.action, record.subject, names.subjectName)}</Text>
                   </Group>
                 </Table.Td>
-                <Table.Td><AuditChange before={record.before} after={record.after} expanded={expanded} /></Table.Td>
+                <Table.Td><AuditChanges changes={record.changes} expanded={expanded} valueText={names.valueText} /></Table.Td>
               </Table.Tr>
             )
           })}

@@ -1,8 +1,9 @@
 import type { CustomerCard } from '@/entities/customer'
-import type { ReceiptLine, ReceiptState } from './types'
+import type { ReceiptLine, ReceiptState, ScannedLine } from './types'
 
 export type ReceiptAction =
-  | { type: 'add'; line: Omit<ReceiptLine, 'quantity'> }
+  | { type: 'add'; line: ScannedLine }
+  | { type: 'discount'; index: number; amount: ReceiptLine['manualDiscount'] }
   | { type: 'step'; index: number; delta: 1 | -1 }
   | { type: 'select'; index: number }
   | { type: 'move'; delta: 1 | -1 }
@@ -16,10 +17,10 @@ export function emptyReceipt(key: string): ReceiptState {
 
 const clamp = (value: number, max: number) => Math.max(0, Math.min(value, max))
 
-function add(state: ReceiptState, line: Omit<ReceiptLine, 'quantity'>): ReceiptState {
+function add(state: ReceiptState, line: ScannedLine): ReceiptState {
   const existing = state.lines.findIndex((l) => l.book === line.book)
   if (existing >= 0) return step({ ...state, selected: existing }, existing, 1)
-  return { ...state, lines: [...state.lines, { ...line, quantity: 1 }], selected: state.lines.length }
+  return { ...state, lines: [...state.lines, { ...line, quantity: 1, manualDiscount: null }], selected: state.lines.length }
 }
 
 /** A quantity never drops below one: removing a line is a separate, confirmed action. */
@@ -37,6 +38,10 @@ function remove(state: ReceiptState, index: number): ReceiptState {
 export function receiptReducer(state: ReceiptState, action: ReceiptAction): ReceiptState {
   switch (action.type) {
     case 'add': return add(state, action.line)
+    case 'discount':
+      return state.lines[action.index]
+        ? { ...state, lines: state.lines.map((l, i) => (i === action.index ? { ...l, manualDiscount: action.amount } : l)) }
+        : state
     case 'step': return state.lines[action.index] ? step(state, action.index, action.delta) : state
     case 'select': return state.lines[action.index] ? { ...state, selected: action.index } : state
     case 'move':

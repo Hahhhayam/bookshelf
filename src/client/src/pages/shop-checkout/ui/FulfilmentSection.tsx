@@ -1,6 +1,6 @@
 import { Group, Radio, SimpleGrid, Stack, Text, Textarea } from '@mantine/core'
 import type { FulfilmentKind } from '@/entities/order'
-import { referenceName } from '@/entities/reference'
+import { storeName, useStores } from '@/entities/store'
 import type { useCartAvailability } from '@/features/shop-place-order'
 import { tokens } from '@/shared/config/tokens'
 import type { CheckoutForm } from '../model/useCheckoutForm'
@@ -42,13 +42,14 @@ function KindCard({ kind, title, text }: { kind: FulfilmentKind; title: string; 
 }
 
 function DeliveryFields({ form }: { form: CheckoutForm }) {
+  const stores = useStores().data
   return (
     <Stack gap="xs">
       <Textarea label="Адреса доставки" placeholder="Місто, вулиця, будинок, квартира або відділення перевізника"
         autosize minRows={2} value={form.address} onChange={(e) => form.setAddress(e.currentTarget.value)} required />
       <Text size="sm" c={tokens.color.ink2}>
         {form.deliveryStock
-          ? `Відправимо з: ${referenceName('locations', form.deliveryStock)}.`
+          ? `Відправимо з: ${storeName(stores, form.deliveryStock)}.`
           : 'Зараз немає магазину, де є всі книжки разом.'}
       </Text>
     </Stack>

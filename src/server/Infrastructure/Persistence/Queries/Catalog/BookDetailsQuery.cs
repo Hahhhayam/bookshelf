@@ -19,6 +19,9 @@ internal sealed class BookDetailsQuery(BookstoreDbContext db) : IBookDetailsQuer
             .ToList();
     }
 
+    public Task<ScheduledPrice?> ScheduledPriceAsync(BookId book, CancellationToken ct) =>
+        db.Set<ScheduledPrice>().AsNoTracking().FirstOrDefaultAsync(p => p.Id == book, ct);
+
     public async Task<IReadOnlyList<PriceEntry>> PriceHistoryAsync(BookId book, CancellationToken ct) =>
         await db.Set<PriceEntry>().AsNoTracking().Where(e => e.BookId == book).OrderBy(e => e.ValidFrom).ToListAsync(ct);
 

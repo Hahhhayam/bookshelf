@@ -1,11 +1,11 @@
 import { Anchor, Group, Stack, Table, Text, Title } from '@mantine/core'
 import type { Availability } from '@/entities/book'
-import { referenceName } from '@/entities/reference'
+import { storeName, useStores } from '@/entities/store'
 import { myStore as myStoreModel } from '@/features/shop-my-store'
 import { tokens } from '@/shared/config/tokens'
 import { StatusNote } from '@/shared/ui'
 
-/** «Наявність у магазинах»: every location in the book's availability (GAP-14: no public store list). */
+/** «Наявність у магазинах»: the book's availability at each store. */
 export function AvailabilityTable({ availability, myStore }: { availability: readonly Availability[]; myStore: string | null }) {
   return (
     <Stack gap={6} component="section" aria-labelledby="availability-title">
@@ -24,11 +24,12 @@ export function AvailabilityTable({ availability, myStore }: { availability: rea
 }
 
 function AvailabilityRow({ row, mine }: { row: Availability; mine: boolean }) {
+  const stores = useStores().data
   return (
     <Table.Tr>
       <Table.Td>
         <Group gap={6} wrap="wrap">
-          <Text fw={mine ? 700 : 400}>{referenceName('locations', row.location)}</Text>
+          <Text fw={mine ? 700 : 400}>{storeName(stores, row.location)}</Text>
           {mine
             ? <Text size="sm" c={tokens.color.ink2}>· ваш</Text>
             : <Anchor component="button" type="button" size="sm" onClick={() => myStoreModel.set(row.location)}>зробити моїм</Anchor>}

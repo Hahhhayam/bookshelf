@@ -33,17 +33,15 @@ namespace Infrastructure.Persistence.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<string>("After")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTimeOffset>("At")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Before")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("By")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Changes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Subject")
                         .HasMaxLength(256)
@@ -71,6 +69,12 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("LastError")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("LastErrorAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("LastExchangeAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -328,6 +332,39 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Publishers", "catalog");
                 });
 
+            modelBuilder.Entity("Domain.Catalog.ScheduledPrice", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("EffectiveFrom")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("SetBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Price", "Domain.Catalog.ScheduledPrice.Price#Money", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nchar(3)")
+                                .IsFixedLength();
+                        });
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EffectiveFrom");
+
+                    b.ToTable("ScheduledPrices", "catalog");
+                });
+
             modelBuilder.Entity("Domain.Crm.BonusAccount", b =>
                 {
                     b.Property<Guid>("Id")
@@ -449,8 +486,14 @@ namespace Infrastructure.Persistence.Migrations
                             b1.Property<Guid?>("CategoryId")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<Guid?>("CustomerId")
+                                .HasColumnType("uniqueidentifier");
+
                             b1.Property<int>("MinimumQuantity")
                                 .HasColumnType("int");
+
+                            b1.Property<Guid?>("SegmentId")
+                                .HasColumnType("uniqueidentifier");
                         });
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "Period", "Domain.Crm.Promotion.Period#Period", b1 =>
@@ -525,6 +568,16 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsResolved")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTimeOffset?>("ResolvedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("ResolvedBy")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("TransferId")
                         .HasColumnType("uniqueidentifier");
 
@@ -543,12 +596,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTimeOffset>("StartedAt")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LocationId", "StartedAt");
 
                     b.ToTable("InventoryCounts", "inventory");
                 });
@@ -961,6 +1019,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTimeOffset?>("ConfirmedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("ConfirmedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("IdempotencyKey")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("bit");
 
@@ -974,6 +1043,11 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdempotencyKey")
+                        .IsUnique();
+
+                    b.HasIndex("LocationId", "ConfirmedAt");
 
                     b.ToTable("GoodsReceipts", "purchasing");
                 });
@@ -1217,6 +1291,21 @@ namespace Infrastructure.Persistence.Migrations
                                 .IsFixedLength();
                         });
 
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Change", "Domain.Sales.Payment.Change#Money", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nchar(3)")
+                                .IsFixedLength();
+                        });
+
                     b.HasKey("Id");
 
                     b.HasIndex("SaleId");
@@ -1237,6 +1326,11 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("IdempotencyKey")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<Guid>("LocationId")
                         .HasColumnType("uniqueidentifier");
 
@@ -1255,7 +1349,12 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdempotencyKey")
+                        .IsUnique();
+
                     b.HasIndex("SaleId");
+
+                    b.HasIndex("LocationId", "Status");
 
                     b.ToTable("Returns", "sales");
                 });
@@ -1403,6 +1502,35 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasIndex("SaleId");
 
                     b.ToTable("SaleLines", "sales");
+                });
+
+            modelBuilder.Entity("Domain.Sales.Shift", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ClosedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("ClosedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("OpenedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("OpenedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId")
+                        .IsUnique()
+                        .HasFilter("[ClosedAt] IS NULL");
+
+                    b.ToTable("Shifts", "sales");
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Sessions.UserSession", b =>

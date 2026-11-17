@@ -8,27 +8,37 @@ public sealed class ReturnIsConfirmed(SqlServerFixture sql) : EndToEndTest(sql)
     public async Task Return_changes_stock_and_bonuses_only_after_confirmation()
     {
         await Preseed(Sample.Standard);
+        await OpensShift(World.StoreA);
         var cashier = await LogsIn(SampleUsers.Cashier);
         var sale = await Sells(cashier, "till-1/0001", total: 705m, (World.Kobzar, 1), (World.Dune, 1));
 
-        var ret = await CreatesReturn(cashier, sale, World.Kobzar, quantity: 1);
+        var ret = await CreatesReturn(cashier, "return-1", sale, World.Kobzar, quantity: 1);
+        Assert.Equal(ret, await CreatesReturn(cashier, "return-1", sale, World.Kobzar, quantity: 1));
         await SeesStock(cashier, World.StoreA, World.Kobzar, onHand: 9, reserved: 0);
         await CannotConfirmReturn(cashier, ret);
 
         var admin = await LogsIn(SampleUsers.StoreAdmin);
+        await SeesPendingReturns(admin, ret);
         await ConfirmsReturn(admin, ret);
         await SeesStock(admin, World.StoreA, World.Kobzar, onHand: 10, reserved: 0);
         await SeesConfirmedReturnInAudit(admin, ret, by: UserOf(SampleUsers.StoreAdmin));
         await FindsCustomerByCard(cashier, bonusBalance: 4, purchases: 1);
-        await CannotReturn(cashier, sale, World.Dune, quantity: 2);
+        await CannotReturn(cashier, sale, World.Dune, quantity: 2, "return-quantity-exceeded");
 
         TimePasses(TimeSpan.FromDays(8));
         cashier = await LogsIn(SampleUsers.Cashier);
-        await CannotReturn(cashier, sale, World.Dune, quantity: 1);
+        await CannotReturn(cashier, sale, World.Dune, quantity: 1, "return-period-expired");
     }
 
-    private static async Task<Guid> CreatesReturn(Api cashier, Guid sale, BookId book, int quantity) =>
-        (await cashier.Create("returns", ReturnBody(sale, book, quantity))).Id();
+    /// <summary>A resend with the same operation key gives back the same return.</summary>
+    private static async Task<Guid> CreatesReturn(Api cashier, string idempotencyKey, Guid sale, BookId book, int quantity) =>
+        (await cashier.Create("returns", ReturnBody(sale, book, quantity), IdempotencyKey(idempotencyKey))).Id();
+
+    private async Task SeesPendingReturns(Api admin, params Guid[] returns)
+    {
+        var pending = await admin.Get(Query.Of($"locations/{World.StoreA.Value}/returns", ("status", "Pending")));
+        Assert.Equal(returns, pending.Items().Select(r => r.Id()));
+    }
 
     private static Task CannotConfirmReturn(Api cashier, Guid ret) =>
         cashier.Refused(HttpStatusCode.Forbidden, HttpMethod.Post, $"returns/{ret}/confirm");
@@ -42,8 +52,9 @@ public sealed class ReturnIsConfirmed(SqlServerFixture sql) : EndToEndTest(sql)
     }
 
     /// <summary>Refused when it exceeds what was sold minus earlier returns, or when the return period is over.</summary>
-    private static Task CannotReturn(Api cashier, Guid sale, BookId book, int quantity) =>
-        cashier.Refused(HttpStatusCode.UnprocessableEntity, HttpMethod.Post, "returns", ReturnBody(sale, book, quantity));
+    private static Task CannotReturn(Api cashier, Guid sale, BookId book, int quantity, string code) =>
+        cashier.Rejected(code, HttpMethod.Post, "returns", ReturnBody(sale, book, quantity),
+            IdempotencyKey($"refused-{Guid.NewGuid():N}"));
 
     private static object ReturnBody(Guid sale, BookId book, int quantity) => new
     {

@@ -8,11 +8,20 @@ export interface ReportFilter {
   book?: string
 }
 
+export interface PeriodTotals {
+  revenue: Money
+  margin: Money
+  receipts: number
+  averageCheck: Money
+}
+
 export interface ManagementReport {
   revenue: Money
   margin: Money
   receipts: number
   averageCheck: Money
+  /** The same figures for the equally long period right before this one. */
+  previousPeriod: PeriodTotals
   daysOfStock: number | null
   topBooks: { book: string; sold: number; revenue: Money }[]
   slowMovingBooks: string[]

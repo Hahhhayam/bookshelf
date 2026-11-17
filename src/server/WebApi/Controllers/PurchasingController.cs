@@ -49,9 +49,10 @@ public sealed class PurchasingController : ControllerBase
     [RequirePermission(Permissions.PurchasingManage, Permissions.ReceivingConfirm)]
     [HttpGet("purchase-orders")]
     public async Task<IActionResult> ListOrders(
-        PurchaseOrderStatus? status, bool overdue, [FromServices] ListPurchaseOrdersUseCase useCase, CancellationToken ct)
+        PurchaseOrderStatus? status, bool open, bool overdue, [FromServices] ListPurchaseOrdersUseCase useCase,
+        CancellationToken ct)
     {
-        var orders = await useCase.ExecuteAsync(status, overdue, ct);
+        var orders = await useCase.ExecuteAsync(status, open, overdue, ct);
         return Ok(orders.Select(o => new
         {
             id = o.Order.Value, supplier = o.Supplier.Value, o.Status, o.ExpectedDate, o.IsOverdue, o.LastChangedAt,
@@ -67,18 +68,68 @@ public sealed class PurchasingController : ControllerBase
         return NoContent();
     }
 
+    [RequirePermission(Permissions.PurchasingManage)]
+    [HttpPost("purchase-orders/{id:guid}/cancel")]
+    public async Task<IActionResult> CancelOrder(Guid id, [FromServices] CancelPurchaseOrderUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new PurchaseOrderId(id), ct);
+        return NoContent();
+    }
+
     [RequirePermission(Permissions.ReceivingConfirm)]
     [HttpPost("deliveries")]
     public async Task<IActionResult> ReceiveDelivery(
-        ReceiveDeliveryRequest request, [FromServices] ReceiveDeliveryUseCase useCase, CancellationToken ct)
+        ReceiveDeliveryRequest request, [FromHeader(Name = "Idempotency-Key")] string idempotencyKey,
+        [FromServices] ReceiveDeliveryUseCase useCase, CancellationToken ct)
     {
         var command = new ReceiveDeliveryCommand(
             new LocationId(request.Location),
             request.PurchaseOrder is { } order ? new PurchaseOrderId(order) : null,
             request.Supplier is { } supplier ? new SupplierId(supplier) : null,
-            request.Received.Select(i => i.ToItem()).ToList());
+            request.Received.Select(i => i.ToItem()).ToList(),
+            new IdempotencyKey(idempotencyKey));
         var id = await useCase.ExecuteAsync(command, ct);
         return Created($"deliveries/{id.Value}", new { id = id.Value });
+    }
+
+    [RequirePermission(Permissions.ReceivingConfirm, Permissions.PurchasingManage)]
+    [HttpGet("deliveries")]
+    public async Task<IActionResult> ListDeliveries(
+        Guid location, [FromServices] ListGoodsReceiptsUseCase useCase, CancellationToken ct)
+    {
+        var receipts = await useCase.ExecuteAsync(new LocationId(location), ct);
+        return Ok(receipts.Select(r => new
+        {
+            id = r.Receipt.Value, supplier = r.Supplier.Value, location = r.Location.Value,
+            purchaseOrder = r.PurchaseOrder?.Value, r.ReceivedUnits, r.HasDiscrepancies, r.ConfirmedAt,
+            confirmedBy = r.ConfirmedBy?.Value,
+        }));
+    }
+
+    [RequirePermission(Permissions.ReceivingConfirm, Permissions.PurchasingManage)]
+    [HttpGet("deliveries/{id:guid}")]
+    public async Task<IActionResult> GetDelivery(Guid id, [FromServices] GetGoodsReceiptUseCase useCase, CancellationToken ct)
+    {
+        var receipt = await useCase.ExecuteAsync(new GoodsReceiptId(id), ct);
+        return Ok(new
+        {
+            id = receipt.Id.Value, supplier = receipt.SupplierId.Value, location = receipt.LocationId.Value,
+            purchaseOrder = receipt.PurchaseOrderId?.Value, receipt.ConfirmedAt, confirmedBy = receipt.ConfirmedBy?.Value,
+            lines = receipt.Lines.Select(l => new { book = l.Id.Value, ordered = l.Ordered.Value, received = l.Received.Value }),
+            discrepancies = receipt.Discrepancies.Select(d => new
+            {
+                id = d.Id, book = d.BookId.Value, ordered = d.Ordered.Value, received = d.Received.Value,
+            }),
+        });
+    }
+
+    [RequirePermission(Permissions.PurchasingManage)]
+    [HttpGet("missing-book-requests")]
+    public async Task<IActionResult> MissingBooks(
+        Guid location, [FromServices] ListMissingBookRequestsUseCase useCase, CancellationToken ct)
+    {
+        var requests = await useCase.ExecuteAsync(new LocationId(location), ct);
+        return Ok(requests.Select(r => new { id = r.Id.Value, r.Title, r.Author, r.Demand, r.RecordedAt }));
     }
 
     [RequirePermission(Permissions.SalesCreate)]
@@ -92,6 +143,11 @@ public sealed class PurchasingController : ControllerBase
         var id = await useCase.ExecuteAsync(command, ct);
         return Created($"missing-book-requests/{id.Value}", new { id = id.Value });
     }
+
+    [RequirePermission(Permissions.PurchasingManage, Permissions.ReceivingConfirm)]
+    [HttpGet("suppliers")]
+    public async Task<IActionResult> Suppliers([FromServices] ListSuppliersUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(s => new { id = s.Id.Value, s.Name, s.ContactInfo, active = s.IsActive }));
 
     [RequirePermission(Permissions.PurchasingManage)]
     [HttpPost("suppliers")]

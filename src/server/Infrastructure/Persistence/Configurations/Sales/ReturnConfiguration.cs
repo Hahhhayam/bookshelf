@@ -12,6 +12,9 @@ internal sealed class ReturnConfiguration() : AggregateRootConfiguration<Return,
         builder.Property(x => x.Reason).HasMaxLength(500);
         builder.Property(x => x.Condition);
         builder.Property(x => x.Status);
+        builder.HasIndex(x => new { x.LocationId, x.Status });
+        builder.Property(x => x.IdempotencyKey).HasMaxLength(128).IsRequired();
+        builder.HasIndex(x => x.IdempotencyKey).IsUnique();
         builder.Ignore(x => x.RefundTotal);
     }
 }

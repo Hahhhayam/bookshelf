@@ -8,5 +8,7 @@ internal sealed class InventoryCountConfiguration()
         builder.Navigation(x => x.Lines).AutoInclude();
         builder.Property(x => x.LocationId);
         builder.Property(x => x.Status);
+        builder.Property(x => x.StartedAt);
+        builder.HasIndex(x => new { x.LocationId, x.StartedAt });
     }
 }

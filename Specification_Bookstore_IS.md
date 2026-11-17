@@ -242,13 +242,13 @@ The system must allow login with an account and determine user rights according 
 - A successful login issues a random bearer session token valid for 8 hours. Only its hash is stored. Logout revokes the caller's own session at once.
 - A token stops working when it expires, is revoked, or its user is blocked. Roles and location access are read on every request, so a change to them applies immediately.
 - A signed-in user can read their own profile: login, permissions and the active locations they may work in. The client builds its navigation from it.
-- Every endpoint requires a signed-in user. The exceptions are login, catalog search, viewing a single item, and the customer-facing cart and order placement. Each staff operation also requires its named permission, checked at the API boundary before the request is processed and again inside the use case.
+- Every endpoint requires a signed-in user. The exceptions are login, catalog search, viewing a single item, the author, publisher, category and pickup-store lists, and the customer-facing cart, order placement, order tracking and bonus summary (the shop acts for a customer id, since customers have no login). Each staff operation also requires its named permission, checked at the API boundary before the request is processed and again inside the use case.
 
 <a id="fr-02"></a>
 #### FR-02 Book catalog
 An authorized user can add, edit and deactivate books. ISBN uniqueness must be checked.
 
-*Implementation notes (not in the report):* editing an item's details removes its cached card at once. Authors, publishers and suppliers are deactivated instead of deleted and can be reactivated; categories can only be renamed. An item keeps only its current price, and a price change applies at once. Earlier prices are kept in a separate append-only history that is written from the price-change event in the same transaction; anyone can read an item's price history, like its card. Scheduled (future-dated) prices are not supported.
+*Implementation notes (not in the report):* editing an item's details removes its cached card at once. Authors, publishers and suppliers are deactivated instead of deleted and can be reactivated; categories can only be renamed. An item keeps its current price and at most one scheduled price. A price change applies at once or from a chosen future moment; a scheduled job applies due prices every minute, so a scheduled price may start up to a minute late. Earlier prices are kept in a separate append-only history that is written from the price-change event in the same transaction; anyone can read an item's price history, like its card. A deactivated item can be reactivated; staff search can include deactivated items.
 
 <a id="fr-03"></a>
 #### FR-03 Search
@@ -261,6 +261,8 @@ A user can find a book by title, ISBN, author, publisher or category and see ava
 #### FR-04 Sale
 A cashier can create a receipt with several items, apply an allowed discount, select the customer and payment method.
 *Supports:* [BC-02](#bc-02)
+
+*Implementation notes (not in the report):* a sale needs an open cashier shift at its store; the store administrator opens and closes shifts (`shifts.manage`). The till prices the receipt before payment with the same rules as the sale (promotions, permitted discount, allowed bonus write-off), and payments must cover that total. A cash payment records the cash tendered and the change. A sale and a return each carry an operation key, so a resend posts once.
 
 <a id="fr-05"></a>
 #### FR-05 Return
@@ -303,6 +305,8 @@ A manager can create supplier orders, add items, purchase price, quantity and ex
 During receiving the system allows recording the actual quantity and the discrepancy with the order.
 *Supports:* [BC-01](#bc-01)
 
+*Implementation notes (not in the report):* a goods receipt carries an operation key, so a resent delivery is received once; it records who confirmed it and when, and its discrepancies can be read back.
+
 <a id="fr-13"></a>
 #### FR-13 Inventory count
 An administrator can open an inventory count, enter actual stock and, after approval, generate an adjustment.
@@ -320,12 +324,14 @@ The system accrues and redeems bonuses by rules, stores operation history and do
 An authorized user creates a promotion with validity period, conditions and priority. At sale the system automatically checks applicable rules.
 *Supports:* [BC-02](#bc-02), [BC-06](#bc-06)
 
+*Implementation notes (not in the report):* a promotion can be aimed at a customer segment or a single customer (a personal offer); it then applies only to sales for that customer.
+
 <a id="fr-16"></a>
 #### FR-16 Reports
 A manager can generate reports by period, store, category, book and other available dimensions.
 *Supports:* [BC-03](#bc-03), [BC-04](#bc-04), [BC-07](#bc-07)
 
-*Implementation notes (not in the report):* the management report is filtered by period, stores (none means the whole chain, which needs its own permission), category and book. It shows revenue, margin (against the average purchase price), receipts, average check, days of stock at the period's sales rate (turnover), top books, slow-moving books (surplus), current stock below minimum (shortage), ABC analysis by revenue (A up to 80%, B up to 95%, C the rest), figures per store and per category. The same report can be exported as a CSV file.
+*Implementation notes (not in the report):* the management report is filtered by period, stores (none means the whole chain, which needs its own permission), category and book. It shows revenue, margin (against the average purchase price), receipts, average check, days of stock at the period's sales rate (turnover), top books, slow-moving books (surplus), current stock below minimum (shortage), ABC analysis by revenue (A up to 80%, B up to 95%, C the rest), figures per store and per category, and the same totals for the equally long previous period. The same report can be exported as a CSV file.
 
 <a id="fr-17"></a>
 #### FR-17 Change history
@@ -337,7 +343,7 @@ For critical entities the system stores the user, time, action type and values o
 The system creates notifications about order readiness, low stock, overdue delivery and critical integration errors.
 *Supports:* [BC-03](#bc-03)
 
-*Implementation notes (not in the report):* overdue deliveries are found by a scheduled job that runs hourly (configurable) and notifies once per purchase order. The schedule is kept in memory, so every running instance runs the job. Integration-error notifications are not triggered yet, because no adapter reports its failures.
+*Implementation notes (not in the report):* overdue deliveries are found by a scheduled job that runs hourly (configurable) and notifies once per purchase order. The schedule is kept in memory, so every running instance runs the job. Integration-error notifications are not triggered yet, because no adapter reports its failures; an integration keeps its last exchange and last error for the administration screen.
 
 <a id="fr-19"></a>
 #### FR-19 Users

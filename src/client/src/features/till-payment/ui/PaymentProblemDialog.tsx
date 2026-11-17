@@ -5,7 +5,7 @@ import { statusTone, tokens } from '@/shared/config/tokens'
 import { Key } from '@/shared/ui'
 import type { PaymentFailure } from '../model/failure'
 
-export type ProblemAction = 'retry' | 'Cash' | 'Card' | 'Split' | 'adjust'
+export type ProblemAction = 'retry' | 'Cash' | 'Card' | 'Split'
 
 function Choice({ k, primary, onClick, children, loading }: {
   k?: string; primary?: boolean; onClick: () => void; children: ReactNode; loading?: boolean
@@ -42,13 +42,8 @@ function Body({ failure, busy, act, close }: {
     case 'rule':
       return <>
         <Title icon={<IconAlertTriangle size={22} stroke={1.75} />} text="Сервер не провів чек" />
-        <Text fz={14}>Відповідь сервера: «{failure.message}»</Text>
-        {failure.totalMismatch && (
-          <Text fz={14}>Сума могла відрізнятися через акції: каса рахує без них, а остаточну суму рахує сервер.
-            Змініть суму оплати в розділеній оплаті.</Text>
-        )}
-        {failure.totalMismatch && <Choice primary k="F7" onClick={() => act('adjust')}>Змінити суму оплати</Choice>}
-        <Choice primary={!failure.totalMismatch} k="Esc" onClick={close}>Назад до чека</Choice>
+        <Text fz={14}>{failure.message}</Text>
+        <Choice primary k="Esc" onClick={close}>Назад до чека</Choice>
       </>
     case 'unconfirmed':
       return <>

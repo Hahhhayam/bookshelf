@@ -29,11 +29,11 @@ public sealed class Transfer : AggregateRoot<TransferId>
         var transfer = new Transfer(TransferId.New(), route);
         foreach (var item in items)
         {
-            Guard.That(!item.Quantity.IsZero, "Transfer quantity must be positive.");
-            Guard.That(transfer._lines.All(l => l.Id != item.BookId), "An item can appear in a transfer only once.");
+            Guard.That(!item.Quantity.IsZero, "quantity-not-positive", "Transfer quantity must be positive.");
+            Guard.That(transfer._lines.All(l => l.Id != item.BookId), "line-duplicate", "An item can appear in a transfer only once.");
             transfer._lines.Add(new(item.BookId, item.Quantity));
         }
-        Guard.That(transfer._lines.Count > 0, "A transfer needs at least one line.");
+        Guard.That(transfer._lines.Count > 0, "lines-empty", "A transfer needs at least one line.");
         return transfer;
     }
 
@@ -65,12 +65,20 @@ public sealed class Transfer : AggregateRoot<TransferId>
         Raise(new TransferReceived(Id, Route, Items(l => l.Received ?? Quantity.Zero), _discrepancies.Count > 0, now));
     }
 
+    /// <summary>Closes a discrepancy found at receiving with the reason for the difference; stock stays as received.</summary>
+    public void ResolveDiscrepancy(Guid discrepancyId, string reason, UserId by, DateTimeOffset now)
+    {
+        var discrepancy = _discrepancies.FirstOrDefault(d => d.Id == discrepancyId)
+                          ?? throw new DomainException("discrepancy-not-found", "The discrepancy is not part of this transfer.");
+        discrepancy.Resolve(reason, by, now);
+    }
+
     private IReadOnlyList<ItemQuantity> Items(Func<TransferLine, Quantity> quantity) =>
         _lines.Select(l => new ItemQuantity(l.Id, quantity(l))).ToList();
 
     private void MoveTo(TransferStatus to, TransferStatus from, UserId by, DateTimeOffset now)
     {
-        Guard.That(Status == from, $"Transfer must be {from}, but is {Status}.");
+        Guard.That(Status == from, "transfer-status-invalid", $"Transfer must be {from}, but is {Status}.");
         Status = to;
         Raise(new TransferStatusChanged(Id, from, to, by, now));
     }

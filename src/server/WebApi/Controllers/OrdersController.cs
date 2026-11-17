@@ -7,6 +7,8 @@ namespace WebApi.Controllers;
 
 public sealed record AddToCartRequest(Guid Book, int Quantity);
 
+public sealed record ChangeCartQuantityRequest(int Quantity);
+
 public sealed record FulfilmentDto(FulfilmentKind Kind, Guid? PickupLocation, string? DeliveryAddress);
 
 public sealed record PlaceOrderRequest(Guid Customer, OrderType Type, FulfilmentDto Fulfilment, Guid StockLocation);
@@ -26,6 +28,40 @@ public sealed class OrdersController : ControllerBase
     }
 
     [AllowAnonymous]
+    [HttpGet("customers/{customer:guid}/cart")]
+    public async Task<IActionResult> GetCart(Guid customer, [FromServices] GetCartUseCase useCase, CancellationToken ct)
+    {
+        var cart = await useCase.ExecuteAsync(new CustomerId(customer), ct);
+        return Ok(new
+        {
+            lines = cart.Lines.Select(l => new
+            {
+                book = l.Book.Value, l.Title, quantity = l.Quantity.Value, unitPrice = MoneyDto.From(l.UnitPrice),
+            }),
+            total = cart.Total is { } sum ? MoneyDto.From(sum) : null,
+        });
+    }
+
+    [AllowAnonymous]
+    [HttpPut("customers/{customer:guid}/cart/items/{book:guid}")]
+    public async Task<IActionResult> ChangeCartQuantity(
+        Guid customer, Guid book, ChangeCartQuantityRequest request, [FromServices] ChangeCartQuantityUseCase useCase,
+        CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new CustomerId(customer), new BookId(book), new Quantity(request.Quantity), ct);
+        return NoContent();
+    }
+
+    [AllowAnonymous]
+    [HttpDelete("customers/{customer:guid}/cart/items/{book:guid}")]
+    public async Task<IActionResult> RemoveFromCart(
+        Guid customer, Guid book, [FromServices] RemoveFromCartUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new CustomerId(customer), new BookId(book), ct);
+        return NoContent();
+    }
+
+    [AllowAnonymous]
     [HttpPost("orders")]
     public async Task<IActionResult> Place(
         PlaceOrderRequest request, [FromServices] PlaceOrderUseCase useCase, CancellationToken ct)
@@ -40,11 +76,16 @@ public sealed class OrdersController : ControllerBase
     [HttpGet("orders/track/{code}")]
     public async Task<IActionResult> Track(string code, [FromServices] TrackOrderUseCase useCase, CancellationToken ct)
     {
-        var view = await useCase.ExecuteAsync(new PickupCode(code), ct);
+        var (order, history) = await useCase.ExecuteAsync(new PickupCode(code), ct);
         return Ok(new
         {
-            view.Order.Status, view.Order.Fulfilment.Kind,
-            history = view.History.Select(c => new { c.To, c.At }),
+            id = order.Id.Value, order.Status, order.Fulfilment.Kind, store = order.Fulfilment.PickupLocation?.Value,
+            total = MoneyDto.From(order.Total),
+            lines = order.Lines.Select(l => new
+            {
+                book = l.Id.Value, quantity = l.Quantity.Value, unitPrice = MoneyDto.From(l.UnitPrice),
+            }),
+            history = history.Select(c => new { c.To, c.At }),
         });
     }
 
@@ -74,9 +115,11 @@ public sealed class OrdersController : ControllerBase
     [RequirePermission(Permissions.OrdersManage)]
     [HttpGet("locations/{location:guid}/orders")]
     public async Task<IActionResult> List(
-        Guid location, OrderStatus? status, [FromServices] ListOrdersUseCase useCase, CancellationToken ct)
+        Guid location, OrderStatus? status, string? pickupCode, [FromServices] ListOrdersUseCase useCase,
+        CancellationToken ct)
     {
-        var orders = await useCase.ExecuteAsync(new LocationId(location), status, ct);
+        var code = string.IsNullOrWhiteSpace(pickupCode) ? (PickupCode?)null : new PickupCode(pickupCode);
+        var orders = await useCase.ExecuteAsync(new LocationId(location), status, code, ct);
         return Ok(orders.Select(o => new
         {
             id = o.Order.Value, customer = o.Customer.Value, o.Type, o.Status, o.LastChangedAt,
@@ -96,8 +139,8 @@ public sealed class OrdersController : ControllerBase
     private static FulfilmentMethod ToFulfilment(FulfilmentDto dto) => dto.Kind switch
     {
         FulfilmentKind.Pickup => FulfilmentMethod.Pickup(new LocationId(
-            dto.PickupLocation ?? throw new DomainException("A pickup order needs a pickup location."))),
+            dto.PickupLocation ?? throw new DomainException("pickup-location-required", "A pickup order needs a pickup location."))),
         _ => FulfilmentMethod.Delivery(
-            dto.DeliveryAddress ?? throw new DomainException("A delivery order needs an address.")),
+            dto.DeliveryAddress ?? throw new DomainException("delivery-address-required", "A delivery order needs an address.")),
     };
 }

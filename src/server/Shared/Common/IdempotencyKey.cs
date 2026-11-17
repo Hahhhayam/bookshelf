@@ -8,7 +8,7 @@ public readonly record struct IdempotencyKey
     public IdempotencyKey(string value)
     {
         var trimmed = Guard.NotBlank(value);
-        Guard.That(trimmed.Length <= 128, "Idempotency key is too long.");
+        Guard.That(trimmed.Length <= 128, "idempotency-key-too-long", "Idempotency key is too long.");
         Value = trimmed;
     }
 

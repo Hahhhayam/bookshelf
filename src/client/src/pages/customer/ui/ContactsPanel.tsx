@@ -1,8 +1,9 @@
 import { Group, SimpleGrid, Stack, Text } from '@mantine/core'
 import type { CustomerCard } from '@/entities/customer'
-import { referenceName } from '@/entities/reference'
+import { useReferenceNames } from '@/entities/reference'
 import { useCan } from '@/entities/viewer'
 import { ChangeSegmentsButton } from '@/features/crm-change-segments'
+import { EditContactButton } from '@/features/crm-edit-contact'
 import { tokens } from '@/shared/config/tokens'
 import { Perm } from '@/shared/lib'
 import { Panel } from '@/shared/ui'
@@ -13,9 +14,14 @@ function Contact({ value, mono }: { value: string | null; mono?: boolean }) {
 }
 
 export function ContactsPanel({ customer }: { customer: CustomerCard }) {
+  const segmentName = useReferenceNames('segments')
   const can = useCan()
   return (
-    <Panel title="Контакти" padding={16}>
+    <Panel title="Контакти" padding={16}
+      extra={can(Perm.CrmManage) && (
+        <EditContactButton customerId={customer.id}
+          current={{ name: customer.name, phone: customer.phone ?? '', email: customer.email ?? '' }} />
+      )}>
       <Stack gap="md">
         <SimpleGrid cols={2} spacing="xs" verticalSpacing="sm" style={{ gridTemplateColumns: '120px 1fr' }}>
           <Text c="dimmed" size="sm">Телефон</Text><Contact value={customer.phone} mono />
@@ -28,7 +34,7 @@ export function ContactsPanel({ customer }: { customer: CustomerCard }) {
           </Group>
           {customer.segments.length === 0
             ? <Text size="sm" c="dimmed">Не входить у жоден сегмент.</Text>
-            : <Group gap={6}>{customer.segments.map((id) => <SegmentChip key={id} name={referenceName('segments', id)} />)}</Group>}
+            : <Group gap={6}>{customer.segments.map((id) => <SegmentChip key={id} name={segmentName(id)} />)}</Group>}
         </Stack>
       </Stack>
     </Panel>

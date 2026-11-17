@@ -2,7 +2,7 @@ import { Modal, Stack, Text } from '@mantine/core'
 import { BookHitList, type BookHit } from '@/entities/book'
 import { StockHere } from './StockHere'
 
-/** A code that matched several books (a title typed into the scan field, GAP-06): the cashier picks one. */
+/** A code that matched several books (a title typed into the scan field): the cashier picks one. */
 export function BookPickDialog({ hits, code, locationId, onPick, onClose }: {
   hits: BookHit[] | null
   code: string

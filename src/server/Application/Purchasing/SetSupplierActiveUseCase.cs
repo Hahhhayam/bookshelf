@@ -8,11 +8,13 @@ public sealed class SetSupplierActiveUseCase(
     {
         user.Require(Permissions.PurchasingManage);
         var supplier = await suppliers.GetAsync(id, ct).OrNotFound("Supplier");
+        var wasActive = supplier.IsActive;
         if (active)
             supplier.Activate();
         else
             supplier.Deactivate();
-        audit.Record(active ? "supplier.activated" : "supplier.deactivated", id.ToString(), after: supplier.Name);
+        audit.Record(active ? "supplier.activated" : "supplier.deactivated", id.ToString(),
+            new FieldChange("active", wasActive.ToString(), active.ToString()));
         await unitOfWork.CommitAsync(ct);
     }
 }

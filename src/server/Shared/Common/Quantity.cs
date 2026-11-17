@@ -6,7 +6,7 @@ public readonly record struct Quantity : IComparable<Quantity>
 
     public Quantity(int value)
     {
-        Guard.That(value >= 0, "Quantity cannot be negative.");
+        Guard.That(value >= 0, "quantity-negative", "Quantity cannot be negative.");
         Value = value;
     }
 

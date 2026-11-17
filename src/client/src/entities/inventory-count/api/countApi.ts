@@ -1,33 +1,11 @@
-import { http, stub, type Created } from '@/shared/api'
-import { local, readJson, writeJson } from '@/shared/lib'
-import type { CountSession } from '../model/types'
-
-const key = 'bookshelf.counts'
-
-const all = () => readJson<CountSession[]>(local, key, [])
-const save = (count: CountSession) => writeJson(local, key, [count, ...all().filter((c) => c.id !== count.id)])
+import { http, type Created } from '@/shared/api'
+import type { CountCard, CountSummary } from '../model/types'
 
 export const countApi = {
-  start: async (location: string) => {
-    const { id } = await http.post<Created>('inventory-counts', { location })
-    save({ id, location, startedAt: new Date().toISOString(), status: 'Open', counted: {} })
-    return id
-  },
-  record: async (id: string, book: string, counted: number) => {
-    await http.put(`inventory-counts/${id}/lines/${book}`, { counted })
-    const count = all().find((c) => c.id === id)
-    if (count) save({ ...count, counted: { ...count.counted, [book]: counted } })
-  },
-  complete: async (id: string) => {
-    await http.post(`inventory-counts/${id}/complete`)
-    const count = all().find((c) => c.id === id)
-    if (count) save({ ...count, status: 'Counted' })
-  },
-  approve: async (id: string) => {
-    await http.post(`inventory-counts/${id}/approve`)
-    const count = all().find((c) => c.id === id)
-    if (count) save({ ...count, status: 'Approved' })
-  },
-  list: () => stub('GAP-08', all),
-  get: (id: string) => stub('GAP-08', () => all().find((c) => c.id === id) ?? null),
+  list: (location: string) => http.get<CountSummary[]>('inventory-counts', { query: { location } }),
+  get: (id: string) => http.get<CountCard>(`inventory-counts/${id}`),
+  start: async (location: string) => (await http.post<Created>('inventory-counts', { location })).id,
+  record: (id: string, book: string, counted: number) => http.put(`inventory-counts/${id}/lines/${book}`, { counted }),
+  complete: (id: string) => http.post(`inventory-counts/${id}/complete`),
+  approve: (id: string) => http.post(`inventory-counts/${id}/approve`),
 }

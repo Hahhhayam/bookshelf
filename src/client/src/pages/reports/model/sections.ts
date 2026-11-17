@@ -1,7 +1,7 @@
 import type { ManagementReport } from '@/entities/report'
 import type { AbcClass } from '../ui/AbcTable'
 
-/** How many rows of each long list the dashboard shows; each title is one request (GAP-13), the CSV has them all. */
+/** How many rows of each long list the dashboard shows; the CSV has them all. */
 export const listLimit = 10
 const abcSamplePerClass = 5
 

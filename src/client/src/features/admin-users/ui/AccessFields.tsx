@@ -15,7 +15,6 @@ export function AccessFields({ options, roles, locations, onRoles, onLocations, 
       <MultiSelect
         label="Ролі" placeholder={roles.length ? undefined : 'Оберіть ролі'} data={options.roles} value={roles}
         onChange={onRoles} searchable clearable nothingFoundMessage="Ролей не знайдено" error={error}
-        description="Список — лише ролі, створені в цьому браузері"
       />
       <MultiSelect
         label="Доступ до локацій" placeholder={locations.length ? undefined : 'Оберіть локації'} data={options.locations}

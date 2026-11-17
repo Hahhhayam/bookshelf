@@ -7,7 +7,7 @@ export type TenderMethod = 'Bonus' | 'GiftCertificate' | 'Cash' | 'Card'
 export type Tender = Record<TenderMethod, number>
 
 export interface PaymentPlan {
-  /** What the payments must add up to: the quoted total, or the amount the cashier corrected after B-01. */
+  /** What the payments must add up to: the server's quoted total. */
   total: number
   tender: Tender
   certificateNumber: string
@@ -23,26 +23,29 @@ export const remaining = (total: number, tender: Tender) => Math.max(0, total - 
 export const change = (total: number, tender: Tender) => Math.min(tender.Cash, Math.max(0, tendered(tender) - total))
 
 /** Why the plan cannot be posted yet, in the cashier's words; null when it can. */
-export function planProblem(plan: PaymentPlan, bonusBalance: number | null): string | null {
+/** `bonusAllowed`: kopecks the customer's bonuses may pay (from the quote), or null without a customer. */
+export function planProblem(plan: PaymentPlan, bonusAllowed: number | null): string | null {
   const { total, tender } = plan
   if (total <= 0) return 'Сума до сплати має бути більшою за нуль.'
   if (remaining(total, tender) > 0) return `Залишилось сплатити ${formatMoney(fromCents(remaining(total, tender)))}.`
   if (tendered(tender) - tender.Cash > total) return 'Картка, бонуси й сертифікат разом більші за суму чека.'
-  if (tender.Bonus > 0 && bonusBalance === null) return 'Бонусами можна платити лише з клієнтом (F4).'
-  if (bonusBalance !== null && tender.Bonus > bonusBalance) return `На бонусному рахунку лише ${formatMoney(fromCents(bonusBalance))}.`
+  if (tender.Bonus > 0 && bonusAllowed === null) return 'Бонусами можна платити лише з клієнтом (F4).'
+  if (bonusAllowed !== null && tender.Bonus > bonusAllowed) return `Бонусами можна списати лише ${formatMoney(fromCents(bonusAllowed))}.`
   if (tender.GiftCertificate > 0 && !plan.certificateNumber.trim()) return 'Вкажіть номер сертифіката.'
   return null
 }
 
-/** The payments the server takes: they must equal the total exactly, so cash goes without the change. */
+/** The payments the server takes: amounts equal the total exactly, and cash also says what was handed over. */
 export function toPayments(plan: PaymentPlan): Payment[] {
-  const net: Tender = { ...plan.tender, Cash: plan.tender.Cash - change(plan.total, plan.tender) }
+  const rest = change(plan.total, plan.tender)
+  const net: Tender = { ...plan.tender, Cash: plan.tender.Cash - rest }
   return (Object.keys(net) as TenderMethod[])
     .filter((method) => net[method] > 0)
     .map((method) => ({
       method,
       amount: fromCents(net[method]),
       giftCertificateNumber: method === 'GiftCertificate' ? plan.certificateNumber.trim() : null,
+      tendered: method === 'Cash' && rest > 0 ? fromCents(plan.tender.Cash) : null,
     }))
 }
 

@@ -55,15 +55,22 @@ public sealed class Sale : AggregateRoot<SaleId>
         return sale;
     }
 
+    /// <summary>The receipt total after discounts; the till's quote and the sale count it the same way.</summary>
+    public static Money TotalOf(IReadOnlyList<SaleLine> lines)
+    {
+        Guard.That(lines.Count > 0, "lines-empty", "A receipt needs at least one line.");
+        return Money.Sum(lines.Select(l => l.Total), lines[0].UnitPrice.Currency);
+    }
+
+    /// <summary>Payments add up to the total exactly; cash change is recorded on the payment, not in its amount.</summary>
+    public static void EnsurePaymentsCover(Money total, IEnumerable<Money> payments) =>
+        Guard.That(Money.Sum(payments, total.Currency) == total, "payments-total-mismatch", "Payments must add up to the receipt total.");
+
     private static Money ValidatedTotal(IReadOnlyList<SaleLine> lines, IReadOnlyList<Payment> payments)
     {
-        Guard.That(lines.Count > 0, "A receipt needs at least one line.");
-        Guard.That(payments.All(p => p.Status != PaymentStatus.Failed), "A sale cannot include a failed payment.");
-
-        var currency = lines[0].UnitPrice.Currency;
-        var total = Money.Sum(lines.Select(l => l.Total), currency);
-        Guard.That(Money.Sum(payments.Select(p => p.Amount), currency) == total,
-            "Payments must add up to the receipt total.");
+        var total = TotalOf(lines);
+        Guard.That(payments.All(p => p.Status != PaymentStatus.Failed), "payment-failed", "A sale cannot include a failed payment.");
+        EnsurePaymentsCover(total, payments.Select(p => p.Amount));
         return total;
     }
 
@@ -74,15 +81,15 @@ public sealed class Sale : AggregateRoot<SaleId>
     public void ConfirmPayment(Guid paymentId)
     {
         var payment = _payments.FirstOrDefault(p => p.Id == paymentId)
-                      ?? throw new DomainException("Payment not found.");
+                      ?? throw new DomainException("payment-not-found", "Payment not found.");
         payment.Capture();
     }
 
     /// <summary>Only a user with the right to cancel may do this.</summary>
     public void Cancel(bool userMayCancel, UserId by, DateTimeOffset now)
     {
-        Guard.That(userMayCancel, "The user has no right to cancel sales.");
-        Guard.That(Status == SaleStatus.Completed, "Only a completed sale can be cancelled.");
+        Guard.That(userMayCancel, "sale-cancel-not-permitted", "The user has no right to cancel sales.");
+        Guard.That(Status == SaleStatus.Completed, "sale-not-completed", "Only a completed sale can be cancelled.");
         Status = SaleStatus.Cancelled;
         Raise(new SaleCancelled(Id, LocationId,
             _lines.Select(l => new ItemQuantity(l.BookId, l.Quantity)).ToList(), by, now));

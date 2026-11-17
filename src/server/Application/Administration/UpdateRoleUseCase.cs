@@ -8,10 +8,11 @@ public sealed class UpdateRoleUseCase(IRoleRepository roles, ICurrentUser user, 
         user.Require(Permissions.UsersManage);
         var role = await roles.GetAsync(id, ct).OrNotFound("Role");
 
-        var before = $"{role.Name}: {RoleText.Of(role)}";
+        var (oldName, oldPermissions) = (role.Name, RoleText.Of(role));
         role.Rename(name);
         role.ChangePermissions(permissions);
-        audit.Record("role.changed", id.ToString(), before, $"{role.Name}: {RoleText.Of(role)}");
+        audit.Record("role.changed", id.ToString(), new FieldChange("name", oldName, role.Name),
+            new FieldChange("permissions", oldPermissions, RoleText.Of(role)));
         await unitOfWork.CommitAsync(ct);
     }
 }

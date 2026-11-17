@@ -1,7 +1,7 @@
 import { SimpleGrid, Stack, Text } from '@mantine/core'
 import type { ReactNode } from 'react'
 import type { PurchaseOrderCard } from '@/entities/purchase-order'
-import { referenceName } from '@/entities/reference'
+import { useReferenceNames } from '@/entities/reference'
 import { uah } from '@/shared/api'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { formatDate, formatNumber } from '@/shared/lib'
@@ -18,13 +18,14 @@ function Fact({ label, children }: { label: string; children: ReactNode }) {
 
 /** The order's key facts in one row of the card. */
 export function OrderFacts({ order }: { order: PurchaseOrderCard }) {
+  const supplierName = useReferenceNames('suppliers')
   const ordered = order.lines.reduce((sum, line) => sum + line.ordered, 0)
   const received = order.lines.reduce((sum, line) => sum + line.received, 0)
   const total = order.lines.reduce((sum, line) => sum + line.ordered * line.purchasePrice.amount, 0)
   return (
     <Panel padding={20}>
       <SimpleGrid cols={{ base: 1, xs: 2, md: 5 }} spacing={28} verticalSpacing={20}>
-        <Fact label="Постачальник">{referenceName('suppliers', order.supplier)}</Fact>
+        <Fact label="Постачальник">{supplierName(order.supplier)}</Fact>
         <Fact label="Очікувана поставка">
           <span style={{ color: order.isOverdue ? statusTone.attention.text : undefined }}>{formatDate(order.expectedDate)}</span>
         </Fact>

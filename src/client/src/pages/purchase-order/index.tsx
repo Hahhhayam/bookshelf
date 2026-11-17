@@ -1,8 +1,7 @@
 import { Anchor, Badge, Stack, Tabs } from '@mantine/core'
 import { Link, useParams } from 'react-router'
 import { purchaseOrderStatus, usePurchaseOrder, type PurchaseOrderStatus } from '@/entities/purchase-order'
-import { userNames } from '@/entities/reference'
-import { useViewer } from '@/entities/viewer'
+import { useUserNames } from '@/entities/reference'
 import { HistoryTimeline, Panel, QueryView } from '@/shared/ui'
 import { OrderFacts } from './ui/OrderFacts'
 import { OrderHeader } from './ui/OrderHeader'
@@ -14,7 +13,7 @@ const statusLabel = (status: string) => purchaseOrderStatus[status as PurchaseOr
 export default function PurchaseOrderPage() {
   const { id } = useParams()
   const query = usePurchaseOrder(id)
-  const userName = userNames(useViewer().data)
+  const userName = useUserNames()
 
   return (
     <Stack gap={20}>

@@ -22,6 +22,8 @@ public sealed class TransferBetweenLocations(SqlServerFixture sql) : EndToEndTes
         await SeesStock(receiver, World.StoreB, World.Dune, onHand: 2, reserved: 0);
         await SeesTransferFlaggedForDiscrepancy(receiver, World.StoreB, transfer);
         await SeesTransferDiscrepancy(receiver, transfer, World.Dune, expected: 3, actual: 2);
+        await ResolvesDiscrepancy(receiver, transfer, "Недостача від складу");
+        await SeesDiscrepancyResolved(receiver, transfer, "Недостача від складу", UserOf(SampleUsers.StoreAdminB));
         await SeesTransferHistory(keeper, transfer, keeper: UserOf(SampleUsers.Keeper), receiver: UserOf(SampleUsers.StoreAdminB));
 
         var outsider = await LogsIn(SampleUsers.StoreAdmin);
@@ -40,7 +42,7 @@ public sealed class TransferBetweenLocations(SqlServerFixture sql) : EndToEndTes
     private static Task ShipsTransfer(Api keeper, Guid transfer) => keeper.Post($"transfers/{transfer}/ship");
 
     private static Task CannotShipTransfer(Api keeper, Guid transfer) =>
-        keeper.Refused(HttpStatusCode.UnprocessableEntity, HttpMethod.Post, $"transfers/{transfer}/ship");
+        keeper.Rejected("transfer-status-invalid", HttpMethod.Post, $"transfers/{transfer}/ship");
 
     private static Task ReceivesTransfer(Api receiver, Guid transfer, params (BookId Book, int Quantity)[] received) =>
         receiver.Post($"transfers/{transfer}/receive",
@@ -59,6 +61,20 @@ public sealed class TransferBetweenLocations(SqlServerFixture sql) : EndToEndTes
         Assert.Equal(book.Value, discrepancy["book"]!.GetValue<Guid>());
         Assert.Equal(expected, discrepancy.Number("expected"));
         Assert.Equal(actual, discrepancy.Number("actual"));
+    }
+
+    private static async Task ResolvesDiscrepancy(Api receiver, Guid transfer, string reason)
+    {
+        var discrepancy = (await receiver.Get($"transfers/{transfer}")).Items("discrepancies").Single().Id();
+        await receiver.Post($"transfers/{transfer}/discrepancies/{discrepancy}/resolve", new { reason });
+    }
+
+    private static async Task SeesDiscrepancyResolved(Api receiver, Guid transfer, string reason, UserId by)
+    {
+        var discrepancy = (await receiver.Get($"transfers/{transfer}")).Items("discrepancies").Single();
+        Assert.True(discrepancy["isResolved"]!.GetValue<bool>());
+        Assert.Equal(reason, discrepancy.Text("reason"));
+        Assert.Equal(by.Value, discrepancy["resolvedBy"]!.GetValue<Guid>());
     }
 
     private static async Task SeesTransferHistory(Api employee, Guid transfer, UserId keeper, UserId receiver) =>

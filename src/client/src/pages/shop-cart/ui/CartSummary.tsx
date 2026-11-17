@@ -2,16 +2,16 @@ import { Button, Group, Stack, Text, Title } from '@mantine/core'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { uah } from '@/shared/api'
-import { cartTotal, type CartLine } from '@/entities/cart'
+import { cartCount, type Cart } from '@/entities/cart'
 import { tokens } from '@/shared/config/tokens'
 import { plural } from '@/shared/lib'
 import { MoneyText } from '@/shared/ui'
 
 const bookForms = ['книжка', 'книжки', 'книжок'] as const
 
-export function CartSummary({ lines }: { lines: readonly CartLine[] }) {
-  const count = lines.reduce((sum, line) => sum + line.quantity, 0)
-  const total = uah(cartTotal(lines))
+export function CartSummary({ cart }: { cart: Cart }) {
+  const count = cartCount(cart.lines)
+  const total = cart.total ?? uah(0)
   return (
     <Stack component="aside" gap={6} p="lg" w={{ base: '100%', md: 380 }}
       style={{ flex: 'none', background: tokens.color.surface, border: `1px solid ${tokens.color.line}`, position: 'sticky', top: 96 }}>

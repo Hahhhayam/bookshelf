@@ -9,9 +9,17 @@ public sealed class SaleBonusRedeemer(IBonusAccountRepository accounts, IBonusPo
         if (bonusPayments.Count == 0)
             return;
 
-        var customer = sale.CustomerId ?? throw new DomainException("Bonuses can be spent only by an identified customer.");
+        var customer = sale.CustomerId ?? throw new DomainException("customer-required", "Bonuses can be spent only by an identified customer.");
         var account = await accounts.FindByCustomerAsync(customer, ct).OrNotFound("Bonus account");
         foreach (var payment in bonusPayments)
             account.Redeem(policy.PointsFor(payment.Amount), sale.Id, now);
+    }
+
+    /// <summary>The balance can pay at most the whole receipt.</summary>
+    public async Task<BonusWriteOff> WriteOffAsync(CustomerId customer, Money total, CancellationToken ct)
+    {
+        var balance = (await accounts.FindByCustomerAsync(customer, ct))?.Balance.Points ?? 0;
+        var worth = policy.ValueOf(balance, total.Currency);
+        return new BonusWriteOff(balance, worth < total ? worth : total);
     }
 }

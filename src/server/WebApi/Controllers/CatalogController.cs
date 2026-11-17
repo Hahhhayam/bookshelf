@@ -9,7 +9,7 @@ public sealed record AddBookRequest(
     string Title, ItemType ItemType, string Barcode, Guid Category, Guid[] Authors, Guid? Publisher, string? Isbn,
     MoneyDto Price);
 
-public sealed record ChangeBookPriceRequest(MoneyDto NewPrice);
+public sealed record ChangeBookPriceRequest(MoneyDto NewPrice, DateTimeOffset? EffectiveFrom = null);
 
 public sealed record UpdateBookDetailsRequest(string Title, string Barcode, Guid Category, Guid[] Authors, Guid? Publisher);
 
@@ -20,16 +20,17 @@ public sealed class CatalogController : ControllerBase
     [HttpGet("books")]
     public async Task<IActionResult> Search(
         string? text, string? isbn, Guid? author, Guid? publisher, Guid? category, Guid? availableAt,
-        [FromServices] SearchBooksUseCase useCase, CancellationToken ct)
+        [FromQuery] Guid[]? ids, bool includeInactive, [FromServices] SearchBooksUseCase useCase, CancellationToken ct)
     {
         var query = new BookSearchQuery(
             text, isbn is null ? null : new Isbn(isbn), author is { } a ? new AuthorId(a) : null,
             publisher is { } p ? new PublisherId(p) : null, category is { } c ? new CategoryId(c) : null,
-            availableAt is { } l ? new LocationId(l) : null);
+            availableAt is { } l ? new LocationId(l) : null,
+            ids is { Length: > 0 } ? ids.Select(i => new BookId(i)).ToList() : null, includeInactive);
         var results = await useCase.ExecuteAsync(query, ct);
         return Ok(results.Select(r => new
         {
-            id = r.Book.Value, r.Title, price = MoneyDto.From(r.Price),
+            id = r.Book.Value, r.Title, price = MoneyDto.From(r.Price), barcode = r.Barcode.Value, r.Status,
             availability = r.Availability.Select(a => new { location = a.Location.Value, available = a.Available.Value }),
         }));
     }
@@ -38,13 +39,16 @@ public sealed class CatalogController : ControllerBase
     [HttpGet("books/{id:guid}")]
     public async Task<IActionResult> Get(Guid id, [FromServices] GetBookUseCase useCase, CancellationToken ct)
     {
-        var (d, availability) = await useCase.ExecuteAsync(new BookId(id), ct);
+        var (d, availability, scheduled) = await useCase.ExecuteAsync(new BookId(id), ct);
         return Ok(new
         {
             id = d.Book.Value, d.Title, price = MoneyDto.From(d.Price), isbn = d.Isbn?.Value, barcode = d.Barcode.Value,
             d.ItemType, d.Status, publisher = d.Publisher?.Value, category = d.Category.Value,
             authors = d.Authors.Select(a => a.Value),
             availability = availability.Select(a => new { location = a.Location.Value, available = a.Available.Value }),
+            scheduledPrice = scheduled is null
+                ? null
+                : new { price = MoneyDto.From(scheduled.Price), scheduled.EffectiveFrom },
         });
     }
 
@@ -75,7 +79,17 @@ public sealed class CatalogController : ControllerBase
     public async Task<IActionResult> ChangePrice(
         Guid id, ChangeBookPriceRequest request, [FromServices] ChangeBookPriceUseCase useCase, CancellationToken ct)
     {
-        await useCase.ExecuteAsync(new ChangeBookPriceCommand(new BookId(id), request.NewPrice.ToMoney()), ct);
+        await useCase.ExecuteAsync(
+            new ChangeBookPriceCommand(new BookId(id), request.NewPrice.ToMoney(), request.EffectiveFrom), ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.CatalogEdit)]
+    [HttpPut("books/{id:guid}/active")]
+    public async Task<IActionResult> SetActive(
+        Guid id, SetActiveRequest request, [FromServices] SetBookActiveUseCase useCase, CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new BookId(id), request.Active, ct);
         return NoContent();
     }
 
@@ -96,6 +110,11 @@ public sealed class CatalogController : ControllerBase
         await useCase.ExecuteAsync(command, ct);
         return NoContent();
     }
+
+    [AllowAnonymous]
+    [HttpGet("authors")]
+    public async Task<IActionResult> Authors([FromServices] ListAuthorsUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(a => new { id = a.Id.Value, a.Name, active = a.IsActive }));
 
     [RequirePermission(Permissions.CatalogEdit)]
     [HttpPost("authors")]
@@ -124,6 +143,11 @@ public sealed class CatalogController : ControllerBase
         return NoContent();
     }
 
+    [AllowAnonymous]
+    [HttpGet("publishers")]
+    public async Task<IActionResult> Publishers([FromServices] ListPublishersUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(p => new { id = p.Id.Value, p.Name, active = p.IsActive }));
+
     [RequirePermission(Permissions.CatalogEdit)]
     [HttpPost("publishers")]
     public async Task<IActionResult> CreatePublisher(
@@ -150,6 +174,11 @@ public sealed class CatalogController : ControllerBase
         await useCase.ExecuteAsync(new PublisherId(id), request.Active, ct);
         return NoContent();
     }
+
+    [AllowAnonymous]
+    [HttpGet("categories")]
+    public async Task<IActionResult> Categories([FromServices] ListCategoriesUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(c => new { id = c.Id.Value, c.Name }));
 
     [RequirePermission(Permissions.CatalogEdit)]
     [HttpPost("categories")]

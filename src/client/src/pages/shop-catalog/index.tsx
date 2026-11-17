@@ -1,20 +1,34 @@
 import { useSearchParams } from 'react-router'
 import { CatalogSearch } from './ui/CatalogSearch'
 import { CatalogStart } from './ui/CatalogStart'
+import type { Facets } from './ui/FacetFilter'
 
-/** Shop catalog (artboards ShopCatalog, ShopMobile a): search results for ?q= with the «my store» filter. */
+/** Shop catalog (artboards ShopCatalog, ShopMobile a): search results for ?q=, category, publisher and «my store». */
 export default function ShopCatalogPage() {
   const [params, setParams] = useSearchParams()
   const text = params.get('q')?.trim() ?? ''
   const onlyMyStore = params.get('mine') === '1'
+  const facets: Facets = { category: params.get('cat'), publisher: params.get('pub') }
 
-  function setOnlyMyStore(on: boolean) {
+  function setParam(name: string, value: string | null) {
     const next = new URLSearchParams(params)
-    if (on) next.set('mine', '1')
-    else next.delete('mine')
+    if (value) next.set(name, value)
+    else next.delete(name)
     setParams(next, { replace: true })
   }
 
-  if (!text) return <CatalogStart />
-  return <CatalogSearch text={text} onlyMyStore={onlyMyStore} onOnlyMyStoreChange={setOnlyMyStore} />
+  function setFacets(next: Facets) {
+    const updated = new URLSearchParams(params)
+    for (const [name, value] of [['cat', next.category], ['pub', next.publisher]] as const) {
+      if (value) updated.set(name, value)
+      else updated.delete(name)
+    }
+    setParams(updated, { replace: true })
+  }
+
+  if (!text && !facets.category && !facets.publisher) return <CatalogStart onFacetsChange={setFacets} />
+  return (
+    <CatalogSearch text={text} facets={facets} onFacetsChange={setFacets} onlyMyStore={onlyMyStore}
+      onOnlyMyStoreChange={(on) => setParam('mine', on ? '1' : null)} />
+  )
 }

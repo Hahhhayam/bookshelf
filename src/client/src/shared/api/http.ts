@@ -1,10 +1,18 @@
-/** A refused call: the HTTP status and the server's problem-details message. */
+/**
+ * A refused call: the HTTP status and the server's problem details. `code` is the stable error code
+ * (src/server/ERROR_CODES.md), `field` names the empty value of a `blank` refusal, `message` is the server's English
+ * `detail`, kept as a fallback for codes the client does not know.
+ */
 export class ApiError extends Error {
   readonly status: number
+  readonly code?: string
+  readonly field?: string
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, code?: string, field?: string) {
     super(message)
     this.status = status
+    this.code = code
+    this.field = field
   }
 }
 
@@ -56,16 +64,24 @@ async function send(method: string, path: string, options: RequestOptions = {}):
   })
   if (response.ok) return response
   if (response.status === 401 && token) config.onUnauthorized()
-  throw new ApiError(response.status, await problemMessage(response))
+  throw await apiError(response)
 }
 
-async function problemMessage(response: Response) {
+interface Problem {
+  detail?: string
+  title?: string
+  code?: string
+  field?: string
+}
+
+async function apiError(response: Response) {
+  let problem: Problem = {}
   try {
-    const problem = (await response.json()) as { detail?: string; title?: string }
-    return problem.detail ?? problem.title ?? response.statusText
+    problem = (await response.json()) as Problem
   } catch {
-    return response.statusText
+    // Not problem details (a proxy error page, an empty body): the status text has to do.
   }
+  return new ApiError(response.status, problem.detail ?? problem.title ?? response.statusText, problem.code, problem.field)
 }
 
 async function json<T>(response: Response): Promise<T> {

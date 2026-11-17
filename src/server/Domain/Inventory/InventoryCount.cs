@@ -13,15 +13,20 @@ public sealed class InventoryCount : AggregateRoot<InventoryCountId>
 
     public LocationId LocationId { get; }
     public CountStatus Status { get; private set; } = CountStatus.Open;
+    public DateTimeOffset StartedAt { get; }
     public IReadOnlyList<CountLine> Lines => _lines;
 
-    private InventoryCount(InventoryCountId id, LocationId locationId) : base(id) => LocationId = locationId;
-
-    public static InventoryCount Start(LocationId locationId, IEnumerable<ItemQuantity> expected)
+    private InventoryCount(InventoryCountId id, LocationId locationId, DateTimeOffset startedAt) : base(id)
     {
-        var count = new InventoryCount(InventoryCountId.New(), locationId);
+        LocationId = locationId;
+        StartedAt = startedAt;
+    }
+
+    public static InventoryCount Start(LocationId locationId, IEnumerable<ItemQuantity> expected, DateTimeOffset now)
+    {
+        var count = new InventoryCount(InventoryCountId.New(), locationId, now);
         count._lines.AddRange(expected.Select(e => new CountLine(e.BookId, e.Quantity)));
-        Guard.That(count._lines.Count > 0, "A count needs at least one line.");
+        Guard.That(count._lines.Count > 0, "lines-empty", "A count needs at least one line.");
         return count;
     }
 
@@ -29,14 +34,14 @@ public sealed class InventoryCount : AggregateRoot<InventoryCountId>
     {
         Require(CountStatus.Open);
         var line = _lines.FirstOrDefault(l => l.Id == bookId)
-                   ?? throw new DomainException("The item is not part of this count.");
+                   ?? throw new DomainException("count-line-not-found", "The item is not part of this count.");
         line.Counted = counted;
     }
 
     public void CompleteCounting()
     {
         Require(CountStatus.Open);
-        Guard.That(_lines.All(l => l.Counted is not null), "Every line must be counted.");
+        Guard.That(_lines.All(l => l.Counted is not null), "count-incomplete", "Every line must be counted.");
         Status = CountStatus.Counted;
     }
 
@@ -59,5 +64,5 @@ public sealed class InventoryCount : AggregateRoot<InventoryCountId>
     }
 
     private void Require(CountStatus expected) =>
-        Guard.That(Status == expected, $"Count must be {expected}, but is {Status}.");
+        Guard.That(Status == expected, "count-status-invalid", $"Count must be {expected}, but is {Status}.");
 }

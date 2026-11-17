@@ -15,9 +15,12 @@ public sealed class SupplierOrderIsReceived(SqlServerFixture sql) : EndToEndTest
         await SeesOrderAmongOverdue(purchasing, order);
 
         var keeper = await LogsIn(SampleUsers.Keeper);
-        await ReceivesDelivery(keeper, order, (World.Kobzar, 20));
+        var first = await ReceivesDelivery(keeper, "delivery-1", order, (World.Kobzar, 20));
+        await ResendsDeliveryAndGetsTheSameReceipt(keeper, "delivery-1", order, first, (World.Kobzar, 20));
         await SeesOrderStatus(purchasing, order, "PartlyReceived");
-        await ReceivesDelivery(keeper, order, (World.Dune, 10));
+        await SeesReceiptDiscrepancy(keeper, first, World.Dune, ordered: 10, received: 0);
+        await ReceivesDelivery(keeper, "delivery-2", order, (World.Dune, 10));
+        await SeesReceiptsAtWarehouse(keeper, count: 2);
         await SeesOrderStatus(purchasing, order, "Received");
         await SeesOrderHistory(purchasing, order, purchaser: UserOf(SampleUsers.Purchasing), keeper: UserOf(SampleUsers.Keeper));
         await SeesStock(purchasing, World.Warehouse, World.Kobzar, onHand: 70, reserved: 0);
@@ -47,17 +50,37 @@ public sealed class SupplierOrderIsReceived(SqlServerFixture sql) : EndToEndTest
         Assert.DoesNotContain(overdue.Items(), o => o.Id() == order);
     }
 
-    private async Task ReceivesDelivery(Api keeper, Guid purchaseOrder, params (BookId Book, int Quantity)[] received) =>
-        await keeper.Create("deliveries", new
+    private async Task<Guid> ReceivesDelivery(
+        Api keeper, string key, Guid purchaseOrder, params (BookId Book, int Quantity)[] received) =>
+        (await keeper.Create("deliveries", new
         {
             location = World.Warehouse.Value, purchaseOrder, supplier = (Guid?)null,
             received = received.Select(r => new { book = r.Book.Value, quantity = r.Quantity }),
-        });
+        }, IdempotencyKey(key))).Id();
+
+    /// <summary>A resend after a lost answer carries the same key, so the goods are not received twice.</summary>
+    private async Task ResendsDeliveryAndGetsTheSameReceipt(
+        Api keeper, string key, Guid purchaseOrder, Guid receipt, params (BookId Book, int Quantity)[] received) =>
+        Assert.Equal(receipt, await ReceivesDelivery(keeper, key, purchaseOrder, received));
+
+    private static async Task SeesReceiptDiscrepancy(Api keeper, Guid receipt, BookId book, int ordered, int received)
+    {
+        var discrepancy = (await keeper.Get($"deliveries/{receipt}")).Items("discrepancies").Single();
+        Assert.Equal(book.Value, discrepancy["book"]!.GetValue<Guid>());
+        Assert.Equal(ordered, discrepancy.Number("ordered"));
+        Assert.Equal(received, discrepancy.Number("received"));
+    }
+
+    private async Task SeesReceiptsAtWarehouse(Api keeper, int count)
+    {
+        var receipts = await keeper.Get(Query.Of("deliveries", ("location", World.Warehouse.Value)));
+        Assert.Equal(count, receipts.Items().Count);
+    }
 
     private static async Task SeesOrderStatus(Api purchasing, Guid order, string status) =>
         Assert.Equal(status, (await purchasing.Get($"purchase-orders/{order}")).Text("status"));
 
     private static async Task SeesOrderHistory(Api purchasing, Guid order, UserId purchaser, UserId keeper) =>
         AssertHistory(await purchasing.Get($"purchase-orders/{order}"),
-            ("Sent", purchaser), ("PartlyReceived", keeper), ("Received", keeper));
+            ("Draft", purchaser), ("Sent", purchaser), ("PartlyReceived", keeper), ("Received", keeper));
 }

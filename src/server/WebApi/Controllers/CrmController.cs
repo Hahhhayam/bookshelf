@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Contracts;
 using WebApi.Security;
@@ -6,7 +7,19 @@ namespace WebApi.Controllers;
 
 public sealed record RegisterCustomerRequest(string Name, string? Phone, string? Email, string CardNumber);
 
-public sealed record PromotionConditionDto(Guid? Book, Guid? Category, int MinimumQuantity);
+public sealed record UpdateCustomerContactRequest(string Name, string? Phone, string? Email);
+
+/// <param name="Segment">With <paramref name="Customer"/>, makes the promotion a personal offer.</param>
+public sealed record PromotionConditionDto(
+    Guid? Book, Guid? Category, int MinimumQuantity, Guid? Segment = null, Guid? Customer = null)
+{
+    public PromotionCondition ToCondition() => new(
+        Book is { } b ? new BookId(b) : null, Category is { } c ? new CategoryId(c) : null, new Quantity(MinimumQuantity),
+        Segment is { } s ? new SegmentId(s) : null, Customer is { } p ? new CustomerId(p) : null);
+
+    public static PromotionConditionDto From(PromotionCondition c) => new(
+        c.BookId?.Value, c.CategoryId?.Value, c.MinimumQuantity.Value, c.SegmentId?.Value, c.CustomerId?.Value);
+}
 
 public sealed record CreatePromotionRequest(
     string Name, DateTimeOffset From, DateTimeOffset To, PromotionConditionDto Condition, decimal DiscountPercent,
@@ -40,6 +53,30 @@ public sealed class CrmController : ControllerBase
         string card, [FromServices] GetCustomerCardUseCase useCase, CancellationToken ct) =>
         Ok(ToCard(await useCase.ExecuteAsync(new CustomerCard(card), ct)));
 
+    [RequirePermission(Permissions.CrmManage)]
+    [HttpPut("customers/{id:guid}")]
+    public async Task<IActionResult> UpdateContact(
+        Guid id, UpdateCustomerContactRequest request, [FromServices] UpdateCustomerContactUseCase useCase,
+        CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new CustomerId(id), new ContactInfo(request.Name, request.Phone, request.Email), ct);
+        return NoContent();
+    }
+
+    /// <summary>The shop's buyer has no login (see <see cref="GetBonusSummaryUseCase"/>), so this read is public.</summary>
+    [AllowAnonymous]
+    [HttpGet("customers/{id:guid}/bonuses")]
+    public async Task<IActionResult> Bonuses(Guid id, [FromServices] GetBonusSummaryUseCase useCase, CancellationToken ct)
+    {
+        var summary = await useCase.ExecuteAsync(new CustomerId(id), ct);
+        return Ok(new
+        {
+            summary.Tier, balance = summary.Account?.Balance.Points ?? 0,
+            operations = (summary.Account?.Transactions ?? []).OrderByDescending(t => t.At)
+                .Select(t => new { t.Kind, t.Points, t.At }),
+        });
+    }
+
     private static object ToCard(CustomerCardView view) => new
     {
         id = view.Customer.Id.Value, view.Customer.Contact.Name, view.Customer.Contact.Phone,
@@ -59,15 +96,25 @@ public sealed class CrmController : ControllerBase
     public async Task<IActionResult> CreatePromotion(
         CreatePromotionRequest request, [FromServices] CreatePromotionUseCase useCase, CancellationToken ct)
     {
-        var condition = new PromotionCondition(
-            request.Condition.Book is { } b ? new BookId(b) : null,
-            request.Condition.Category is { } c ? new CategoryId(c) : null,
-            new Quantity(request.Condition.MinimumQuantity));
-        var command = new CreatePromotionCommand(
-            request.Name, new Period(request.From, request.To), condition, request.DiscountPercent, request.Priority);
+        var command = new CreatePromotionCommand(request.Name, new Period(request.From, request.To),
+            request.Condition.ToCondition(), request.DiscountPercent, request.Priority);
         var id = await useCase.ExecuteAsync(command, ct);
         return Created($"promotions/{id.Value}", new { id = id.Value });
     }
+
+    [RequirePermission(Permissions.PromotionsManage)]
+    [HttpGet("promotions")]
+    public async Task<IActionResult> Promotions([FromServices] ListPromotionsUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(p => new
+        {
+            id = p.Id.Value, p.Name, from = p.Period.Start, to = p.Period.End,
+            condition = PromotionConditionDto.From(p.Condition), p.DiscountPercent, p.Priority,
+        }));
+
+    [RequirePermission(Permissions.CrmManage, Permissions.PromotionsManage)]
+    [HttpGet("segments")]
+    public async Task<IActionResult> Segments([FromServices] ListSegmentsUseCase useCase, CancellationToken ct) =>
+        Ok((await useCase.ExecuteAsync(ct)).Select(s => new { id = s.Id.Value, s.Name, s.Description }));
 
     [RequirePermission(Permissions.CrmManage)]
     [HttpPost("segments")]

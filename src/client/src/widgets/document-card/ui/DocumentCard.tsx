@@ -1,8 +1,7 @@
 import { Anchor, Badge, Group, Stack, Tabs, Text, Title } from '@mantine/core'
 import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
-import { userNames } from '@/entities/reference'
-import { useViewer } from '@/entities/viewer'
+import { useUserNames } from '@/entities/reference'
 import type { HistoryEntry } from '@/shared/api'
 import type { StatusTone } from '@/shared/config/tokens'
 import { tokens } from '@/shared/config/tokens'
@@ -31,7 +30,7 @@ export function DocumentCard({ crumb, title, status, actions, facts, children, t
   tabs: DocumentTab[]
   history: { entries: readonly HistoryEntry[]; label: (status: string) => string }
 }) {
-  const userName = userNames(useViewer().data)
+  const userName = useUserNames()
   const all: DocumentTab[] = [
     ...tabs,
     {

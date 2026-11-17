@@ -11,7 +11,8 @@ public sealed class CreateLocationUseCase(
         user.Require(Permissions.LocationsManage);
         var location = Location.Create(command.Name, command.Type, command.Address);
         locations.Add(location);
-        audit.Record("location.created", location.Id.ToString(), after: location.Name);
+        audit.Record("location.created", location.Id.ToString(), FieldChange.Set("name", location.Name),
+            FieldChange.Set("type", location.Type.ToString()), FieldChange.Set("address", location.Address.Value));
         await unitOfWork.CommitAsync(ct);
         return location.Id;
     }

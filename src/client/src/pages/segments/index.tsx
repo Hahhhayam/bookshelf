@@ -1,12 +1,12 @@
-import { Alert, Button, Grid, Stack, Table, Text } from '@mantine/core'
-import { IconInfoCircle, IconPencil, IconUsersGroup } from '@tabler/icons-react'
+import { Button, Grid, Stack, Table, Text } from '@mantine/core'
+import { IconPencil, IconUsersGroup } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useReferenceList, type Segment } from '@/entities/reference'
 import { SegmentForm, useSaveSegment } from '@/features/crm-segment-form'
 import { EmptyState, PageHeader, Panel, QueryView } from '@/shared/ui'
 import { EditSegmentDialog } from './ui/EditSegmentDialog'
 
-/** Customer segments for targeted promotions (FR-14); listed from what was created here until the API lists them (GAP-12). */
+/** Customer segments for personal offers (FR-15) and analysis. */
 export default function SegmentsPage() {
   const segments = useReferenceList('segments')
   const create = useSaveSegment()
@@ -15,9 +15,6 @@ export default function SegmentsPage() {
   return (
     <Stack gap="lg">
       <PageHeader eyebrow="Клієнти" title="Сегменти" />
-      <Alert variant="light" color="gray" icon={<IconInfoCircle size={18} />}>
-        Сервер поки не віддає список сегментів, тож тут видно лише сегменти, створені в цьому браузері.
-      </Alert>
       <Grid gap="lg" align="flex-start">
         <Grid.Col span={{ base: 12, md: 4 }}><Panel title="Новий сегмент" padding={16}>
           <SegmentForm submitLabel="Створити сегмент" submitting={create.isPending} error={create.error ?? undefined}

@@ -15,7 +15,7 @@ public sealed class AdjustStockUseCase(
         item.Adjust(command.NewOnHand, command.Reason, user.Id, Guid.CreateVersion7(), clock.Now);
 
         audit.Record("stock.adjusted", $"{command.Location}/{command.Book}",
-            before.ToString(), $"{item.OnHand} ({command.Reason.Text})");
+            new FieldChange("onHand", before.ToString(), item.OnHand.ToString()), FieldChange.Set("reason", command.Reason.Text));
         await unitOfWork.CommitAsync(ct);
     }
 }

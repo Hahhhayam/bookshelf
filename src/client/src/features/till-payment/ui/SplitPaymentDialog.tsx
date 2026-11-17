@@ -1,4 +1,4 @@
-import { Alert, Button, Group, Modal, Stack, Text, TextInput } from '@mantine/core'
+import { Button, Group, Modal, Stack, Text, TextInput } from '@mantine/core'
 import { IconCash, IconCreditCard, IconGift, IconStar } from '@tabler/icons-react'
 import { useEffect, type KeyboardEvent } from 'react'
 import { statusTone, tokens } from '@/shared/config/tokens'
@@ -7,6 +7,7 @@ import { Key, MoneyText } from '@/shared/ui'
 import { change, planProblem, remaining, type PaymentPlan, type TenderMethod } from '../model/paymentPlan'
 import { useSplitForm } from '../model/useSplitForm'
 import { AmountInput } from './AmountInput'
+import { CertificateBalance } from './CertificateBalance'
 import { SplitRow } from './SplitRow'
 
 const labels: Record<TenderMethod, string> = {
@@ -15,27 +16,27 @@ const labels: Record<TenderMethod, string> = {
 
 /**
  * F7: one receipt paid by several methods. Tab moves between fields, Enter fills in what is left, Ctrl+Enter posts
- * when nothing is left, Esc closes without changes. With `adjustTotal` (after B-01) the cashier may correct
- * «До сплати» to the amount the server expects.
+ * when nothing is left, Esc closes without changes.
  */
-export function SplitPaymentDialog({ opened, total, subtitle, bonusBalance, adjustTotal, busy, onSubmit, onClose }: {
+export function SplitPaymentDialog({ opened, total, subtitle, bonusAllowed, bonusBalance, busy, onSubmit, onClose }: {
   opened: boolean
   total: number
   subtitle: string
-  /** Kopecks on the customer's bonus account, or null without a customer. */
+  /** Kopecks the customer's bonuses may pay (from the quote), or null without a customer. */
+  bonusAllowed: number | null
+  /** Points on the customer's bonus account, or null without a customer. */
   bonusBalance: number | null
-  adjustTotal: boolean
   busy: boolean
   onSubmit: (plan: PaymentPlan) => void
   onClose: () => void
 }) {
   const form = useSplitForm(total)
   const { reset } = form
-  useEffect(() => { if (opened) reset(total) }, [opened, total, reset])
+  useEffect(() => { if (opened) reset() }, [opened, total, reset])
 
   const { plan } = form
   const left = remaining(plan.total, plan.tender)
-  const problem = form.invalid.length > 0 ? 'Перевірте суми: дозволені лише числа.' : planProblem(plan, bonusBalance)
+  const problem = form.invalid.length > 0 ? 'Перевірте суми: дозволені лише числа.' : planProblem(plan, bonusAllowed)
 
   function field(method: TenderMethod, autoFocus = false, disabled = false) {
     const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -62,23 +63,19 @@ export function SplitPaymentDialog({ opened, total, subtitle, bonusBalance, adju
           </Stack>
           <Stack gap={2} align="flex-end">
             <Text fz={13} c={tokens.color.ink2}>До сплати</Text>
-            {adjustTotal
-              ? <TextInput aria-label="До сплати" w={150} value={form.totalText} rightSection="₴"
-                  onChange={(e) => form.setTotalText(e.currentTarget.value)}
-                  styles={{ input: { textAlign: 'right', fontWeight: 700, fontSize: 20 } }} />
-              : <MoneyText value={fromCents(plan.total)} variant="strong" size={24} />}
+            <MoneyText value={fromCents(plan.total)} variant="strong" size={24} />
           </Stack>
         </Group>
-        {adjustTotal && (
-          <Alert color="yellow" variant="light" p="xs" mb="xs">
-            <Text fz={13}>Сервер порахував суму з акціями. Вкажіть суму з повідомлення або чека сервера й розподіліть оплату.</Text>
-          </Alert>
-        )}
-        <SplitRow icon={<IconStar size={20} stroke={1.75} />} title="Бонуси" field={field('Bonus', false, bonusBalance === null)}
-          hint={bonusBalance === null ? 'Потрібен клієнт (F4)' : `На рахунку ${formatMoney(fromCents(bonusBalance))}`} />
+        <SplitRow icon={<IconStar size={20} stroke={1.75} />} title="Бонуси" field={field('Bonus', false, bonusAllowed === null)}
+          hint={bonusAllowed === null
+            ? 'Потрібен клієнт (F4)'
+            : `Можна списати ${formatMoney(fromCents(bonusAllowed))} · на рахунку ${bonusBalance ?? 0} бонусів`} />
         <SplitRow icon={<IconGift size={20} stroke={1.75} />} title="Подарунковий сертифікат" field={field('GiftCertificate')}
-          hint={<TextInput size="xs" mt={2} placeholder="Номер сертифіката" aria-label="Номер сертифіката" value={form.certificateNumber}
-            onChange={(e) => form.setCertificateNumber(e.currentTarget.value)} styles={{ input: { fontFamily: tokens.font.mono } }} />} />
+          hint={<Stack gap={4} mt={2}>
+            <TextInput size="xs" placeholder="Номер сертифіката" aria-label="Номер сертифіката" value={form.certificateNumber}
+              onChange={(e) => form.setCertificateNumber(e.currentTarget.value)} styles={{ input: { fontFamily: tokens.font.mono } }} />
+            <CertificateBalance number={form.certificateNumber} />
+          </Stack>} />
         <SplitRow icon={<IconCash size={20} stroke={1.75} />} title="Готівка" field={field('Cash', true)}
           hint={<>Отримано від клієнта · <strong style={{ color: tokens.color.ink }}>решта {formatMoney(fromCents(change(plan.total, plan.tender)))}</strong></>} />
         <SplitRow icon={<IconCreditCard size={20} stroke={1.75} />} title="Картка" field={field('Card')} last

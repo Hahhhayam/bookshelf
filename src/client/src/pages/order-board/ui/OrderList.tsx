@@ -1,14 +1,13 @@
 import { Anchor, Table } from '@mantine/core'
 import { Link } from 'react-router'
 import { orderStatus, orderTypeLabel, type OrderSummary } from '@/entities/order'
-import { userNames } from '@/entities/reference'
-import { useViewer } from '@/entities/viewer'
+import { useUserNames } from '@/entities/reference'
 import { formatAgo, shortId } from '@/shared/lib'
 import { Panel, StatusBadge } from '@/shared/ui'
 
 /** The list view: every status, including issued and cancelled orders that leave the board. */
 export function OrderList({ orders }: { orders: OrderSummary[] }) {
-  const userName = userNames(useViewer().data)
+  const userName = useUserNames()
   return (
     <Panel>
       <Table.ScrollContainer minWidth={640}>

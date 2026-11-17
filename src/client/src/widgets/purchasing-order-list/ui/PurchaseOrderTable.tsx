@@ -2,7 +2,7 @@ import { Anchor, Stack, Table, Text } from '@mantine/core'
 import { IconAlertTriangle, IconClockHour4 } from '@tabler/icons-react'
 import { Link } from 'react-router'
 import { purchaseOrderStatus, type PurchaseOrderSummary } from '@/entities/purchase-order'
-import { referenceName } from '@/entities/reference'
+import { useReferenceNames } from '@/entities/reference'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { formatDate, overdueText } from '@/shared/lib'
 import { StatusBadge } from '@/shared/ui'
@@ -49,6 +49,7 @@ export function PurchaseOrderTable({ rows, footer }: { rows: readonly PurchaseOr
 }
 
 function OrderRow({ row }: { row: PurchaseOrderSummary }) {
+  const supplierName = useReferenceNames('suppliers')
   const kind = rowKind(row)
   const status = purchaseOrderStatus[row.status]
   return (
@@ -57,7 +58,7 @@ function OrderRow({ row }: { row: PurchaseOrderSummary }) {
       <Table.Td>
         <Stack gap={3}>
           <Anchor component={Link} to={`/staff/purchase-orders/${row.id}`} fw={600} underline="never">
-            {referenceName('suppliers', row.supplier)}
+            {supplierName(row.supplier)}
           </Anchor>
           {kind === 'overdue' && <Text fz={12} fw={600} c={statusTone.attention.text}>{overdueText(row.expectedDate)}</Text>}
         </Stack>

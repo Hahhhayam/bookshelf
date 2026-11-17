@@ -9,15 +9,21 @@ public static class ManagementReportCalculator
     private const decimal AShare = 0.80m;
     private const decimal BShare = 0.95m;
 
-    public static ManagementReport Calculate(ReportData data, Period period)
+    /// <param name="previous">The sales of the period right before <paramref name="period"/>; only its totals are used.</param>
+    public static ManagementReport Calculate(ReportData data, ReportData previous, Period period)
     {
-        var lines = data.Lines;
-        var revenue = Sum(lines, data.Currency);
-        var receipts = lines.Select(l => l.Sale).Distinct().Count();
+        var totals = Totals(data);
         return new ManagementReport(
-            revenue, revenue - Cost(lines, data), receipts, AverageCheck(revenue, receipts),
+            totals.Revenue, totals.Margin, totals.Receipts, totals.AverageCheck, Totals(previous),
             DaysOfStock(data, period), TopBooks(data), SlowMovingBooks(data), Shortages(data), Abc(data),
             Stores(data), Categories(data));
+    }
+
+    private static PeriodTotals Totals(ReportData data)
+    {
+        var revenue = Sum(data.Lines, data.Currency);
+        var receipts = data.Lines.Select(l => l.Sale).Distinct().Count();
+        return new PeriodTotals(revenue, revenue - Cost(data.Lines, data), receipts, AverageCheck(revenue, receipts));
     }
 
     private static Money Sum(IEnumerable<SoldLineFact> lines, CurrencyCode currency) =>

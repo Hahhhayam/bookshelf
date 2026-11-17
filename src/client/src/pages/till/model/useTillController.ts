@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { useCan } from '@/entities/viewer'
 import type { QuickMethod } from '@/features/till-payment'
 import { useReceipt, useReceiptQuote } from '@/features/till-receipt'
+import { Perm } from '@/shared/lib'
 import type { TillCommand, TillMode } from './tillKeymap'
 import { useTillCheckout } from './useTillCheckout'
 import { useTillKeyboard } from './useTillKeyboard'
@@ -9,17 +11,17 @@ import { useTillScan } from './useTillScan'
 
 export type TillDialog =
   | { kind: 'quick'; method: QuickMethod }
-  | { kind: 'split'; adjust: boolean }
-  | { kind: 'customer' | 'search' | 'remove' | 'void' }
+  | { kind: 'customer' | 'search' | 'remove' | 'void' | 'split' | 'discount' }
   | null
 
 /** Wires the receipt, scan, payment and dialogs to the keyboard; the screen components only render. */
 export function useTillController(locationId: string) {
   const navigate = useNavigate()
+  const can = useCan()
   const scanRef = useRef<HTMLInputElement>(null)
   const controls = useReceipt(locationId)
   const { receipt } = controls
-  const quote = useReceiptQuote(receipt.lines)
+  const quote = useReceiptQuote(locationId, receipt.customer, receipt.lines)
   const scan = useTillScan(locationId, receipt.lines, controls.add)
   const checkout = useTillCheckout(locationId, controls)
   const [dialog, setDialog] = useState<TillDialog>(null)
@@ -36,9 +38,9 @@ export function useTillController(locationId: string) {
   }, [mode, receipt.lines.length])
 
   function openPay(method: QuickMethod | 'Split') {
-    if (empty || checkout.busy || quote.pending) return
+    if (empty || checkout.busy || quote.pending || quote.error !== null) return
     checkout.dismissFailure()
-    setDialog(method === 'Split' ? { kind: 'split', adjust: false } : { kind: 'quick', method })
+    setDialog(method === 'Split' ? { kind: 'split' } : { kind: 'quick', method })
   }
 
   function exit() {
@@ -54,6 +56,7 @@ export function useTillController(locationId: string) {
   const commands: Record<TillCommand, () => void> = {
     search: () => setDialog({ kind: 'search' }),
     customer: () => setDialog({ kind: 'customer' }),
+    discount: () => can(Perm.SalesDiscount) && receipt.selected >= 0 && setDialog({ kind: 'discount' }),
     split: () => openPay('Split'),
     cash: () => openPay('Cash'),
     card: () => openPay('Card'),
@@ -75,7 +78,10 @@ export function useTillController(locationId: string) {
     scan.scan(code)
   }
 
-  return { scanRef, controls, receipt, quote, scan, scanCode, checkout, dialog, setDialog, openPay, exit, newReceipt, empty }
+  return {
+    scanRef, controls, receipt, quote, scan, scanCode, checkout, dialog, setDialog, openPay, exit, newReceipt, empty,
+    canDiscount: can(Perm.SalesDiscount),
+  }
 }
 
 export type TillController = ReturnType<typeof useTillController>

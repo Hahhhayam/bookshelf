@@ -1,17 +1,15 @@
 import { Anchor, Group, Stack, Table, Text, VisuallyHidden } from '@mantine/core'
 import { IconAlertTriangle, IconArrowDownLeft, IconArrowUpRight } from '@tabler/icons-react'
 import { Link } from 'react-router'
-import { locationNames, userNames } from '@/entities/reference'
+import { useLocationNames, useUserNames } from '@/entities/reference'
 import { transferBadge, type TransferSummary } from '@/entities/transfer'
-import { useViewer } from '@/entities/viewer'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { formatAgo, shortId } from '@/shared/lib'
 import { Initials, StatusBadge } from '@/shared/ui'
 
 export function TransferTable({ transfers, location }: { transfers: TransferSummary[]; location: string }) {
-  const viewer = useViewer().data
-  const locationName = locationNames(viewer?.locations)
-  const userName = userNames(viewer)
+  const locationName = useLocationNames()
+  const userName = useUserNames()
   return (
     <Table.ScrollContainer minWidth={720}>
       <Table verticalSpacing="sm" highlightOnHover>

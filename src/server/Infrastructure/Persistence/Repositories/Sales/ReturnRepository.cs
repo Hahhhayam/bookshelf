@@ -7,6 +7,9 @@ internal sealed class ReturnRepository(BookstoreDbContext db) : IReturnRepositor
     public Task<Return?> GetAsync(ReturnId id, CancellationToken ct) =>
         db.Set<Return>().FirstOrDefaultAsync(r => r.Id == id, ct);
 
+    public Task<Return?> FindByKeyAsync(IdempotencyKey key, CancellationToken ct) =>
+        db.Set<Return>().FirstOrDefaultAsync(r => r.IdempotencyKey == key, ct);
+
     public async Task<IReadOnlyDictionary<BookId, Quantity>> ReturnedQuantitiesAsync(SaleId sale, CancellationToken ct)
     {
         var lines = await db.Set<Return>()

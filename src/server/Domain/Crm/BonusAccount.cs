@@ -21,7 +21,7 @@ public sealed class BonusAccount : AggregateRoot<BonusAccountId>
     /// <summary>Accrues bonuses after a completed sale; a repeated accrual for the same sale is ignored and reported as false.</summary>
     public bool Accrue(int points, SaleId saleId, DateTimeOffset now)
     {
-        Guard.That(points > 0, "Accrued bonuses must be positive.");
+        Guard.That(points > 0, "bonus-points-not-positive", "Accrued bonuses must be positive.");
         if (Has(BonusTransactionKind.Accrual, saleId.Value))
             return false;
 
@@ -33,8 +33,8 @@ public sealed class BonusAccount : AggregateRoot<BonusAccountId>
     /// <summary>Spends bonuses during a sale; the balance can never go negative.</summary>
     public void Redeem(int points, SaleId saleId, DateTimeOffset now)
     {
-        Guard.That(points > 0, "Redeemed bonuses must be positive.");
-        Guard.That(points <= Balance.Points, "Not enough bonuses.");
+        Guard.That(points > 0, "bonus-points-not-positive", "Redeemed bonuses must be positive.");
+        Guard.That(points <= Balance.Points, "bonus-insufficient", "Not enough bonuses.");
 
         Balance = new(Balance.Points - points);
         _transactions.Add(new(BonusTransactionKind.Redemption, -points, saleId.Value, now));
@@ -46,7 +46,7 @@ public sealed class BonusAccount : AggregateRoot<BonusAccountId>
     /// </summary>
     public int Reverse(int points, ReturnId returnId, DateTimeOffset now)
     {
-        Guard.That(points > 0, "Reversed bonuses must be positive.");
+        Guard.That(points > 0, "bonus-points-not-positive", "Reversed bonuses must be positive.");
         if (Has(BonusTransactionKind.Reversal, returnId.Value))
             return 0;
 

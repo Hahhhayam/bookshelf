@@ -15,5 +15,5 @@ npm test
 npm run build
 ```
 
-`VITE_SHOP_CUSTOMER_ID` (optional, in `.env.local`) sets the customer the shop acts for until customers can sign in
-(API_GAPS.md, GAP-02); without it checkout asks for a customer id once.
+`VITE_SHOP_CUSTOMER_ID` (optional, in `.env.local`) sets the customer the shop acts for; customers have no login
+(the report gives them none), so without it the shop asks for the customer number once, on the first «У кошик».

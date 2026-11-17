@@ -7,7 +7,8 @@ public sealed class CreateRoleUseCase(IRoleRepository roles, ICurrentUser user, 
         user.Require(Permissions.UsersManage);
         var role = Role.Create(name, permissions);
         roles.Add(role);
-        audit.Record("role.created", role.Id.ToString(), after: $"{role.Name}: {RoleText.Of(role)}");
+        audit.Record("role.created", role.Id.ToString(),
+            FieldChange.Set("name", role.Name), FieldChange.Set("permissions", RoleText.Of(role)));
         await unitOfWork.CommitAsync(ct);
         return role.Id;
     }

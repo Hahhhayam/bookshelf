@@ -10,5 +10,7 @@ internal sealed class IntegrationConfiguration()
         builder.Property(x => x.IsEnabled);
         builder.Property(x => x.Status);
         builder.Property(x => x.LastError);
+        builder.Property(x => x.LastErrorAt);
+        builder.Property(x => x.LastExchangeAt);
     }
 }

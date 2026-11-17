@@ -1,7 +1,7 @@
 import { Anchor, Box, Breadcrumbs, Flex, Stack, Text } from '@mantine/core'
 import { Link, useParams } from 'react-router'
 import { BookCover, useBookCard, type BookCard } from '@/entities/book'
-import { referenceName } from '@/entities/reference'
+import { useReferenceNames } from '@/entities/reference'
 import { tokens } from '@/shared/config/tokens'
 import { QueryView } from '@/shared/ui'
 import { BookDetails } from './ui/BookDetails'
@@ -15,7 +15,8 @@ export default function ShopBookPage() {
 }
 
 function BookView({ book }: { book: BookCard }) {
-  const authors = book.authors.map((author) => referenceName('authors', author)).join(', ')
+  const authorName = useReferenceNames('authors')
+  const authors = book.authors.map((author) => authorName(author)).join(', ')
   return (
     <Stack gap="lg">
       <Breadcrumbs separator="/" fz="md">

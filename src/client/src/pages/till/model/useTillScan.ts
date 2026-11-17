@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { availableAt, elsewhere, useFindBook, type BookHit } from '@/entities/book'
-import { referenceName } from '@/entities/reference'
-import type { ReceiptLine } from '@/features/till-receipt'
+import { useLocationNames } from '@/entities/reference'
+import type { ReceiptLine, ScannedLine } from '@/features/till-receipt'
 import type { ScanMessage } from '@/features/till-scan'
 import { formatMoney } from '@/shared/lib'
 import { errorMessage } from '@/shared/ui'
 
-function notEnough(hit: BookHit, inReceipt: number, here: number, locationId: string): ScanMessage {
-  const others = elsewhere(hit, locationId).map((a) => `${referenceName('locations', a.location)} — ${a.available} шт.`)
+function notEnough(
+  hit: BookHit, inReceipt: number, here: number, locationId: string, locationName: (id: string) => string,
+): ScanMessage {
+  const others = elsewhere(hit, locationId).map((a) => `${locationName(a.location)} — ${a.available} шт.`)
   return {
     tone: 'error',
     title: 'Недостатньо товару',
@@ -17,8 +19,9 @@ function notEnough(hit: BookHit, inReceipt: number, here: number, locationId: st
 }
 
 /** A scan: one book is added, several open a pick list, none says so; stock is checked against the search result. */
-export function useTillScan(locationId: string, lines: ReceiptLine[], add: (line: Omit<ReceiptLine, 'quantity'>) => void) {
+export function useTillScan(locationId: string, lines: ReceiptLine[], add: (line: ScannedLine) => void) {
   const lookup = useFindBook()
+  const locationName = useLocationNames()
   const [message, setMessage] = useState<ScanMessage | null>(null)
   const [pick, setPick] = useState<{ hits: BookHit[]; code: string } | null>(null)
 
@@ -26,7 +29,7 @@ export function useTillScan(locationId: string, lines: ReceiptLine[], add: (line
     setPick(null)
     const inReceipt = lines.find((l) => l.book === hit.id)?.quantity ?? 0
     const here = availableAt(hit, locationId)
-    if (here !== undefined && inReceipt + 1 > here) return setMessage(notEnough(hit, inReceipt, here, locationId))
+    if (here !== undefined && inReceipt + 1 > here) return setMessage(notEnough(hit, inReceipt, here, locationId, locationName))
     add({ book: hit.id, title: hit.title, unitPrice: hit.price })
     setMessage({ tone: 'ok', text: `Додано: «${hit.title}» · ${formatMoney(hit.price)}` })
   }

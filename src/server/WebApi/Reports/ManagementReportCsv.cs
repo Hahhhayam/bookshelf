@@ -26,11 +26,12 @@ internal static class ManagementReportCsv
 
     private static void Summary(StringBuilder csv, ManagementReport report)
     {
-        csv.AppendLine("metric,value");
-        csv.AppendLine(Row("revenue", report.Revenue));
-        csv.AppendLine(Row("margin", report.Margin));
-        csv.AppendLine(Row("receipts", report.Receipts));
-        csv.AppendLine(Row("average check", report.AverageCheck));
+        var previous = report.PreviousPeriod;
+        csv.AppendLine("metric,value,previous period");
+        csv.AppendLine(Row("revenue", report.Revenue, previous.Revenue));
+        csv.AppendLine(Row("margin", report.Margin, previous.Margin));
+        csv.AppendLine(Row("receipts", report.Receipts, previous.Receipts));
+        csv.AppendLine(Row("average check", report.AverageCheck, previous.AverageCheck));
         csv.AppendLine(Row("days of stock", report.DaysOfStock?.ToString(CultureInfo.InvariantCulture) ?? ""));
     }
 

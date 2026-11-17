@@ -1,9 +1,9 @@
 import { Group, Table, Text } from '@mantine/core'
-import { locationTypeLabel, type KnownLocation } from '@/entities/reference'
+import { locationTypeLabel, type Location } from '@/entities/reference'
 import { LocationActiveButton, LocationFormButton } from '@/features/admin-locations'
 import { StatusBadge } from '@/shared/ui'
 
-export function LocationsTable({ locations }: { locations: KnownLocation[] }) {
+export function LocationsTable({ locations }: { locations: Location[] }) {
   return (
     <Table.ScrollContainer minWidth={720}>
       <Table verticalSpacing="sm" highlightOnHover>
@@ -21,10 +21,9 @@ export function LocationsTable({ locations }: { locations: KnownLocation[] }) {
             <Table.Tr key={location.id}>
               <Table.Td>
                 <Text fw={600}>{location.name}</Text>
-                {location.own && <Text size="xs" c="dimmed">ваш доступ</Text>}
               </Table.Td>
               <Table.Td>{locationTypeLabel[location.type]}</Table.Td>
-              <Table.Td>{location.address || <Text span c="dimmed">невідома</Text>}</Table.Td>
+              <Table.Td>{location.address}</Table.Td>
               <Table.Td>
                 {location.active ? <StatusBadge tone="ready" label="Активна" /> : <StatusBadge tone="draft" label="Неактивна" />}
               </Table.Td>

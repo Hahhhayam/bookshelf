@@ -32,7 +32,9 @@ internal sealed class DistributedSearchResultCache(IDistributedCache cache) : IS
     private static string KeyFor(BookSearchQuery q)
     {
         var text = string.IsNullOrWhiteSpace(q.Text) ? "" : q.Text.Trim();
-        var filters = $"{text}|{q.Isbn?.Value}|{q.Author?.Value}|{q.Publisher?.Value}|{q.Category?.Value}|{q.AvailableAt?.Value}";
+        var ids = q.Ids is null ? "" : string.Join(',', q.Ids.Select(i => i.Value).Order());
+        var filters = $"{text}|{q.Isbn?.Value}|{q.Author?.Value}|{q.Publisher?.Value}|{q.Category?.Value}|{q.AvailableAt?.Value}" +
+            $"|{ids}|{q.IncludeInactive}";
         return $"catalog:search:{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(filters)))}";
     }
 }

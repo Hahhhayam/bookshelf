@@ -9,7 +9,8 @@ public sealed class CreateIntegrationUseCase(
         user.Require(Permissions.IntegrationsManage);
         var integration = Integration.Create(kind, name);
         integrations.Add(integration);
-        audit.Record("integration.created", integration.Id.ToString(), after: $"{kind}: {integration.Name}");
+        audit.Record("integration.created", integration.Id.ToString(),
+            FieldChange.Set("kind", kind.ToString()), FieldChange.Set("name", integration.Name));
         await unitOfWork.CommitAsync(ct);
         return integration.Id;
     }

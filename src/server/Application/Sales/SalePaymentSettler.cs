@@ -17,7 +17,7 @@ public sealed class SalePaymentSettler(IPaymentGateway gateway, IGiftCertificate
         {
             PaymentMethod.Card => ChargeCardAsync(request, key, ct),
             PaymentMethod.GiftCertificate => RedeemCertificateAsync(request, ct),
-            _ => Task.FromResult(new Payment(request.Method, request.Amount, PaymentStatus.Captured)),
+            _ => Task.FromResult(new Payment(request.Method, request.Amount, PaymentStatus.Captured, request.Tendered)),
         };
 
     private async Task<Payment> ChargeCardAsync(PaymentRequest request, IdempotencyKey key, CancellationToken ct)

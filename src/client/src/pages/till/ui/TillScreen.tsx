@@ -1,10 +1,13 @@
-import { Stack } from '@mantine/core'
+import { Center, Stack } from '@mantine/core'
+import { IconLock } from '@tabler/icons-react'
+import { useOpenShift } from '@/entities/sale'
 import { CustomerPanel } from '@/features/till-customer'
 import { ClosedReceipt, PayButtons } from '@/features/till-payment'
 import { ReceiptLines, ReceiptTotals } from '@/features/till-receipt'
 import { ScanStatus } from '@/features/till-scan'
+import { ShiftControl } from '@/features/till-shift'
 import { tokens } from '@/shared/config/tokens'
-import { ScanField, type ScanHint } from '@/shared/ui'
+import { EmptyState, ScanField, type ScanHint } from '@/shared/ui'
 import { useTillController, type TillController } from '../model/useTillController'
 import { KeyHints } from './KeyHints'
 import { TillDialogs } from './TillDialogs'
@@ -30,9 +33,9 @@ function ReceiptSection({ till }: { till: TillController }) {
       <TillScan till={till} error={scan.message?.tone === 'error'} />
       <ScanStatus message={scan.message} />
       <div style={{ flex: 1, minHeight: 0, background: tokens.color.surface, border: `1px solid ${tokens.color.line}`, overflow: 'auto' }}>
-        <ReceiptLines lines={receipt.lines} selected={receipt.selected} onSelect={controls.select} onStep={controls.step} />
+        <ReceiptLines lines={receipt.lines} priced={till.quote.lineOf} selected={receipt.selected} onSelect={controls.select} onStep={controls.step} />
       </div>
-      <KeyHints />
+      <KeyHints discount={till.canDiscount} />
     </Stack>
   )
 }
@@ -45,20 +48,32 @@ function SidePanel({ till }: { till: TillController }) {
       <CustomerPanel customer={till.receipt.customer} />
       <ReceiptTotals count={count} quote={till.quote} />
       <div style={{ marginTop: 'auto' }}>
-        <PayButtons disabled={till.empty || till.checkout.busy || till.quote.pending} onPay={till.openPay} />
+        <PayButtons disabled={till.empty || till.checkout.busy || till.quote.pending || till.quote.error !== null} onPay={till.openPay} />
       </div>
     </Stack>
+  )
+}
+
+/** A sale needs an open shift (3.5 «Каса відкрита»); the receipt being paid stays on screen until it closes. */
+function TillClosed({ locationId }: { locationId: string }) {
+  return (
+    <Center style={{ flex: 1 }}>
+      <EmptyState icon={<IconLock size={40} stroke={1.75} />} title="Каса закрита"
+        text="Продаж можливий лише у відкриту зміну." actions={<ShiftControl locationId={locationId} />} />
+    </Center>
   )
 }
 
 /** The full-screen till (Till, TillPay and TillStates artboards); base font 16 px. */
 export function TillScreen({ locationId, store, cashier }: { locationId: string; store: string; cashier: string }) {
   const till = useTillController(locationId)
+  const shift = useOpenShift(locationId).data
   const closed = till.checkout.closed
+  const tillClosed = shift !== undefined && !shift.open && !closed && till.empty
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: tokens.color.paper, fontSize: 16, fontFeatureSettings: "'tnum' 1" }}>
-      <TillHeader store={store} cashier={cashier} onExit={till.exit} />
-      {closed ? (
+      <TillHeader store={store} shiftSince={shift?.open ? shift.openedAt : null} cashier={cashier} onExit={till.exit} />
+      {tillClosed ? <TillClosed locationId={locationId} /> : closed ? (
         <ClosedReceipt sale={closed} onNew={till.newReceipt}
           scanSlot={<TillScan till={till} placeholder="Скануйте наступну книгу — відкриється новий чек" />} />
       ) : (

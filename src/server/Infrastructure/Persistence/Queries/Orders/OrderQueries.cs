@@ -10,18 +10,27 @@ internal sealed class OrderQueries(BookstoreDbContext db) : IOrderQueries
     public async Task<OrderView?> FindByPickupCodeAsync(PickupCode code, CancellationToken ct) =>
         await ViewOfAsync(await db.Set<Order>().AsNoTracking().FirstOrDefaultAsync(o => o.PickupCode == code, ct), ct);
 
-    public async Task<IReadOnlyList<OrderSummary>> ListAsync(LocationId location, OrderStatus? status, CancellationToken ct)
+    public async Task<IReadOnlyList<OrderSummary>> ListAsync(
+        LocationId location, OrderStatus? status, PickupCode? pickupCode, CancellationToken ct)
     {
-        var orders = db.Set<Order>().AsNoTracking().Where(o => o.StockLocation == location);
-        orders = status is { } wanted
-            ? orders.Where(o => o.Status == wanted)
-            : orders.Where(o => o.Status != OrderStatus.Issued && o.Status != OrderStatus.Cancelled);
+        var orders = Filter(db.Set<Order>().AsNoTracking().Where(o => o.StockLocation == location), status, pickupCode);
         var rows = await orders.Select(o => new { o.Id, o.CustomerId, o.Type, o.Status }).ToListAsync(ct);
 
         var latest = await LatestChanges.ForAsync<OrderStatusChange, OrderId, OrderStatus>(
             db.Set<OrderStatusChange>(), rows.Select(r => r.Id).ToList(), ct);
         return rows.Select(r => new OrderSummary(r.Id, r.CustomerId, r.Type, r.Status,
             latest.GetValueOrDefault(r.Id)?.At, latest.GetValueOrDefault(r.Id)?.By)).ToList();
+    }
+
+    private static IQueryable<Order> Filter(IQueryable<Order> orders, OrderStatus? status, PickupCode? pickupCode)
+    {
+        if (pickupCode is { } code)
+            orders = orders.Where(o => o.PickupCode == code);
+        if (status is { } wanted)
+            return orders.Where(o => o.Status == wanted);
+        return pickupCode is null
+            ? orders.Where(o => o.Status != OrderStatus.Issued && o.Status != OrderStatus.Cancelled)
+            : orders;
     }
 
     private async Task<OrderView?> ViewOfAsync(Order? order, CancellationToken ct)

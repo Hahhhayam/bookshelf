@@ -33,7 +33,7 @@ public sealed class MissingBookRequest : AggregateRoot<MissingBookRequestId>
 
     public void RecordAnotherRequest()
     {
-        Guard.That(Status == MissingBookRequestStatus.Open, "The request is no longer open.");
+        Guard.That(Status == MissingBookRequestStatus.Open, "request-not-open", "The request is no longer open.");
         Demand++;
     }
 

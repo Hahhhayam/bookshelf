@@ -4,6 +4,7 @@ export interface ViewerLocation {
   id: string
   name: string
   type: LocationType
+  address: string
 }
 
 /** The signed-in employee, from GET /auth/me. */

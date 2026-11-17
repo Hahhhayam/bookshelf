@@ -1,15 +1,8 @@
 import { Chip, Group, SegmentedControl, Select, TextInput } from '@mantine/core'
 import { IconClock, IconSearch } from '@tabler/icons-react'
 import { orderStatus, type OrderStatus } from '@/entities/order'
+import type { BoardFilters, BoardView } from '../model/filters'
 
-export type BoardView = 'board' | 'list'
-
-export interface BoardFilters {
-  view: BoardView
-  search: string
-  lateOnly: boolean
-  status: OrderStatus | null
-}
 
 const statusOptions = [
   { value: '', label: 'Відкриті' },
@@ -29,7 +22,7 @@ export function BoardToolbar({ filters, lateCount, onChange }: {
         data={[{ value: 'board', label: 'Дошка' }, { value: 'list', label: 'Список' }]}
       />
       <TextInput
-        w={300} maw="100%" placeholder="Номер або клієнт" aria-label="Пошук замовлення"
+        w={340} maw="100%" placeholder="Номер, код отримання або клієнт" aria-label="Пошук замовлення"
         leftSection={<IconSearch size={16} stroke={1.75} />}
         value={filters.search} onChange={(event) => onChange({ ...filters, search: event.currentTarget.value })}
       />

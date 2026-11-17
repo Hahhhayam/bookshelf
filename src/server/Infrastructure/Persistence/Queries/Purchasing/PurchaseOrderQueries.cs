@@ -15,12 +15,13 @@ internal sealed class PurchaseOrderQueries(BookstoreDbContext db) : IPurchaseOrd
     }
 
     public async Task<IReadOnlyList<PurchaseOrderSummary>> ListAsync(
-        PurchaseOrderStatus? status, bool overdueOnly, DateOnly today, CancellationToken ct)
+        PurchaseOrderStatus? status, bool openOnly, bool overdueOnly, DateOnly today, CancellationToken ct)
     {
         var orders = db.Set<PurchaseOrder>().AsNoTracking();
-        orders = status is { } wanted
-            ? orders.Where(o => o.Status == wanted)
-            : orders.Where(o => o.Status != PurchaseOrderStatus.Received && o.Status != PurchaseOrderStatus.Cancelled);
+        if (status is { } wanted)
+            orders = orders.Where(o => o.Status == wanted);
+        else if (openOnly)
+            orders = orders.Where(o => o.Status != PurchaseOrderStatus.Received && o.Status != PurchaseOrderStatus.Cancelled);
         var rows = (await orders.Select(o => new { o.Id, o.SupplierId, o.Status, o.ExpectedDate }).ToListAsync(ct))
             .Where(o => !overdueOnly || PurchaseOrder.IsLate(o.Status, o.ExpectedDate, today))
             .ToList();

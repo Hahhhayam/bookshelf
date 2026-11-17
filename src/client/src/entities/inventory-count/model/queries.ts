@@ -3,12 +3,12 @@ import { countApi } from '../api/countApi'
 
 export const countKeys = {
   all: ['inventory-counts'] as const,
-  one: (id: string) => ['inventory-counts', id] as const,
+  list: (location: string) => ['inventory-counts', 'list', location] as const,
+  one: (id: string) => ['inventory-counts', 'card', id] as const,
 }
 
-/** Counts started in this browser: the API cannot read counts back (GAP-08). */
-export function useCounts() {
-  return useQuery({ queryKey: countKeys.all, queryFn: countApi.list })
+export function useCounts(location: string | undefined) {
+  return useQuery({ queryKey: countKeys.list(location ?? ''), queryFn: () => countApi.list(location!), enabled: !!location })
 }
 
 export function useCount(id: string | undefined) {

@@ -7,7 +7,7 @@ public readonly record struct Route
 
     public Route(LocationId from, LocationId to)
     {
-        Guard.That(from != to, "A transfer needs two different locations.");
+        Guard.That(from != to, "transfer-same-location", "A transfer needs two different locations.");
         From = from;
         To = to;
     }

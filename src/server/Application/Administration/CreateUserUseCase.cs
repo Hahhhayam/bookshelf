@@ -9,12 +9,12 @@ public sealed class CreateUserUseCase(
     public async Task<UserId> ExecuteAsync(CreateUserCommand command, CancellationToken ct)
     {
         currentUser.Require(Permissions.UsersManage);
-        Guard.That(await users.FindByLoginAsync(command.Login, ct) is null, "This login is already taken.");
+        Guard.That(await users.FindByLoginAsync(command.Login, ct) is null, "login-taken", "This login is already taken.");
 
         var user = User.Create(command.Login, hasher.Hash(command.Password),
             new LocationAccess(command.Locations), command.Roles);
         users.Add(user);
-        audit.Record("user.created", user.Id.ToString(), after: user.Login);
+        audit.Record("user.created", user.Id.ToString(), FieldChange.Set("login", user.Login));
         await unitOfWork.CommitAsync(ct);
         return user.Id;
     }

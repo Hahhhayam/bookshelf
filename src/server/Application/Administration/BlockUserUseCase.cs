@@ -9,7 +9,8 @@ public sealed class BlockUserUseCase(
         var user = await users.GetAsync(userId, ct).OrNotFound("User");
 
         user.Block();
-        audit.Record("user.blocked", userId.ToString(), UserStatus.Active.ToString(), UserStatus.Blocked.ToString());
+        audit.Record("user.blocked", userId.ToString(),
+            new FieldChange("status", UserStatus.Active.ToString(), UserStatus.Blocked.ToString()));
         await unitOfWork.CommitAsync(ct);
     }
 }

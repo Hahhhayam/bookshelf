@@ -14,5 +14,7 @@ internal sealed class PaymentConfiguration : IEntityTypeConfiguration<Payment>
         builder.Property(x => x.Method);
         builder.ComplexProperty(x => x.Amount, MoneyMapping.Configure);
         builder.Property(x => x.Status);
+        builder.ComplexProperty(x => x.Change, MoneyMapping.Configure);
+        builder.Ignore(x => x.Tendered);
     }
 }

@@ -50,6 +50,11 @@ export function useOrderDraft() {
     })
   }
 
+  /** Lines prefilled from the need; a book already in the order keeps its line. */
+  function addLines(lines: readonly DraftLine[]) {
+    setDraft((d) => ({ ...d, lines: [...d.lines, ...lines.filter((line) => d.lines.every((l) => l.book !== line.book))] }))
+  }
+
   function updateLine(book: string, patch: Partial<Pick<DraftLine, 'quantity' | 'price'>>) {
     setDraft((d) => ({ ...d, lines: d.lines.map((line) => (line.book === book ? { ...line, ...patch } : line)) }))
   }
@@ -59,6 +64,7 @@ export function useOrderDraft() {
     setSupplier: (supplier: string | null) => setDraft((d) => ({ ...d, supplier })),
     setExpectedDate: (expectedDate: string) => setDraft((d) => ({ ...d, expectedDate })),
     addBook,
+    addLines,
     updateLine,
     removeLine: (book: string) => setDraft((d) => ({ ...d, lines: d.lines.filter((line) => line.book !== book) })),
     minDate: today(),

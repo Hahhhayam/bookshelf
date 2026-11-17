@@ -2,7 +2,7 @@ import { useMemo, useReducer } from 'react'
 import type { CustomerCard } from '@/entities/customer'
 import { newKey } from '@/shared/lib'
 import { emptyReceipt, receiptReducer } from './receiptReducer'
-import type { ReceiptLine } from './types'
+import type { ReceiptLine, ScannedLine } from './types'
 
 const receiptKey = (locationId: string) => newKey(`till-${locationId}`)
 
@@ -13,7 +13,8 @@ const receiptKey = (locationId: string) => newKey(`till-${locationId}`)
 export function useReceipt(locationId: string) {
   const [receipt, dispatch] = useReducer(receiptReducer, locationId, (location) => emptyReceipt(receiptKey(location)))
   const actions = useMemo(() => ({
-    add: (line: Omit<ReceiptLine, 'quantity'>) => dispatch({ type: 'add', line }),
+    add: (line: ScannedLine) => dispatch({ type: 'add', line }),
+    setDiscount: (index: number, amount: ReceiptLine['manualDiscount']) => dispatch({ type: 'discount', index, amount }),
     step: (index: number, delta: 1 | -1) => dispatch({ type: 'step', index, delta }),
     select: (index: number) => dispatch({ type: 'select', index }),
     move: (delta: 1 | -1) => dispatch({ type: 'move', delta }),

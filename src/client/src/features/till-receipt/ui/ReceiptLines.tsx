@@ -2,6 +2,7 @@ import { Table, Text, UnstyledButton } from '@mantine/core'
 import { IconBarcode } from '@tabler/icons-react'
 import { useEffect, useRef } from 'react'
 import { useBookCard } from '@/entities/book'
+import { discountSourceLabel, type PricedLine } from '@/entities/sale'
 import { uah } from '@/shared/api'
 import { tokens } from '@/shared/config/tokens'
 import { EmptyState, MoneyText } from '@/shared/ui'
@@ -27,8 +28,25 @@ function LineSubtitle({ book }: { book: string }) {
   )
 }
 
-function LineRow({ line, index, selected, onSelect, onStep }: {
+/** The line total from the server's quote, with the discount that made it; the plain product until the quote comes. */
+function LineTotal({ line, priced }: { line: ReceiptLine; priced: PricedLine | undefined }) {
+  const total = priced?.total ?? uah(Math.round(line.unitPrice.amount * line.quantity * 100) / 100)
+  const discount = priced && priced.discount.amount.amount > 0 ? priced.discount : null
+  return (
+    <>
+      <MoneyText value={total} variant="strong" />
+      {discount && (
+        <Text fz={12} c={tokens.color.accent}>
+          {discountSourceLabel[discount.source]} −<MoneyText value={discount.amount} />
+        </Text>
+      )}
+    </>
+  )
+}
+
+function LineRow({ line, priced, index, selected, onSelect, onStep }: {
   line: ReceiptLine
+  priced: PricedLine | undefined
   index: number
   selected: boolean
   onSelect: () => void
@@ -57,15 +75,16 @@ function LineRow({ line, index, selected, onSelect, onStep }: {
       </Table.Td>
       <Table.Td style={{ ...cell, textAlign: 'right' }}><MoneyText value={line.unitPrice} /></Table.Td>
       <Table.Td style={{ ...cell, textAlign: 'right' }}>
-        <MoneyText value={uah(Math.round(line.unitPrice.amount * line.quantity * 100) / 100)} variant="strong" />
+        <LineTotal line={line} priced={priced} />
       </Table.Td>
     </Table.Tr>
   )
 }
 
-/** The receipt lines; clicks select a line, the page's keyboard does the rest. Promotions per line are unknown (GAP-05). */
-export function ReceiptLines({ lines, selected, onSelect, onStep }: {
+/** The receipt lines; clicks select a line, the page's keyboard does the rest. */
+export function ReceiptLines({ lines, priced, selected, onSelect, onStep }: {
   lines: ReceiptLine[]
+  priced: (book: string) => PricedLine | undefined
   selected: number
   onSelect: (index: number) => void
   onStep: (index: number, delta: 1 | -1) => void
@@ -92,7 +111,7 @@ export function ReceiptLines({ lines, selected, onSelect, onStep }: {
       </Table.Thead>
       <Table.Tbody>
         {lines.map((line, index) => (
-          <LineRow key={line.book} line={line} index={index} selected={index === selected}
+          <LineRow key={line.book} line={line} priced={priced(line.book)} index={index} selected={index === selected}
             onSelect={() => onSelect(index)} onStep={(delta) => onStep(index, delta)} />
         ))}
       </Table.Tbody>

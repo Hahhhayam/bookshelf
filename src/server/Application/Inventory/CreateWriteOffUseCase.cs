@@ -19,7 +19,7 @@ public sealed class CreateWriteOffUseCase(
         }
 
         writeOffs.Add(writeOff);
-        audit.Record("stock.written-off", writeOff.Id.ToString(), after: command.Reason.Text);
+        audit.Record("stock.written-off", writeOff.Id.ToString(), FieldChange.Set("reason", command.Reason.Text));
         await unitOfWork.CommitAsync(ct);
         return writeOff.Id;
     }

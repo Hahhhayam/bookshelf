@@ -5,11 +5,8 @@ import { useFindBook } from '../model/queries'
 import type { BookHit } from '../model/types'
 import { BookHitList } from './BookHitList'
 
-/**
- * Finds a book by a scanned code or typed text. One hit is picked at once; several are offered to choose from.
- * A shop barcode that is not an ISBN is found through text search only (GAP-06).
- */
-export function BookLookup({ onPick, placeholder = 'Скан ISBN або назва книги', label, autoFocus }: {
+/** Finds a book by a scanned code (ISBN or shop barcode) or typed text. One hit is picked at once; several are offered to choose from. */
+export function BookLookup({ onPick, placeholder = 'Скан ISBN, штрихкод або назва книги', label, autoFocus }: {
   onPick: (book: BookHit) => void
   placeholder?: string
   label?: string

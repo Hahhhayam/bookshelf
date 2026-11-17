@@ -4,10 +4,7 @@ import { useState } from 'react'
 import { useReferenceList } from '@/entities/reference'
 import { SupplierFormDialog } from './SupplierFormDialog'
 
-/**
- * Picks an active supplier from those remembered in this browser (GAP-03), with an inline "new supplier" for one
- * that is not there yet.
- */
+/** Picks an active supplier, with an inline "new supplier" for one that is not there yet. */
 export function SupplierSelect({ value, onChange, label = 'Постачальник', error, canCreate = true }: {
   value: string | null
   onChange: (id: string | null) => void
@@ -32,7 +29,7 @@ export function SupplierSelect({ value, onChange, label = 'Постачальн�
           onChange={onChange}
           error={error}
           disabled={suppliers.isPending}
-          placeholder={options.length ? 'Оберіть постачальника' : 'Ще немає збережених постачальників'}
+          placeholder={options.length ? 'Оберіть постачальника' : 'Ще немає постачальників'}
           nothingFoundMessage="Такого немає — додайте нового"
         />
         {canCreate && (

@@ -3,6 +3,7 @@ import { Alert, Button, Group, NumberInput, SimpleGrid, Stack, TextInput } from 
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { emptyPromotion, promotionSchema, useCreatePromotion, type PromotionValues } from '@/features/crm-create-promotion'
 import { errorMessage } from '@/shared/ui'
+import { AudienceFields } from './AudienceFields'
 import { ConditionFields } from './ConditionFields'
 
 /** FR-15: a promotion with a period, a condition, a discount and a priority (the higher one wins when they overlap). */
@@ -25,6 +26,7 @@ export function PromotionForm({ onCreated }: { onCreated?: () => void }) {
             <TextInput type="datetime-local" label="Діє до" withAsterisk {...register('to')} error={errors.to?.message} />
           </SimpleGrid>
           <ConditionFields />
+          <AudienceFields />
           <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="sm">
             <Controller control={control} name="discountPercent" render={({ field }) => (
               <NumberInput label="Знижка, %" withAsterisk min={0} max={100} decimalScale={2} decimalSeparator=","

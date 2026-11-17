@@ -7,7 +7,7 @@ public sealed class GetBookUseCase(IBookDetailsQuery query, ICatalogCache cache)
     {
         var details = await cache.GetAsync(book, ct) ?? await LoadAndCacheAsync(book, ct);
         var availability = await query.AvailabilityAsync(book, ct);
-        return new BookView(details, availability);
+        return new BookView(details, availability, await query.ScheduledPriceAsync(book, ct));
     }
 
     private async Task<BookDetails> LoadAndCacheAsync(BookId book, CancellationToken ct)

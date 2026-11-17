@@ -32,7 +32,7 @@ function useSource(kind: CatalogReferenceKind, selected: string[], creatable?: b
   const list = useReferenceList(kind)
   const create = useCreateReference(kind)
   return {
-    items: toOptions(kind, list.data, selected),
+    items: toOptions(list.data, selected),
     createLabel: createLabel[kind],
     onCreate: creatable ? (name: string) => create.mutateAsync(name) : undefined,
   }

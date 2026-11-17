@@ -5,6 +5,7 @@ export const Perm = {
   SalesCreate: 'sales.create',
   SalesDiscount: 'sales.discount',
   SalesCancel: 'sales.cancel',
+  ShiftsManage: 'shifts.manage',
   ReturnsCreate: 'returns.create',
   ReturnsConfirm: 'returns.confirm',
   StockAdjust: 'stock.adjust',

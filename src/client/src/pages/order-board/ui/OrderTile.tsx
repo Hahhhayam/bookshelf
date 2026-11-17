@@ -3,13 +3,18 @@ import { IconClock, IconDots } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { cancellable, isWaitingTooLong, orderTypeLabel, type OrderSummary } from '@/entities/order'
+import { useUserNames } from '@/entities/reference'
 import { CancelOrderDialog, NextStatusButton } from '@/features/ops-order-status'
 import { statusTone, tokens } from '@/shared/config/tokens'
 import { formatWaited, minutesSince, shortId } from '@/shared/lib'
 
-/** One order on the board: number, customer, waiting time (amber when over the norm), the next step and a menu. */
+/**
+ * One order on the board: number, customer, waiting time (amber when over the norm), who made the last change, the
+ * next step and a menu.
+ */
 export function OrderTile({ order }: { order: OrderSummary }) {
   const [cancelling, setCancelling] = useState(false)
+  const userName = useUserNames()
   const number = shortId(order.id)
   const waited = minutesSince(order.lastChangedAt)
   const late = order.lastChangedAt !== null && isWaitingTooLong(order.status, waited)
@@ -54,6 +59,7 @@ export function OrderTile({ order }: { order: OrderSummary }) {
             <IconClock size={14} stroke={1.75} />
             {order.lastChangedAt === null ? 'без змін' : late ? `Чекає ${formatWaited(waited)}` : `${formatWaited(waited)} тому`}
           </Group>
+          {order.lastChangedBy && <Text span size="xs" c={tokens.color.ink2}>· {userName(order.lastChangedBy)}</Text>}
         </Group>
         <NextStatusButton id={order.id} status={order.status} compact />
       </Stack>

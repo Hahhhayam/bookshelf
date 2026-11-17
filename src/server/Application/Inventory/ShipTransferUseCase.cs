@@ -20,7 +20,7 @@ public sealed class ShipTransferUseCase(
     {
         var item = await stock.RequireAsync(transfer.Route.From, book, ct);
         var reservation = item.FindActiveReservation(transfer.Id.Value)
-                          ?? throw new DomainException("The transfer has no reservation at the sender.");
+                          ?? throw new DomainException("reservation-not-found", "The transfer has no reservation at the sender.");
         item.FulfilReservation(reservation, clock.Now);
     }
 }

@@ -4,7 +4,6 @@ import { saleStatus, type BookHit } from '@/entities/book'
 import { formatNumber } from '@/shared/lib'
 import { MoneyText, StatusBadge } from '@/shared/ui'
 
-/** Search returns only books on sale, so every row is active; a deactivated book opens by its link only (B-41). */
 export function BookTable({ books }: { books: BookHit[] }) {
   return (
     <Table.ScrollContainer minWidth={640}>
@@ -24,7 +23,7 @@ export function BookTable({ books }: { books: BookHit[] }) {
               <Table.Td><Anchor component={Link} to={`/staff/catalog/${book.id}`} fw={600}>{book.title}</Anchor></Table.Td>
               <Table.Td ta="right"><MoneyText value={book.price} /></Table.Td>
               <Table.Td ta="right">{formatNumber(book.availability.reduce((sum, a) => sum + a.available, 0))}</Table.Td>
-              <Table.Td><StatusBadge {...saleStatus.Active} /></Table.Td>
+              <Table.Td><StatusBadge {...saleStatus[book.status]} /></Table.Td>
               <Table.Td ta="right">
                 <Button component={Link} to={`/staff/catalog/${book.id}`} variant="subtle" size="xs">Редагувати</Button>
               </Table.Td>

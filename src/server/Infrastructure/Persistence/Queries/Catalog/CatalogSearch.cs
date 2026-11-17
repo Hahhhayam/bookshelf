@@ -17,7 +17,11 @@ internal sealed class CatalogSearch(BookstoreDbContext db) : ICatalogSearch
 
     private IQueryable<Book> Matching(BookSearchQuery query)
     {
-        var books = db.Set<Book>().AsNoTracking().Where(b => b.Status == Domain.Catalog.SaleStatus.Active);
+        var books = db.Set<Book>().AsNoTracking();
+        if (query.Ids is { } ids)
+            books = books.Where(b => ids.Contains(b.Id));
+        else if (!query.IncludeInactive)
+            books = books.Where(b => b.Status == Domain.Catalog.SaleStatus.Active);
         if (!string.IsNullOrWhiteSpace(query.Text))
         {
             var text = query.Text.Trim();
@@ -45,7 +49,7 @@ internal sealed class CatalogSearch(BookstoreDbContext db) : ICatalogSearch
     }
 
     private static BookSearchResult ToResult(Book book, IEnumerable<LocationAvailability> availability) =>
-        new(book.Id, book.Title, book.Price, availability.ToList());
+        new(book.Id, book.Title, book.Price, availability.ToList(), book.Barcode, book.Status);
 
     private static bool IsAvailableAt(BookSearchResult result, LocationId? location) =>
         location is not { } at || result.Availability.Any(a => a.Location == at);

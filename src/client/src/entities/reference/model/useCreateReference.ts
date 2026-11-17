@@ -18,7 +18,7 @@ const createdText: Record<CatalogReferenceKind, string> = {
   categories: 'Категорію додано',
 }
 
-/** Creates an author, publisher or category by name and refreshes the remembered list (GAP-03). */
+/** Creates an author, publisher or category by name and refreshes its list. */
 export function useCreateReference(kind: CatalogReferenceKind) {
   const refresh = useRefreshReference()
   return useMutation({

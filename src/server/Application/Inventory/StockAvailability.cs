@@ -10,6 +10,6 @@ public static class StockAvailability
 
         foreach (var item in totals)
             Guard.That(item.Quantity <= stock[item.BookId].Level.Available,
-                $"Not enough available stock of book {item.BookId}.");
+                "stock-insufficient", $"Not enough available stock of book {item.BookId}.");
     }
 }

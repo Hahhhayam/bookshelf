@@ -8,6 +8,7 @@ public static class Permissions
     public const string SalesCreate = "sales.create";
     public const string SalesDiscount = "sales.discount";
     public const string SalesCancel = "sales.cancel";
+    public const string ShiftsManage = "shifts.manage";
     public const string ReturnsCreate = "returns.create";
     public const string ReturnsConfirm = "returns.confirm";
     public const string StockAdjust = "stock.adjust";

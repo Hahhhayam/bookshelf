@@ -18,7 +18,7 @@ public sealed class ApproveInventoryCountUseCase(
         foreach (var adjustment in adjustments)
             await ApplyAsync(count, adjustment, ct);
 
-        audit.Record("inventory-count.posted", countId.ToString(), after: $"{adjustments.Count} adjustments");
+        audit.Record("inventory-count.posted", countId.ToString(), FieldChange.Set("adjustments", adjustments.Count.ToString()));
         await unitOfWork.CommitAsync(ct);
     }
 

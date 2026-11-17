@@ -1,6 +1,7 @@
 import { Alert, Group, Stack, Text, Title } from '@mantine/core'
 import { useState } from 'react'
 import { availabilityStatusTone, availabilitySummary, type BookCard } from '@/entities/book'
+import { onlyStores, useStores } from '@/entities/store'
 import { AddToCartButton } from '@/features/shop-add-to-cart'
 import { useMyStore } from '@/features/shop-my-store'
 import { tokens } from '@/shared/config/tokens'
@@ -10,7 +11,8 @@ import { AvailabilityTable } from './AvailabilityTable'
 export function BookSummary({ book, authors }: { book: BookCard; authors: string }) {
   const [quantity, setQuantity] = useState(1)
   const store = useMyStore()
-  const availability = availabilitySummary(book.availability, store)
+  const atStores = onlyStores(book.availability, useStores().data)
+  const availability = availabilitySummary(atStores, store)
   const onSale = book.status === 'Active'
 
   return (
@@ -29,7 +31,7 @@ export function BookSummary({ book, authors }: { book: BookCard; authors: string
         <Alert color="gray" title="Знято з продажу">Цю книжку зараз не можна замовити.</Alert>
       )}
       <StatusNote tone={availabilityStatusTone[availability.tone]} size={15}>{availability.label}</StatusNote>
-      <AvailabilityTable availability={book.availability} myStore={store} />
+      <AvailabilityTable availability={atStores} myStore={store} />
     </Stack>
   )
 }

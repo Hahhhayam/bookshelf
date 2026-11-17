@@ -7,5 +7,7 @@ internal static class PromotionConditionMapping
         condition.Property(x => x.BookId);
         condition.Property(x => x.CategoryId);
         condition.Property(x => x.MinimumQuantity);
+        condition.Property(x => x.SegmentId);
+        condition.Property(x => x.CustomerId);
     }
 }

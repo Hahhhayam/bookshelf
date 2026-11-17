@@ -40,7 +40,7 @@ public sealed class ChangeOrderStatusUseCase(
                 await ForEachReservationAsync(order, (item, reservation) => item.ReleaseReservation(reservation), ct);
                 break;
             default:
-                throw new DomainException($"An order cannot be moved to {target} by hand.");
+                throw new DomainException("order-status-not-manual", $"An order cannot be moved to {target} by hand.");
         }
     }
 
@@ -51,7 +51,7 @@ public sealed class ChangeOrderStatusUseCase(
         {
             var item = await stock.RequireAsync(order.StockLocation, line.Id, ct);
             var reservation = item.FindActiveReservation(order.Id.Value)
-                              ?? throw new DomainException("The order has no active reservation.");
+                              ?? throw new DomainException("reservation-not-found", "The order has no active reservation.");
             action(item, reservation);
         }
     }

@@ -1,17 +1,18 @@
 import { Anchor, AppShell, Badge, Button, Container, Group, TextInput } from '@mantine/core'
-import { IconSearch, IconShoppingCart, IconTruck } from '@tabler/icons-react'
+import { IconGift, IconSearch, IconShoppingCart, IconTruck } from '@tabler/icons-react'
 import { useState, type FormEvent } from 'react'
 import { Link, Outlet, useNavigate, useSearchParams } from 'react-router'
-import { useCart } from '@/entities/cart'
+import { cartCount, useCart } from '@/entities/cart'
+import { useShopperId } from '@/entities/shopper'
 import { tokens } from '@/shared/config/tokens'
 import { Brand } from '@/shared/ui'
 
-/** The online shop: brand, search, order tracking and the cart. */
+/** The online shop: brand, search, order tracking, the buyer's bonuses and the cart. */
 export function ShopShell() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const [text, setText] = useState(params.get('q') ?? '')
-  const count = useCart().reduce((sum, line) => sum + line.quantity, 0)
+  const count = cartCount(useCart(useShopperId()).data?.lines ?? [])
 
   function search(event: FormEvent) {
     event.preventDefault()
@@ -31,6 +32,9 @@ export function ShopShell() {
             <Group gap="xs" wrap="nowrap">
               <Button component={Link} to="/track" variant="subtle" leftSection={<IconTruck size={18} />} visibleFrom="sm">
                 Відстежити
+              </Button>
+              <Button component={Link} to="/bonuses" variant="subtle" leftSection={<IconGift size={18} />} visibleFrom="sm">
+                Бонуси
               </Button>
               <Button component={Link} to="/cart" variant="default" leftSection={<IconShoppingCart size={18} />}
                 rightSection={count > 0 ? <Badge size="sm" circle={false}>{count}</Badge> : undefined}>

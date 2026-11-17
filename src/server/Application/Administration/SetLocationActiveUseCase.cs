@@ -8,11 +8,13 @@ public sealed class SetLocationActiveUseCase(
     {
         user.Require(Permissions.LocationsManage);
         var location = await locations.GetAsync(id, ct).OrNotFound("Location");
+        var wasActive = location.IsActive;
         if (active)
             location.Activate();
         else
             location.Deactivate();
-        audit.Record(active ? "location.activated" : "location.deactivated", id.ToString(), after: location.Name);
+        audit.Record(active ? "location.activated" : "location.deactivated", id.ToString(),
+            new FieldChange("active", wasActive.ToString(), active.ToString()));
         await unitOfWork.CommitAsync(ct);
     }
 }

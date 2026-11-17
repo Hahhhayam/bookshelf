@@ -17,7 +17,7 @@ export function AuditFilters({ state }: { state: AuditFilterState }) {
       <TextInput
         type="date" aria-label="Від" value={state.period.from} w={160}
         onChange={(e) => state.setPeriod({ ...state.period, from: e.currentTarget.value })}
-        error={state.periodValid ? undefined : 'Період не застосовано'}
+        error={state.periodValid ? undefined : 'Початок пізніше за кінець'}
       />
       <TextInput
         type="date" aria-label="До" value={state.period.to} w={160}

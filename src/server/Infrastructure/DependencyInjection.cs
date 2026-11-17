@@ -56,7 +56,7 @@ public static class DependencyInjection
         return services;
     }
 
-    // Quartz keeps its schedule in memory, so every app instance runs these jobs; both are safe to repeat.
+    // Quartz keeps its schedule in memory, so every app instance runs these jobs; all are safe to repeat.
     private static void AddScheduledJobs(IServiceCollection services, ScheduledJobsOptions scheduling)
     {
         services.AddQuartz(quartz =>
@@ -65,6 +65,8 @@ public static class DependencyInjection
                 .WithSimpleSchedule(s => s.WithInterval(scheduling.ExpireReservationsInterval).RepeatForever()));
             quartz.ScheduleJob<FlagOverduePurchaseOrdersJob>(trigger => trigger.StartNow()
                 .WithSimpleSchedule(s => s.WithInterval(scheduling.FlagOverduePurchaseOrdersInterval).RepeatForever()));
+            quartz.ScheduleJob<ApplyScheduledPricesJob>(trigger => trigger.StartNow()
+                .WithSimpleSchedule(s => s.WithInterval(scheduling.ApplyScheduledPricesInterval).RepeatForever()));
         });
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
     }

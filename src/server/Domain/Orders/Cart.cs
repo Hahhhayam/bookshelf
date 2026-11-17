@@ -19,7 +19,7 @@ public sealed class Cart : AggregateRoot<CartId>
 
     public void Add(BookId bookId, Quantity quantity)
     {
-        Guard.That(!quantity.IsZero, "Quantity must be positive.");
+        Guard.That(!quantity.IsZero, "quantity-not-positive", "Quantity must be positive.");
         var line = _lines.FirstOrDefault(l => l.Id == bookId);
         if (line is null)
             _lines.Add(new(bookId, quantity));
@@ -34,7 +34,7 @@ public sealed class Cart : AggregateRoot<CartId>
             Remove(bookId);
             return;
         }
-        var line = _lines.FirstOrDefault(l => l.Id == bookId) ?? throw new DomainException("The item is not in the cart.");
+        var line = _lines.FirstOrDefault(l => l.Id == bookId) ?? throw new DomainException("cart-line-not-found", "The item is not in the cart.");
         line.Quantity = quantity;
     }
 

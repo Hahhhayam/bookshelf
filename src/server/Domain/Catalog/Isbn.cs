@@ -13,7 +13,7 @@ public readonly record struct Isbn
             13 => IsValidIsbn13(digits),
             10 => IsValidIsbn10(digits),
             _ => false,
-        }, $"'{value}' is not a valid ISBN.");
+        }, "isbn-invalid", $"'{value}' is not a valid ISBN.");
         Value = digits;
     }
 

@@ -8,12 +8,15 @@ public sealed class ChainManagerReadsReport(SqlServerFixture sql) : EndToEndTest
     public async Task Report_figures_match_the_day_sales()
     {
         await Preseed(Sample.Standard);
+        await OpensShift(World.StoreA);
         var cashier = await LogsIn(SampleUsers.Cashier);
         await Sells(cashier, "till-1/0001", total: 705m, (World.Kobzar, 1), (World.Dune, 1));
         await Sells(cashier, "till-1/0002", total: 100m, (World.Notebook, 2));
 
         var manager = await LogsIn(SampleUsers.ChainManager);
         await SeesChainReport(manager, revenue: 805m, receipts: 2, averageCheck: 402.5m);
+        await ComparesWithPreviousPeriod(manager, previousRevenue: 0m, previousReceipts: 0);
+        await SeesTheDayAsPreviousPeriodOfTheNextDay(manager, revenue: 805m, receipts: 2);
         await SeesCategoryRevenue(manager, World.Fiction, revenue: 705m);
         await SeesStoreRevenue(manager, World.StoreA, revenue: 805m);
         await SeesAbcClasses(manager, (World.Dune, "A"), (World.Kobzar, "A"), (World.Notebook, "B"));
@@ -33,6 +36,24 @@ public sealed class ChainManagerReadsReport(SqlServerFixture sql) : EndToEndTest
         Assert.Equal(revenue, report.Amount("revenue"));
         Assert.Equal(receipts, report.Number("receipts"));
         Assert.Equal(averageCheck, report.Amount("averageCheck"));
+    }
+
+    /// <summary>The report compares itself with the equally long period right before it (table 1.1).</summary>
+    private async Task ComparesWithPreviousPeriod(Api manager, decimal previousRevenue, int previousReceipts)
+    {
+        var previous = (await manager.Get(Report()))["previousPeriod"]!;
+        Assert.Equal(previousRevenue, previous.Amount("revenue"));
+        Assert.Equal(previousReceipts, previous.Number("receipts"));
+    }
+
+    /// <summary>Starts an hour ahead: query times go out in whole seconds, so a boundary at "now" could cut the sales off.</summary>
+    private async Task SeesTheDayAsPreviousPeriodOfTheNextDay(Api manager, decimal revenue, int receipts)
+    {
+        var nextDay = Query.Of("reports/management", ("from", Now.AddHours(1)), ("to", Now.AddDays(1).AddHours(1)));
+        var report = await manager.Get(nextDay);
+        Assert.Equal(0, report.Number("receipts"));
+        Assert.Equal(revenue, report["previousPeriod"]!.Amount("revenue"));
+        Assert.Equal(receipts, report["previousPeriod"]!.Number("receipts"));
     }
 
     private async Task SeesCategoryRevenue(Api manager, CategoryId category, decimal revenue) =>

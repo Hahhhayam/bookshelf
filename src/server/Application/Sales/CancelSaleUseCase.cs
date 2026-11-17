@@ -16,7 +16,7 @@ public sealed class CancelSaleUseCase(
             item.AcceptReturn(line.Quantity, sale.Id.Value, clock.Now);
         }
 
-        audit.Record("sale.cancelled", saleId.ToString(), after: sale.Total.ToString());
+        audit.Record("sale.cancelled", saleId.ToString(), FieldChange.Set("total", sale.Total.ToString()));
         await unitOfWork.CommitAsync(ct);
     }
 }

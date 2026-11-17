@@ -8,11 +8,13 @@ public sealed class SetPublisherActiveUseCase(
     {
         user.Require(Permissions.CatalogEdit);
         var publisher = await publishers.GetAsync(id, ct).OrNotFound("Publisher");
+        var wasActive = publisher.IsActive;
         if (active)
             publisher.Activate();
         else
             publisher.Deactivate();
-        audit.Record(active ? "publisher.activated" : "publisher.deactivated", id.ToString(), after: publisher.Name);
+        audit.Record(active ? "publisher.activated" : "publisher.deactivated", id.ToString(),
+            new FieldChange("active", wasActive.ToString(), active.ToString()));
         await unitOfWork.CommitAsync(ct);
     }
 }

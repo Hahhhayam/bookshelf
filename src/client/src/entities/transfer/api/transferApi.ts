@@ -14,4 +14,6 @@ export const transferApi = {
   approve: (id: string) => http.post(`transfers/${id}/approve`),
   ship: (id: string) => http.post(`transfers/${id}/ship`),
   receive: (id: string, received: TransferItem[]) => http.post(`transfers/${id}/receive`, { received }),
+  resolveDiscrepancy: (id: string, discrepancy: string, reason: string) =>
+    http.post(`transfers/${id}/discrepancies/${discrepancy}/resolve`, { reason }),
 }

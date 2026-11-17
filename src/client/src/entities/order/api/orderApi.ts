@@ -9,10 +9,10 @@ export interface PlaceOrder {
 }
 
 export const orderApi = {
-  list: (location: string, status?: OrderStatus) => http.get<OrderSummary[]>(`locations/${location}/orders`, { query: { status } }),
+  list: (location: string, status?: OrderStatus, pickupCode?: string) =>
+    http.get<OrderSummary[]>(`locations/${location}/orders`, { query: { status, pickupCode } }),
   card: (id: string) => http.get<OrderCard>(`orders/${id}`),
   track: (code: string) => http.get<TrackedOrder>(`orders/track/${encodeURIComponent(code)}`),
   changeStatus: (id: string, status: OrderStatus) => http.post(`orders/${id}/status`, { status }),
-  addToCart: (customer: string, book: string, quantity: number) => http.post(`customers/${customer}/cart/items`, { book, quantity }),
   place: (order: PlaceOrder) => http.post<PlacedOrder>('orders', order),
 }

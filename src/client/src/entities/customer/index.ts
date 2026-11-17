@@ -1,3 +1,3 @@
 export { customerApi } from './api/customerApi'
-export { customerKeys, useCustomer, useCustomerByCard } from './model/queries'
-export { bonusKindLabel, tierLabel, type BonusKind, type CustomerCard, type LoyaltyTier } from './model/types'
+export { customerKeys, useBonusSummary, useCustomer, useCustomerByCard } from './model/queries'
+export { bonusKindLabel, tierLabel, type BonusKind, type BonusSummary, type CustomerCard, type LoyaltyTier } from './model/types'

@@ -50,5 +50,5 @@ public readonly record struct Money : IComparable<Money>
     public override string ToString() => $"{Amount:0.00} {Currency}";
 
     private static void EnsureSameCurrency(Money a, Money b) =>
-        Guard.That(a.Currency == b.Currency, $"Currency mismatch: {a.Currency} and {b.Currency}.");
+        Guard.That(a.Currency == b.Currency, "currency-mismatch", $"Currency mismatch: {a.Currency} and {b.Currency}.");
 }

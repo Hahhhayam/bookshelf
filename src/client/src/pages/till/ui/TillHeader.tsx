@@ -1,6 +1,7 @@
 import { Group, Text, UnstyledButton } from '@mantine/core'
 import { useNetwork } from '@mantine/hooks'
 import { tokens } from '@/shared/config/tokens'
+import { formatDateTime } from '@/shared/lib'
 import { Key } from '@/shared/ui'
 
 function Connection() {
@@ -13,13 +14,20 @@ function Connection() {
   )
 }
 
-/** The dark strip of the till: store, cashier, connection and the F12 exit. Shift control does not exist yet (GAP-27). */
-export function TillHeader({ store, cashier, onExit }: { store: string; cashier: string; onExit: () => void }) {
+/** The dark strip of the till: store, shift, cashier, connection and the F12 exit. */
+export function TillHeader({ store, shiftSince, cashier, onExit }: {
+  store: string
+  /** When the open shift started, or null while the till is closed. */
+  shiftSince: string | null
+  cashier: string
+  onExit: () => void
+}) {
   return (
     <Group component="header" h={52} px={20} gap={20} wrap="nowrap" fz={13}
       style={{ flex: 'none', background: tokens.color.ink, color: tokens.color.paper }}>
       <Text fz={15} fw={700}>Каса</Text>
       <Text fz={13} c={tokens.color.lineStrong}>{store}</Text>
+      <Text fz={13} c={tokens.color.lineStrong}>{shiftSince ? `Зміна з ${formatDateTime(shiftSince)}` : 'Каса закрита'}</Text>
       <Connection />
       <Text fz={13} c={tokens.color.lineStrong}>{cashier}</Text>
       <UnstyledButton onClick={onExit} tabIndex={-1}

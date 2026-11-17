@@ -21,10 +21,25 @@ public sealed class Api(HttpClient http)
     public Task Put(string url, object body, IReadOnlyDictionary<string, string>? headers = null) =>
         SendAsync(HttpMethod.Put, url, body, headers, HttpStatusCode.NoContent);
 
+    public Task Delete(string url, IReadOnlyDictionary<string, string>? headers = null) =>
+        SendAsync(HttpMethod.Delete, url, null, headers, HttpStatusCode.NoContent);
+
+    /// <summary>Posts a calculation that changes nothing, such as a receipt quote, and returns its result.</summary>
+    public async Task<JsonNode> Compute(string url, object body) =>
+        JsonNode.Parse(await SendAsync(HttpMethod.Post, url, body, null, HttpStatusCode.OK))!;
+
     /// <summary>Sends a call that must be refused with the given status.</summary>
     public Task Refused(HttpStatusCode status, HttpMethod method, string url, object? body = null,
         IReadOnlyDictionary<string, string>? headers = null) =>
         SendAsync(method, url, body, headers, status);
+
+    /// <summary>Sends a call that must break a business rule (422) with the given error code.</summary>
+    public async Task Rejected(string code, HttpMethod method, string url, object? body = null,
+        IReadOnlyDictionary<string, string>? headers = null)
+    {
+        var problem = JsonNode.Parse(await SendAsync(method, url, body, headers, HttpStatusCode.UnprocessableEntity))!;
+        Assert.Equal(code, problem["code"]?.GetValue<string>());
+    }
 
     private async Task<string> SendAsync(HttpMethod method, string url, object? body,
         IReadOnlyDictionary<string, string>? headers, HttpStatusCode expected)

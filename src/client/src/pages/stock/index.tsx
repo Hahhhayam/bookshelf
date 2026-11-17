@@ -5,6 +5,7 @@ import { useBookTitles } from '@/entities/book'
 import { useLocationStock, type StockLine } from '@/entities/stock'
 import { useCan, useWorkingLocation } from '@/entities/viewer'
 import { AdjustStockDialog, WriteOffDialog, type StockTarget } from '@/features/ops-stock-actions'
+import { MissingBookDialog } from '@/features/purchasing-missing-book'
 import { Perm } from '@/shared/lib'
 import { EmptyState, PageHeader, Panel, QueryView } from '@/shared/ui'
 import { StockTable } from './ui/StockTable'
@@ -16,6 +17,7 @@ export default function StockPage() {
   const [search, setSearch] = useState('')
   const [adjusting, setAdjusting] = useState<StockTarget | null>(null)
   const [writingOff, setWritingOff] = useState<StockTarget | null>(null)
+  const [missingTitle, setMissingTitle] = useState<string | null>(null)
   const stock = useLocationStock(location?.id, belowMinimum ? { belowMinimum: true } : {})
   const title = useBookTitles((stock.data ?? []).map((line) => line.book))
   const text = search.trim().toLocaleLowerCase('uk')
@@ -39,7 +41,13 @@ export default function StockPage() {
           empty={(stock.data?.length ?? 0) > 0 || belowMinimum ? (
             <EmptyState
               title={belowMinimum && !text ? 'Усе вище мінімуму' : 'За цими фільтрами — нічого'}
-              actions={<Button variant="default" onClick={reset}>Скинути фільтри</Button>}
+              text={text && can(Perm.SalesCreate) ? 'Книги немає на цій локації? Запишіть запит — його побачить менеджер із закупівель.' : undefined}
+              actions={(
+                <>
+                  <Button variant="default" onClick={reset}>Скинути фільтри</Button>
+                  {text && can(Perm.SalesCreate) && <Button onClick={() => setMissingTitle(search.trim())}>Записати запит на відсутню книгу</Button>}
+                </>
+              )}
             />
           ) : (
             <EmptyState icon={<IconBuildingWarehouse size={40} stroke={1.5} />} title="Залишків немає" text="На цій локації ще немає жодної книжки." />
@@ -60,6 +68,9 @@ export default function StockPage() {
       </Panel>
       {location && <AdjustStockDialog location={location.id} target={adjusting} onClose={() => setAdjusting(null)} />}
       {location && <WriteOffDialog location={location.id} target={writingOff} onClose={() => setWritingOff(null)} />}
+      {location && missingTitle !== null && (
+        <MissingBookDialog location={location.id} initialTitle={missingTitle} onClose={() => setMissingTitle(null)} />
+      )}
     </Stack>
   )
 }

@@ -31,11 +31,11 @@ public sealed class WriteOff : AggregateRoot<WriteOffId>
         var document = new WriteOff(WriteOffId.New(), locationId, reason, createdBy, now);
         foreach (var item in items)
         {
-            Guard.That(!item.Quantity.IsZero, "Write-off quantity must be positive.");
-            Guard.That(document._lines.All(l => l.Id != item.BookId), "An item can appear in a write-off only once.");
+            Guard.That(!item.Quantity.IsZero, "quantity-not-positive", "Write-off quantity must be positive.");
+            Guard.That(document._lines.All(l => l.Id != item.BookId), "line-duplicate", "An item can appear in a write-off only once.");
             document._lines.Add(new(item.BookId, item.Quantity));
         }
-        Guard.That(document._lines.Count > 0, "A write-off needs at least one line.");
+        Guard.That(document._lines.Count > 0, "lines-empty", "A write-off needs at least one line.");
         return document;
     }
 }

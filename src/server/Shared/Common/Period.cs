@@ -8,7 +8,7 @@ public readonly record struct Period
 
     public Period(DateTimeOffset start, DateTimeOffset end)
     {
-        Guard.That(end > start, "Period end must be after its start.");
+        Guard.That(end > start, "period-invalid", "Period end must be after its start.");
         Start = start;
         End = end;
     }

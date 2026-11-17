@@ -1,7 +1,6 @@
 import { Button, Grid, Stack } from '@mantine/core'
 import { IconPlus, IconShieldLock } from '@tabler/icons-react'
 import { useState } from 'react'
-import { RememberedNote } from '@/shared/ui'
 import { useReferenceList } from '@/entities/reference'
 import { RoleEditor } from '@/features/admin-role-editor'
 import { EmptyState, PageHeader, Panel, QueryView } from '@/shared/ui'
@@ -22,10 +21,6 @@ export default function RolesPage() {
         eyebrow="Адміністрування / Ролі" title={selection.kind === 'new' ? 'Нова роль' : current?.name ?? 'Ролі'}
         actions={<Button leftSection={<IconPlus size={18} stroke={1.75} />} onClick={startNew}>Нова роль</Button>}
       />
-      <RememberedNote>
-        Сервер поки не віддає список ролей (GAP-10): тут ролі, створені в цьому браузері. Права ролі замінюються
-        повністю, і кожна зміна потрапляє в журнал аудиту.
-      </RememberedNote>
       <Grid gap="lg">
         <Grid.Col span={{ base: 12, md: 4, lg: 3 }}>
           <QueryView

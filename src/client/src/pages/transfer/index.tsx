@@ -1,9 +1,9 @@
 import { useParams } from 'react-router'
-import { locationNames, userNames } from '@/entities/reference'
+import { useLocationNames, useUserNames } from '@/entities/reference'
 import {
   transferBadge, transferSide, transferStatus, useTransfer, type TransferCard, type TransferStatus,
 } from '@/entities/transfer'
-import { useCan, useViewer, useWorkingLocation } from '@/entities/viewer'
+import { useCan, useWorkingLocation } from '@/entities/viewer'
 import { formatDateTime, Perm, shortId } from '@/shared/lib'
 import { QueryView } from '@/shared/ui'
 import { DocumentCard, type Fact } from '@/widgets/document-card'
@@ -45,9 +45,8 @@ function TransferDocument({ transfer }: { transfer: TransferCard }) {
 }
 
 function useTransferFacts(transfer: TransferCard): Fact[] {
-  const viewer = useViewer().data
-  const locationName = locationNames(viewer?.locations)
-  const userName = userNames(viewer)
+  const locationName = useLocationNames()
+  const userName = useUserNames()
   const units = transfer.lines.reduce((sum, line) => sum + line.shipped, 0)
   const at = (status: TransferStatus) => {
     const entry = transfer.history.find((h) => h.to === status)

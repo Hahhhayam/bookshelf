@@ -19,14 +19,14 @@ export function useTillCheckout(locationId: string, controls: ReceiptControls) {
     setLastPlan(plan)
     setFailure(null)
     const payments = toPayments(plan)
-    const lines = receipt.lines.map(({ book, quantity }) => ({ book, quantity }))
+    const items = receipt.lines.map(({ book, quantity, manualDiscount }) => ({ book, quantity, manualDiscount }))
     complete.mutate(
-      { key: receipt.key, location: locationId, customer: receipt.customer?.id ?? null, lines, payments },
+      { key: receipt.key, location: locationId, customer: receipt.customer?.id ?? null, items, payments },
       {
         onSuccess: ({ id }) => {
           setClosed({
             id, at: new Date().toISOString(), total: plan.total, change: change(plan.total, plan.tender), payments,
-            items: lines.reduce((sum, l) => sum + l.quantity, 0), customerName: receipt.customer?.name ?? null,
+            items: items.reduce((sum, l) => sum + l.quantity, 0), customerName: receipt.customer?.name ?? null,
           })
           renew()
         },

@@ -13,21 +13,20 @@ public sealed class AuditRecord : AggregateRoot<AuditRecordId>
     public DateTimeOffset At { get; }
     public string Action { get; }
     public string? Subject { get; }
-    public string? Before { get; }
-    public string? After { get; }
+    public IReadOnlyList<FieldChange> Changes { get; }
 
-    private AuditRecord(UserId? by, DateTimeOffset at, string action, string? subject, string? before, string? after)
+    private AuditRecord(UserId? by, DateTimeOffset at, string action, string? subject, IReadOnlyList<FieldChange> changes)
         : base(AuditRecordId.New())
     {
         By = by;
         At = at;
         Action = action;
         Subject = subject;
-        Before = before;
-        After = after;
+        Changes = changes;
     }
 
-    public static AuditRecord Record(UserId? by, DateTimeOffset at, string action, string? subject = null,
-        string? before = null, string? after = null) =>
-        new(by, at, Guard.NotBlank(action), subject, before, after);
+    /// <summary>A key field whose value stayed the same is not a change, so it is left out.</summary>
+    public static AuditRecord Record(UserId? by, DateTimeOffset at, string action, string? subject,
+        params IReadOnlyList<FieldChange> changes) =>
+        new(by, at, Guard.NotBlank(action), subject, changes.Where(c => c.Before != c.After).ToList());
 }

@@ -31,7 +31,7 @@ public sealed class PlaceOrderUseCase(
         foreach (var line in cart.Lines)
         {
             var book = await books.GetAsync(line.Id, ct).OrNotFound("Book");
-            Guard.That(book.IsActive, $"'{book.Title}' is not on sale.");
+            Guard.That(book.IsActive, "book-inactive", $"'{book.Title}' is not on sale.");
             lines.Add((line.Id, line.Quantity, book.Price));
         }
         return lines;

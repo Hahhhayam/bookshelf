@@ -9,7 +9,8 @@ public sealed class UnblockUserUseCase(
         var user = await users.GetAsync(userId, ct).OrNotFound("User");
 
         user.Unblock();
-        audit.Record("user.unblocked", userId.ToString(), UserStatus.Blocked.ToString(), UserStatus.Active.ToString());
+        audit.Record("user.unblocked", userId.ToString(),
+            new FieldChange("status", UserStatus.Blocked.ToString(), UserStatus.Active.ToString()));
         await unitOfWork.CommitAsync(ct);
     }
 }

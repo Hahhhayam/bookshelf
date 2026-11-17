@@ -25,6 +25,6 @@ internal sealed class UserProfileQuery(BookstoreDbContext db) : IUserProfileQuer
         var locations = await db.Set<Location>().AsNoTracking()
             .Where(l => allowed.Contains(l.Id) && l.IsActive)
             .ToListAsync(ct);
-        return locations.OrderBy(l => l.Name).Select(l => new ProfileLocation(l.Id, l.Name, l.Type)).ToList();
+        return locations.OrderBy(l => l.Name).Select(l => new ProfileLocation(l.Id, l.Name, l.Type, l.Address)).ToList();
     }
 }

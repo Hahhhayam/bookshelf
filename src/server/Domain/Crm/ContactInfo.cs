@@ -10,7 +10,7 @@ public sealed record ContactInfo
     public ContactInfo(string name, string? phone, string? email)
     {
         Guard.That(!string.IsNullOrWhiteSpace(phone) || !string.IsNullOrWhiteSpace(email),
-            "A customer needs a phone number or an e-mail.");
+            "contact-required", "A customer needs a phone number or an e-mail.");
         Name = Guard.NotBlank(name);
         Phone = string.IsNullOrWhiteSpace(phone) ? null : phone.Trim();
         Email = string.IsNullOrWhiteSpace(email) ? null : email.Trim();

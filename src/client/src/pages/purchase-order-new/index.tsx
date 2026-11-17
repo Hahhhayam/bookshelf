@@ -2,14 +2,17 @@ import { Anchor, SimpleGrid, Stack, Text, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { BookLookup } from '@/entities/book'
+import { useWorkingLocation } from '@/entities/viewer'
 import { OrderLinesEditor, useCreateOrder, useOrderDraft, validateDraft } from '@/features/purchasing-create-order'
 import { SupplierSelect } from '@/features/purchasing-manage-supplier'
+import { NeedPanel } from '@/features/purchasing-need-forming'
 import { PageHeader, Panel } from '@/shared/ui'
 import { SubmitBar } from './ui/SubmitBar'
 
-/** A new purchase order: supplier, expected date and the books with purchase prices. */
+/** A new purchase order: supplier, expected date and the books with purchase prices, prefilled from the need. */
 export default function PurchaseOrderNewPage() {
   const navigate = useNavigate()
+  const location = useWorkingLocation()
   const order = useOrderDraft()
   const create = useCreateOrder()
   const [submitted, setSubmitted] = useState(false)
@@ -42,6 +45,10 @@ export default function PurchaseOrderNewPage() {
           <OrderLinesEditor lines={order.draft.lines} onChange={order.updateLine} onRemove={order.removeLine} />
         </Stack>
       </Panel>
+      {location && (
+        <NeedPanel location={location.id} locationName={location.name}
+          added={order.draft.lines.map((line) => line.book)} onAdd={order.addLines} />
+      )}
       <SubmitBar pending={create.isPending} error={create.error} onSubmit={submit} />
     </Stack>
   )

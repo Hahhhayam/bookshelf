@@ -57,7 +57,7 @@ public sealed class StockItem : AggregateRoot<StockItemId>
     /// <summary>Sets the on-hand quantity manually. Needs a reason and is audited by the caller.</summary>
     public void Adjust(Quantity newOnHand, AdjustmentReason reason, UserId by, Guid documentId, DateTimeOffset now)
     {
-        Guard.That(newOnHand >= Reserved, "On-hand quantity cannot drop below the reserved quantity.");
+        Guard.That(newOnHand >= Reserved, "stock-below-reserved", "On-hand quantity cannot drop below the reserved quantity.");
         var delta = newOnHand.Value - OnHand.Value;
         if (delta == 0)
             return;
@@ -72,8 +72,8 @@ public sealed class StockItem : AggregateRoot<StockItemId>
     public ReservationId Reserve(Quantity quantity, ReservationPurpose purpose, Guid documentId,
         DateTimeOffset? expiresAt = null)
     {
-        Guard.That(!quantity.IsZero, "Reserved quantity must be positive.");
-        Guard.That(quantity <= Level.Available, "Not enough available stock to reserve.");
+        Guard.That(!quantity.IsZero, "quantity-not-positive", "Reserved quantity must be positive.");
+        Guard.That(quantity <= Level.Available, "stock-insufficient", "Not enough available stock to reserve.");
 
         var reservation = new Reservation(quantity, purpose, documentId, expiresAt);
         _reservations.Add(reservation);
@@ -111,15 +111,15 @@ public sealed class StockItem : AggregateRoot<StockItemId>
 
     private void Increase(Quantity quantity, MovementType type, DocumentReference document, DateTimeOffset now)
     {
-        Guard.That(!quantity.IsZero, "Quantity must be positive.");
+        Guard.That(!quantity.IsZero, "quantity-not-positive", "Quantity must be positive.");
         OnHand += quantity;
         _movements.Add(new(type, quantity.Value, document, now));
     }
 
     private void DecreaseAvailable(Quantity quantity, MovementType type, DocumentReference document, DateTimeOffset now)
     {
-        Guard.That(!quantity.IsZero, "Quantity must be positive.");
-        Guard.That(quantity <= Level.Available, "Not enough available stock.");
+        Guard.That(!quantity.IsZero, "quantity-not-positive", "Quantity must be positive.");
+        Guard.That(quantity <= Level.Available, "stock-insufficient", "Not enough available stock.");
 
         var before = OnHand;
         OnHand -= quantity;
@@ -129,7 +129,7 @@ public sealed class StockItem : AggregateRoot<StockItemId>
 
     private Reservation FindActive(ReservationId id) =>
         _reservations.FirstOrDefault(r => r.Id == id && r.IsActive)
-        ?? throw new DomainException("Active reservation not found.");
+        ?? throw new DomainException("reservation-not-found", "Active reservation not found.");
 
     private void RaiseIfBelowMinimum(Quantity before, DateTimeOffset now)
     {

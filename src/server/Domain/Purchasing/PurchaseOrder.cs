@@ -25,30 +25,32 @@ public sealed class PurchaseOrder : AggregateRoot<PurchaseOrderId>
         ExpectedDate = expectedDate;
     }
 
+    /// <summary>The new draft starts its status history, so the list and the card show who created it and when.</summary>
     public static PurchaseOrder Create(SupplierId supplierId, DateOnly expectedDate,
-        IEnumerable<(BookId BookId, Quantity Quantity, Money PurchasePrice)> lines)
+        IEnumerable<(BookId BookId, Quantity Quantity, Money PurchasePrice)> lines, UserId by, DateTimeOffset now)
     {
         var order = new PurchaseOrder(PurchaseOrderId.New(), supplierId, expectedDate);
         foreach (var (bookId, quantity, price) in lines)
         {
-            Guard.That(!quantity.IsZero, "Ordered quantity must be positive.");
-            Guard.That(order._lines.All(l => l.Id != bookId), "An item can appear in a purchase order only once.");
+            Guard.That(!quantity.IsZero, "quantity-not-positive", "Ordered quantity must be positive.");
+            Guard.That(order._lines.All(l => l.Id != bookId), "line-duplicate", "An item can appear in a purchase order only once.");
             order._lines.Add(new(bookId, quantity, price));
         }
-        Guard.That(order._lines.Count > 0, "A purchase order needs at least one line.");
+        Guard.That(order._lines.Count > 0, "lines-empty", "A purchase order needs at least one line.");
+        order.MoveTo(PurchaseOrderStatus.Draft, by, now);
         return order;
     }
 
     public void Send(UserId by, DateTimeOffset now)
     {
-        Guard.That(Status == PurchaseOrderStatus.Draft, "Only a draft order can be sent.");
+        Guard.That(Status == PurchaseOrderStatus.Draft, "purchase-order-status-invalid", "Only a draft order can be sent.");
         MoveTo(PurchaseOrderStatus.Sent, by, now);
     }
 
     public void Cancel(UserId by, DateTimeOffset now)
     {
         Guard.That(Status is PurchaseOrderStatus.Draft or PurchaseOrderStatus.Sent,
-            "Only an order with no deliveries can be cancelled.");
+            "purchase-order-status-invalid", "Only an order with no deliveries can be cancelled.");
         MoveTo(PurchaseOrderStatus.Cancelled, by, now);
     }
 
@@ -56,7 +58,7 @@ public sealed class PurchaseOrder : AggregateRoot<PurchaseOrderId>
     public void ApplyReceipt(IEnumerable<ItemQuantity> received, UserId by, DateTimeOffset now)
     {
         Guard.That(Status is PurchaseOrderStatus.Sent or PurchaseOrderStatus.PartlyReceived,
-            "The order is not awaiting delivery.");
+            "purchase-order-status-invalid", "The order is not awaiting delivery.");
         foreach (var item in received)
         {
             var line = _lines.FirstOrDefault(l => l.Id == item.BookId);

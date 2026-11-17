@@ -1,29 +1,19 @@
-import { Button, Group, Text, TextInput } from '@mantine/core'
+import { Button, Group, Text } from '@mantine/core'
+import { useState } from 'react'
+import { ShopperIdModal } from '@/entities/shopper'
 import { shortId } from '@/shared/lib'
-import type { CheckoutForm } from '../model/useCheckoutForm'
 import { CheckoutSection } from './CheckoutSection'
 
-/** The order is placed for a customer id remembered in this browser. */
-export function CustomerSection({ form }: { form: CheckoutForm }) {
+/** The order is placed for the shopper whose cart this is; another number opens that customer's cart. */
+export function CustomerSection({ customer }: { customer: string }) {
+  const [changing, setChanging] = useState(false)
   return (
     <CheckoutSection step={1} title="Покупець">
-      {form.askCustomer ? (
-        <TextInput
-          label="Номер покупця"
-          description="Введіть номер з картки покупця — ми запам’ятаємо його в цьому браузері."
-          placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-          value={form.customer}
-          onChange={(e) => form.setCustomer(e.currentTarget.value)}
-          autoComplete="off"
-          maw={460}
-          required
-        />
-      ) : (
-        <Group gap="sm">
-          <Text>Замовлення буде оформлено на покупця <strong>#{shortId(form.shopperId ?? '')}</strong></Text>
-          <Button variant="subtle" size="compact-sm" onClick={form.editCustomer}>Змінити</Button>
-        </Group>
-      )}
+      <Group gap="sm">
+        <Text>Замовлення буде оформлено на покупця <strong>#{shortId(customer)}</strong></Text>
+        <Button variant="subtle" size="compact-sm" onClick={() => setChanging(true)}>Змінити</Button>
+      </Group>
+      <ShopperIdModal opened={changing} onClose={() => setChanging(false)} />
     </CheckoutSection>
   )
 }

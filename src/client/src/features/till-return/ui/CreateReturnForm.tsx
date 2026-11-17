@@ -1,29 +1,33 @@
 import { Alert, Button, NumberInput, SegmentedControl, Stack, Text, TextInput } from '@mantine/core'
 import { useState } from 'react'
-import type { BookHit } from '@/entities/book'
-import { conditionLabel, type ItemCondition } from '@/entities/sale'
+import { conditionLabel, type ItemCondition, type PricedLine } from '@/entities/sale'
 import { errorMessage, Panel } from '@/shared/ui'
 import { useCreateReturn } from '../model/queries'
-import { BookPicker } from './BookPicker'
+import { SaleLinePicker } from './SaleLinePicker'
 import { isSaleId, SalePicker } from './SalePicker'
 
 const conditions = (Object.keys(conditionLabel) as ItemCondition[]).map((value) => ({ value, label: conditionLabel[value] }))
 
-/** A return at the till: sale, book, quantity, reason and condition; an administrator confirms it afterwards. */
-export function CreateReturnForm() {
+/** A return at the till: receipt, position, quantity, reason and condition; an administrator confirms it afterwards. */
+export function CreateReturnForm({ locationId }: { locationId: string }) {
   const [sale, setSale] = useState('')
-  const [book, setBook] = useState<BookHit | null>(null)
+  const [line, setLine] = useState<PricedLine | null>(null)
   const [quantity, setQuantity] = useState<number>(1)
   const [reason, setReason] = useState('')
   const [condition, setCondition] = useState<ItemCondition>('New')
-  const create = useCreateReturn()
-  const ready = isSaleId(sale) && book !== null && quantity >= 1 && reason.trim() !== ''
+  const create = useCreateReturn(locationId)
+  const saleId = isSaleId(sale) ? sale.trim() : undefined
+  const ready = saleId !== undefined && line !== null && quantity >= 1 && quantity <= line.quantity && reason.trim() !== ''
 
+  function pickSale(id: string) {
+    setSale(id)
+    setLine(null)
+  }
   function submit() {
-    if (!ready || !book) return
+    if (!ready || !saleId || !line) return
     create.mutate(
-      { sale: sale.trim(), book: book.id, title: book.title, quantity, reason: reason.trim(), condition },
-      { onSuccess: () => { setBook(null); setQuantity(1); setReason('') } },
+      { sale: saleId, items: [{ book: line.book, quantity }], reason: reason.trim(), condition },
+      { onSuccess: () => { setLine(null); setQuantity(1); setReason('') } },
     )
   }
 
@@ -31,9 +35,9 @@ export function CreateReturnForm() {
     <Panel title="Нове повернення" padding={16}>
       <Stack gap="md">
         <Text fz="sm" c="dimmed">Повернути книгу можна протягом 7 днів від дня покупки — давніший продаж сервер не прийме.</Text>
-        <SalePicker value={sale} onChange={setSale} />
-        <BookPicker value={book} onChange={setBook} />
-        <NumberInput label="Кількість" min={1} allowDecimal={false} value={quantity}
+        <SalePicker locationId={locationId} value={sale} onChange={pickSale} />
+        <SaleLinePicker sale={saleId} value={line} onChange={setLine} />
+        <NumberInput label="Кількість" min={1} max={line?.quantity} allowDecimal={false} value={quantity}
           onChange={(v) => setQuantity(typeof v === 'number' ? v : 1)} w={160} />
         <TextInput label="Причина" placeholder="Наприклад: подарували дублікат" value={reason}
           onChange={(e) => setReason(e.currentTarget.value)} required />

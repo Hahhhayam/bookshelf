@@ -1,5 +1,5 @@
-import { Alert, Button, Stack } from '@mantine/core'
-import { IconInfoCircle, IconPlus } from '@tabler/icons-react'
+import { Button, Stack } from '@mantine/core'
+import { IconPlus } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useReferenceList, type Supplier } from '@/entities/reference'
 import { SupplierFormDialog } from '@/features/purchasing-manage-supplier'
@@ -12,7 +12,7 @@ interface DialogState {
   supplier?: Supplier
 }
 
-/** Suppliers remembered in this browser (GAP-03): create, edit, activate and deactivate. */
+/** Suppliers: create, edit, activate and deactivate. */
 export default function SuppliersPage() {
   const query = useReferenceList('suppliers')
   const [dialog, setDialog] = useState<DialogState | null>(null)
@@ -25,10 +25,6 @@ export default function SuppliersPage() {
         title="Постачальники"
         actions={<Button leftSection={<IconPlus size={16} />} onClick={() => open()}>Новий постачальник</Button>}
       />
-      <Alert color="blue" variant="light" icon={<IconInfoCircle size={18} />}>
-        Сервер поки не віддає список постачальників, тому тут видно лише тих, кого створили або змінили в цьому
-        браузері. Постачальники з інших комп’ютерів з’являться, коли API навчиться їх перелічувати.
-      </Alert>
       <Panel>
         <QueryView
           query={query}

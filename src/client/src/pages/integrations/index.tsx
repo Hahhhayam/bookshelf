@@ -1,6 +1,5 @@
 import { Stack } from '@mantine/core'
 import { IconPlugConnected } from '@tabler/icons-react'
-import { RememberedNote } from '@/shared/ui'
 import { useReferenceList } from '@/entities/reference'
 import { CreateIntegrationButton } from '@/features/admin-integrations'
 import { EmptyState, PageHeader, Panel, QueryView } from '@/shared/ui'
@@ -12,10 +11,6 @@ export default function IntegrationsPage() {
   return (
     <Stack gap="lg">
       <PageHeader eyebrow="Адміністрування" title="Інтеграції" actions={<CreateIntegrationButton />} />
-      <RememberedNote>
-        Сервер поки не віддає список підключень (GAP-10), тому тут лише створені в цьому браузері; «Працює»
-        означає лише, що підключення ввімкнене — стану зв’язку сервер не повідомляє.
-      </RememberedNote>
       <Panel>
         <QueryView
           query={integrations} isEmpty={(list) => list.length === 0}

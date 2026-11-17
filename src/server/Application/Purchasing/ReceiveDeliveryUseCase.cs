@@ -2,9 +2,13 @@ namespace Application.Purchasing;
 
 /// <param name="PurchaseOrder">Null for an unplanned delivery, which then needs <paramref name="Supplier"/>.</param>
 public sealed record ReceiveDeliveryCommand(
-    LocationId Location, PurchaseOrderId? PurchaseOrder, SupplierId? Supplier, IReadOnlyList<ItemQuantity> Received);
+    LocationId Location, PurchaseOrderId? PurchaseOrder, SupplierId? Supplier, IReadOnlyList<ItemQuantity> Received,
+    IdempotencyKey Key);
 
-/// <summary>Scenario 3.9. Confirming the receipt raises stock and moves the purchase order's status.</summary>
+/// <summary>
+/// Scenario 3.9. Confirming the receipt raises stock and moves the purchase order's status. A resend with the same
+/// operation key answers with the receipt already recorded instead of receiving the goods twice.
+/// </summary>
 public sealed class ReceiveDeliveryUseCase(
     IGoodsReceiptRepository receipts, IPurchaseOrderRepository orders, StockItemLoader stock, ICurrentUser user,
     IClock clock, IUnitOfWork unitOfWork)
@@ -13,6 +17,8 @@ public sealed class ReceiveDeliveryUseCase(
     {
         user.Require(Permissions.ReceivingConfirm);
         user.RequireAccess(command.Location);
+        if (await receipts.FindByKeyAsync(command.Key, ct) is { } existing)
+            return existing.Id;
 
         var order = await LoadOrderAsync(command.PurchaseOrder, ct);
         var receipt = BuildReceipt(command, order);
@@ -32,10 +38,10 @@ public sealed class ReceiveDeliveryUseCase(
     {
         if (order is not null)
             return GoodsReceipt.AgainstOrder(order, command.Location,
-                command.Received.ToDictionary(r => r.BookId, r => r.Quantity));
+                command.Received.ToDictionary(r => r.BookId, r => r.Quantity), command.Key);
 
-        var supplier = command.Supplier ?? throw new DomainException("An unplanned delivery needs a supplier.");
-        return GoodsReceipt.Unplanned(supplier, command.Location, command.Received);
+        var supplier = command.Supplier ?? throw new DomainException("supplier-required", "An unplanned delivery needs a supplier.");
+        return GoodsReceipt.Unplanned(supplier, command.Location, command.Received, command.Key);
     }
 
     private async Task IncreaseStockAsync(GoodsReceipt receipt, CancellationToken ct)

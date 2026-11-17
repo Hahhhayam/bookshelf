@@ -1,12 +1,14 @@
 import { Stack, Text, Title } from '@mantine/core'
 import type { BookCard } from '@/entities/book'
-import { referenceName } from '@/entities/reference'
+import { useReferenceNames } from '@/entities/reference'
 import { tokens } from '@/shared/config/tokens'
 
 export function BookDetails({ book }: { book: BookCard }) {
+  const categoryName = useReferenceNames('categories')
+  const publisherName = useReferenceNames('publishers')
   const rows: [string, string, boolean?][] = [
-    ['Видавництво', referenceName('publishers', book.publisher)],
-    ['Категорія', referenceName('categories', book.category)],
+    ['Видавництво', publisherName(book.publisher)],
+    ['Категорія', categoryName(book.category)],
     ['ISBN', book.isbn ?? '—', true],
   ]
   return (

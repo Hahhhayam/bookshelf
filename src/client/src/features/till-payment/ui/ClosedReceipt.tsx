@@ -25,7 +25,7 @@ function PaymentSummary({ sale }: { sale: ClosedSale }) {
           <Text c={tokens.color.ink2} fz={15}>
             {paymentLabel[p.method]}{p.giftCertificateNumber ? ` ${p.giftCertificateNumber}` : ''}
           </Text>
-          <MoneyText value={p.method === 'Cash' ? fromCents(Math.round(p.amount.amount * 100) + sale.change) : p.amount} />
+          <MoneyText value={p.tendered ?? p.amount} />
         </Group>
       ))}
       {sale.change > 0 && (

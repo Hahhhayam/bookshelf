@@ -28,6 +28,13 @@ public abstract class EndToEndTest(SqlServerFixture sql) : IAsyncLifetime
 
     protected void TimePasses(TimeSpan time) => _app.Clock.Advance(time);
 
+    /// <summary>Scheduled jobs are off in tests (see <see cref="BookstoreApp"/>), so a scenario runs a job's use case itself.</summary>
+    protected async Task ScheduledJobRuns<TJob>(Func<TJob, CancellationToken, Task> run) where TJob : notnull
+    {
+        using var scope = _app.Services.CreateScope();
+        await run(scope.ServiceProvider.GetRequiredService<TJob>(), CancellationToken.None);
+    }
+
     protected Api Anonymous() => _app.Anonymous();
 
     protected Task<Api> LogsIn(string login, string password = SampleUsers.Password) => _app.LoginAsync(login, password);
@@ -58,6 +65,13 @@ public abstract class EndToEndTest(SqlServerFixture sql) : IAsyncLifetime
         Assert.Equal(changes, tracked.Items("history").Count);
         Assert.Null(tracked["customer"]);
         Assert.All(tracked.Items("history"), h => Assert.Null(h["by"]));
+    }
+
+    /// <summary>The store administrator opens the till; a store sells only during an open shift (scenario 3.5).</summary>
+    protected async Task<Guid> OpensShift(LocationId store)
+    {
+        var storeAdmin = await LogsIn(SampleUsers.StoreAdmin);
+        return (await storeAdmin.Create($"locations/{store.Value}/shifts", new { })).Id();
     }
 
     /// <summary>Pays the whole receipt in cash, so <paramref name="total"/> must be the total after promotions.</summary>

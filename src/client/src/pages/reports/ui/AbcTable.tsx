@@ -2,6 +2,7 @@ import { Text } from '@mantine/core'
 import { tokens } from '@/shared/config/tokens'
 import { formatNumber } from '@/shared/lib'
 import { Panel, SimpleTable } from '@/shared/ui'
+import { DrillLink } from './DrillLink'
 
 export type AbcClass = 'A' | 'B' | 'C'
 
@@ -33,7 +34,11 @@ function AbcChip({ cls }: { cls: AbcClass }) {
 }
 
 /** ABC analysis by revenue: a sample of each class and how many titles fall into each. */
-export function AbcTable({ rows, counts }: { rows: AbcRow[]; counts: Record<AbcClass, number> }) {
+export function AbcTable({ rows, counts, onBook }: {
+  rows: AbcRow[]
+  counts: Record<AbcClass, number>
+  onBook: (book: string) => void
+}) {
   const total = counts.A + counts.B + counts.C
   return (
     <Panel title="ABC-аналіз за виручкою" extra={<Text size="sm" c="dimmed">A — 80%, B — 15%, C — 5% виручки</Text>}>
@@ -42,7 +47,7 @@ export function AbcTable({ rows, counts }: { rows: AbcRow[]; counts: Record<AbcC
         columns={[{ label: 'Клас' }, { label: 'Книга' }, { label: 'Частка', numeric: true }, { label: 'Накопичено', numeric: true }]}
         rows={rows.map((row) => ({
           key: row.book,
-          cells: [<AbcChip key="c" cls={row.cls} />, row.title, percent.format(row.share), percent.format(row.cumulative)],
+          cells: [<AbcChip key="c" cls={row.cls} />, <DrillLink key="t" onClick={() => onBook(row.book)}>{row.title}</DrillLink>, percent.format(row.share), percent.format(row.cumulative)],
         }))}
       />
       {total > 0 && (

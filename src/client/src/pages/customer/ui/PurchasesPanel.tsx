@@ -1,6 +1,6 @@
 import { Table, Text } from '@mantine/core'
 import type { CustomerCard } from '@/entities/customer'
-import { referenceName } from '@/entities/reference'
+import { useReferenceNames } from '@/entities/reference'
 import { tokens, type StatusTone } from '@/shared/config/tokens'
 import { formatDate, formatMoney, shortId } from '@/shared/lib'
 import { MoneyText, Panel, StatusBadge } from '@/shared/ui'
@@ -21,6 +21,7 @@ function summary(purchases: Purchase[]) {
 }
 
 export function PurchasesPanel({ purchases }: { purchases: Purchase[] }) {
+  const locationName = useReferenceNames('locations')
   const sorted = [...purchases].sort((a, b) => b.at.localeCompare(a.at))
   return (
     <Panel title="Історія покупок" extra={<Text size="sm" c="dimmed">{summary(purchases)}</Text>}>
@@ -34,7 +35,7 @@ export function PurchasesPanel({ purchases }: { purchases: Purchase[] }) {
               {sorted.map((p) => (
                 <Table.Tr key={p.sale}>
                   <Table.Td>{formatDate(p.at)}</Table.Td>
-                  <Table.Td>{referenceName('locations', p.location)}</Table.Td>
+                  <Table.Td>{locationName(p.location)}</Table.Td>
                   <Table.Td style={{ fontFamily: tokens.font.mono }}>Чек {shortId(p.sale)}</Table.Td>
                   <Table.Td ta="right"><MoneyText value={p.total} variant={p.status === 'Cancelled' ? 'strike' : 'default'} /></Table.Td>
                   <Table.Td><StatusBadge {...purchaseStatus[p.status]} /></Table.Td>

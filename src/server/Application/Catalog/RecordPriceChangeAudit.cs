@@ -5,7 +5,8 @@ public sealed class RecordPriceChangeAudit(IAuditRecordRepository records) : IEv
     public Task HandleAsync(PriceChanged domainEvent, CancellationToken ct)
     {
         records.Add(AuditRecord.Record(domainEvent.ChangedBy, domainEvent.OccurredAt, "book.price-changed",
-            domainEvent.BookId.ToString(), domainEvent.OldPrice.ToString(), domainEvent.NewPrice.ToString()));
+            domainEvent.BookId.ToString(),
+            new FieldChange("price", domainEvent.OldPrice.ToString(), domainEvent.NewPrice.ToString())));
         return Task.CompletedTask;
     }
 }

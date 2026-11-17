@@ -12,9 +12,9 @@ interface Row {
 }
 
 const copy: Record<CatalogReferenceKind, { add: string; placeholder: string; empty: string }> = {
-  authors: { add: 'Новий автор', placeholder: 'Ім’я та прізвище', empty: 'Авторів тут ще не створювали' },
-  publishers: { add: 'Нове видавництво', placeholder: 'Назва видавництва', empty: 'Видавництв тут ще не створювали' },
-  categories: { add: 'Нова категорія', placeholder: 'Назва категорії', empty: 'Категорій тут ще не створювали' },
+  authors: { add: 'Новий автор', placeholder: 'Ім’я та прізвище', empty: 'Авторів ще немає' },
+  publishers: { add: 'Нове видавництво', placeholder: 'Назва видавництва', empty: 'Видавництв ще немає' },
+  categories: { add: 'Нова категорія', placeholder: 'Назва категорії', empty: 'Категорій ще немає' },
 }
 
 export function ReferenceList({ kind }: { kind: CatalogReferenceKind }) {

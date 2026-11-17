@@ -56,15 +56,15 @@ public sealed class Order : AggregateRoot<OrderId>
         var order = new Order(OrderId.New(), customerId, type, fulfilment, stockLocation, code);
         foreach (var (bookId, quantity, unitPrice) in lines)
             order.AddLine(bookId, quantity, unitPrice);
-        Guard.That(order._lines.Count > 0, "An order needs at least one line.");
+        Guard.That(order._lines.Count > 0, "lines-empty", "An order needs at least one line.");
         order.Raise(new OrderPlaced(order.Id, customerId, type, fulfilment, order.OrderedItems(), now));
         return order;
     }
 
     private void AddLine(BookId bookId, Quantity quantity, Money unitPrice)
     {
-        Guard.That(!quantity.IsZero, "Ordered quantity must be positive.");
-        Guard.That(_lines.All(l => l.Id != bookId), "An item can appear in an order only once.");
+        Guard.That(!quantity.IsZero, "quantity-not-positive", "Ordered quantity must be positive.");
+        Guard.That(_lines.All(l => l.Id != bookId), "line-duplicate", "An item can appear in an order only once.");
         _lines.Add(new(bookId, quantity, unitPrice));
     }
 
@@ -89,7 +89,7 @@ public sealed class Order : AggregateRoot<OrderId>
 
     private void MoveTo(OrderStatus to, UserId by, DateTimeOffset now)
     {
-        Guard.That(Transitions[Status].Contains(to), $"An order cannot move from {Status} to {to}.");
+        Guard.That(Transitions[Status].Contains(to), "order-transition-invalid", $"An order cannot move from {Status} to {to}.");
         var from = Status;
         Status = to;
         Raise(new OrderStatusChanged(Id, from, to, by, now));

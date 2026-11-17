@@ -11,11 +11,12 @@ export interface BarRow {
 
 const rowHeight = 34
 
-/** Revenue split as horizontal bars (stores, categories), largest first. */
-export function RevenueBars({ title, rows, format }: {
+/** Revenue split as horizontal bars (stores, categories), largest first; a bar with `onSelect` drills down. */
+export function RevenueBars({ title, rows, format, onSelect }: {
   title: string
   rows: BarRow[]
   format: (value: number) => string
+  onSelect?: (key: string) => void
 }) {
   const sorted = [...rows].sort((a, b) => b.value - a.value)
   return (
@@ -31,7 +32,11 @@ export function RevenueBars({ title, rows, format }: {
                   type="category" dataKey="label" width={150} axisLine={false} tickLine={false}
                   tick={{ fill: tokens.color.ink, fontSize: 13 }}
                 />
-                <Bar dataKey="value" fill={tokens.color.accent} background={{ fill: tokens.color.paper }} isAnimationActive={false}>
+                <Bar
+                  dataKey="value" fill={tokens.color.accent} background={{ fill: tokens.color.paper }} isAnimationActive={false}
+                  cursor={onSelect ? 'pointer' : undefined}
+                  onClick={onSelect ? (_data: unknown, index: number) => onSelect(sorted[index]!.key) : undefined}
+                >
                   <LabelList
                     dataKey="value" position="right" fill={tokens.color.ink2} fontSize={13}
                     formatter={(value: unknown) => format(Number(value))}

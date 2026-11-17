@@ -14,6 +14,8 @@ public sealed class Integration : AggregateRoot<IntegrationId>
     public bool IsEnabled { get; private set; } = true;
     public IntegrationStatus Status { get; private set; } = IntegrationStatus.Healthy;
     public string? LastError { get; private set; }
+    public DateTimeOffset? LastErrorAt { get; private set; }
+    public DateTimeOffset? LastExchangeAt { get; private set; }
 
     private Integration(IntegrationId id, IntegrationKind kind, string name) : base(id)
     {
@@ -32,15 +34,17 @@ public sealed class Integration : AggregateRoot<IntegrationId>
     public void ReportFailure(string error, DateTimeOffset now)
     {
         LastError = Guard.NotBlank(error);
+        LastErrorAt = now;
         if (Status == IntegrationStatus.Failed)
             return;
         Status = IntegrationStatus.Failed;
         Raise(new IntegrationFailed(Id, Kind, error, now));
     }
 
-    public void ReportRecovered()
+    /// <summary>A successful exchange means the connection works again; the last error stays visible with its time.</summary>
+    public void ReportExchange(DateTimeOffset now)
     {
+        LastExchangeAt = now;
         Status = IntegrationStatus.Healthy;
-        LastError = null;
     }
 }

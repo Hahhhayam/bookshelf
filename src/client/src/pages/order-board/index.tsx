@@ -1,30 +1,24 @@
 import { Button, Stack } from '@mantine/core'
 import { IconInbox } from '@tabler/icons-react'
 import { useState } from 'react'
-import { isWaitingTooLong, useOrders, type OrderSummary } from '@/entities/order'
+import { useOrders } from '@/entities/order'
 import { useWorkingLocation } from '@/entities/viewer'
-import { minutesSince, shortId } from '@/shared/lib'
 import { EmptyState, PageHeader, Panel, QueryView } from '@/shared/ui'
-import { BoardToolbar, type BoardFilters } from './ui/BoardToolbar'
+import { initialFilters, isLate, matches, pickupCodeOf } from './model/filters'
+import { BoardToolbar } from './ui/BoardToolbar'
 import { OrderBoard } from './ui/OrderBoard'
 import { OrderList } from './ui/OrderList'
 
-const isLate = (order: OrderSummary) => order.lastChangedAt !== null && isWaitingTooLong(order.status, minutesSince(order.lastChangedAt))
-
-function matches(order: OrderSummary, filters: BoardFilters) {
-  const text = filters.search.trim().toUpperCase()
-  const found = !text || shortId(order.id).includes(text) || shortId(order.customer).includes(text) || order.id.toUpperCase().includes(text)
-  return found && (!filters.lateOnly || isLate(order))
-}
-
-const initial: BoardFilters = { view: 'board', search: '', lateOnly: false, status: null }
-
+/** A pickup code finds its order in any status, so the result is shown as a list even on the board view. */
 export default function OrderBoardPage() {
   const location = useWorkingLocation()
-  const [filters, setFilters] = useState(initial)
-  const orders = useOrders(location?.id, filters.view === 'list' ? filters.status ?? undefined : undefined)
+  const [filters, setFilters] = useState(initialFilters)
+  const pickupCode = pickupCodeOf(filters.search)
+  const status = filters.view === 'list' && !pickupCode ? filters.status ?? undefined : undefined
+  const orders = useOrders(location?.id, status, pickupCode)
   const lateCount = (orders.data ?? []).filter(isLate).length
   const filtered = (orders.data ?? []).filter((order) => matches(order, filters))
+  const asList = filters.view === 'list' || !!pickupCode
 
   return (
     <Stack gap="lg">
@@ -33,9 +27,9 @@ export default function OrderBoardPage() {
       <QueryView
         query={orders}
         isEmpty={() => filtered.length === 0}
-        empty={<Panel><Empty filtered={(orders.data?.length ?? 0) > 0} onReset={() => setFilters({ ...initial, view: filters.view })} /></Panel>}
+        empty={<Panel><Empty filtered={(orders.data?.length ?? 0) > 0 || !!pickupCode} onReset={() => setFilters({ ...initialFilters, view: filters.view })} /></Panel>}
       >
-        {() => (filters.view === 'board' ? <OrderBoard orders={filtered} /> : <OrderList orders={filtered} />)}
+        {() => (asList ? <OrderList orders={filtered} /> : <OrderBoard orders={filtered} />)}
       </QueryView>
     </Stack>
   )

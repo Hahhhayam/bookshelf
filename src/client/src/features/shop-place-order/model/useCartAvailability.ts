@@ -1,7 +1,8 @@
 import { useBookCards, type Availability } from '@/entities/book'
 import type { CartLine } from '@/entities/cart'
+import { onlyStores, useStores } from '@/entities/store'
 
-/** A location that has at least one cart book, and the titles it cannot supply in the wanted quantity. */
+/** A store that has at least one cart book, and the titles it cannot supply in the wanted quantity. */
 export interface StoreCoverage {
   location: string
   missing: string[]
@@ -21,13 +22,17 @@ function coverage(lines: readonly CartLine[], byBook: Map<string, Availability[]
     .sort((a, b) => a.missing.length - b.missing.length)
 }
 
-/**
- * Live availability of every cart book and the stores that can supply them. Stores are only the locations that
- * appear here, since the API has no public store list (GAP-14).
- */
+/** Live availability of every cart book at the stores, and which stores can supply the whole cart. */
 export function useCartAvailability(lines: readonly CartLine[]) {
   const cards = useBookCards(lines.map((line) => line.book))
-  const availabilityOf = (book: string) => cards.cardOf(book)?.availability ?? []
+  const stores = useStores()
+  const availabilityOf = (book: string) => onlyStores(cards.cardOf(book)?.availability ?? [], stores.data)
   const byBook = new Map(lines.map((line) => [line.book, availabilityOf(line.book)]))
-  return { isPending: cards.isPending, error: cards.error, refetch: cards.refetch, stores: coverage(lines, byBook), availabilityOf }
+  return {
+    isPending: cards.isPending || stores.isPending,
+    error: cards.error ?? stores.error,
+    refetch: () => { cards.refetch(); void stores.refetch() },
+    stores: coverage(lines, byBook),
+    availabilityOf,
+  }
 }

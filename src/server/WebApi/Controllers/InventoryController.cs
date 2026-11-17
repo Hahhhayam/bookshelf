@@ -24,6 +24,8 @@ public sealed record RecordCountRequest(int Counted);
 
 public sealed record CreateWriteOffRequest(Guid Location, string Reason, ItemQuantityDto[] Items);
 
+public sealed record ResolveDiscrepancyRequest(string Reason);
+
 [ApiController]
 public sealed class InventoryController : ControllerBase
 {
@@ -40,7 +42,8 @@ public sealed class InventoryController : ControllerBase
     }
 
     [RequirePermission(Permissions.SalesCreate, Permissions.StockAdjust, Permissions.TransfersManage,
-        Permissions.InventoryCountManage, Permissions.ReceivingConfirm, Permissions.PurchasingManage)]
+        Permissions.InventoryCountManage, Permissions.InventoryCountApprove, Permissions.WriteOffCreate,
+        Permissions.ReceivingConfirm, Permissions.PurchasingManage)]
     [HttpGet("locations/{location:guid}/stock")]
     public async Task<IActionResult> Stock(
         Guid location, Guid? book, bool belowMinimum, [FromServices] GetLocationStockUseCase useCase, CancellationToken ct)
@@ -70,6 +73,7 @@ public sealed class InventoryController : ControllerBase
             discrepancies = transfer.Discrepancies.Select(d => new
             {
                 id = d.Id, book = d.BookId.Value, expected = d.Expected.Value, actual = d.Actual.Value, d.IsResolved,
+                d.Reason, resolvedBy = d.ResolvedBy?.Value, d.ResolvedAt,
             }),
             history = history.Select(c => new { c.From, c.To, c.At, by = c.By.Value }),
         });
@@ -153,6 +157,40 @@ public sealed class InventoryController : ControllerBase
     {
         await useCase.ExecuteAsync(new TransferId(id), request.Received.Select(i => i.ToItem()).ToList(), ct);
         return NoContent();
+    }
+
+    [RequirePermission(Permissions.TransfersManage)]
+    [HttpPost("transfers/{id:guid}/discrepancies/{discrepancy:guid}/resolve")]
+    public async Task<IActionResult> ResolveDiscrepancy(
+        Guid id, Guid discrepancy, ResolveDiscrepancyRequest request, [FromServices] ResolveTransferDiscrepancyUseCase useCase,
+        CancellationToken ct)
+    {
+        await useCase.ExecuteAsync(new ResolveTransferDiscrepancyCommand(new TransferId(id), discrepancy, request.Reason), ct);
+        return NoContent();
+    }
+
+    [RequirePermission(Permissions.InventoryCountManage, Permissions.InventoryCountApprove)]
+    [HttpGet("inventory-counts")]
+    public async Task<IActionResult> ListCounts(
+        Guid location, [FromServices] ListInventoryCountsUseCase useCase, CancellationToken ct)
+    {
+        var counts = await useCase.ExecuteAsync(new LocationId(location), ct);
+        return Ok(counts.Select(c => new
+        {
+            id = c.Count.Value, location = c.Location.Value, c.Status, c.StartedAt, lines = c.Lines, counted = c.Counted,
+        }));
+    }
+
+    [RequirePermission(Permissions.InventoryCountManage, Permissions.InventoryCountApprove)]
+    [HttpGet("inventory-counts/{id:guid}")]
+    public async Task<IActionResult> GetCount(Guid id, [FromServices] GetInventoryCountUseCase useCase, CancellationToken ct)
+    {
+        var count = await useCase.ExecuteAsync(new InventoryCountId(id), ct);
+        return Ok(new
+        {
+            id = count.Id.Value, location = count.LocationId.Value, count.Status, count.StartedAt,
+            lines = count.Lines.Select(l => new { book = l.Id.Value, expected = l.Expected.Value, counted = l.Counted?.Value }),
+        });
     }
 
     [RequirePermission(Permissions.InventoryCountManage)]

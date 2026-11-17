@@ -2,7 +2,8 @@ namespace Application.Inventory;
 
 /// <summary>FR-13: opens a count with the currently recorded quantities as the expected ones.</summary>
 public sealed class StartInventoryCountUseCase(
-    IInventoryCountRepository counts, IStockItemRepository stockItems, ICurrentUser user, IUnitOfWork unitOfWork)
+    IInventoryCountRepository counts, IStockItemRepository stockItems, ICurrentUser user, IClock clock,
+    IUnitOfWork unitOfWork)
 {
     public async Task<InventoryCountId> ExecuteAsync(LocationId location, CancellationToken ct)
     {
@@ -11,7 +12,7 @@ public sealed class StartInventoryCountUseCase(
 
         var expected = (await stockItems.ListByLocationAsync(location, ct))
             .Select(s => new ItemQuantity(s.BookId, s.OnHand));
-        var count = InventoryCount.Start(location, expected);
+        var count = InventoryCount.Start(location, expected, clock.Now);
         counts.Add(count);
         await unitOfWork.CommitAsync(ct);
         return count.Id;

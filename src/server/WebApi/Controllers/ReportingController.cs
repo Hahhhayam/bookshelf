@@ -22,6 +22,13 @@ public sealed class ReportingController : ControllerBase
             margin = MoneyDto.From(report.Margin),
             report.Receipts,
             averageCheck = MoneyDto.From(report.AverageCheck),
+            previousPeriod = new
+            {
+                revenue = MoneyDto.From(report.PreviousPeriod.Revenue),
+                margin = MoneyDto.From(report.PreviousPeriod.Margin),
+                report.PreviousPeriod.Receipts,
+                averageCheck = MoneyDto.From(report.PreviousPeriod.AverageCheck),
+            },
             report.DaysOfStock,
             topBooks = report.TopBooks.Select(b => new { book = b.Book.Value, sold = b.Sold.Value, revenue = MoneyDto.From(b.Revenue) }),
             slowMovingBooks = report.SlowMovingBooks.Select(b => b.Value),

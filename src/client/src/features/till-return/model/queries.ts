@@ -1,34 +1,29 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { returnApi, saleKeys, type ItemCondition } from '@/entities/sale'
+import { useState } from 'react'
+import { returnApi, saleKeys, type ReturnDraft } from '@/entities/sale'
+import { newKey } from '@/shared/lib'
 
-export interface ReturnDraft {
-  sale: string
-  book: string
-  title: string
-  quantity: number
-  reason: string
-  condition: ItemCondition
-}
-
-export function useCreateReturn() {
+/**
+ * Creating a return. The operation key lives as long as the form's draft: a retry after a lost answer resends it, so
+ * the return is not created twice; it changes only after a success.
+ */
+export function useCreateReturn(locationId: string) {
   const client = useQueryClient()
-  return useMutation({
-    mutationFn: async (draft: ReturnDraft) => {
-      const { id } = await returnApi.create(draft.sale, [{ book: draft.book, quantity: draft.quantity }], draft.reason, draft.condition)
-      returnApi.rememberPending({ ...draft, id, at: new Date().toISOString() })
-      return id
+  const [key, setKey] = useState(() => newKey('return'))
+  const mutation = useMutation({
+    mutationFn: (draft: ReturnDraft) => returnApi.create(draft, key),
+    onSuccess: async () => {
+      setKey(newKey('return'))
+      await client.invalidateQueries({ queryKey: saleKeys.pendingReturns(locationId) })
     },
-    onSuccess: () => client.invalidateQueries({ queryKey: saleKeys.pendingReturns }),
   })
+  return mutation
 }
 
-export function useConfirmReturn() {
+export function useConfirmReturn(locationId: string) {
   const client = useQueryClient()
   return useMutation({
-    mutationFn: async (id: string) => {
-      await returnApi.confirm(id)
-      returnApi.forgetPending(id)
-    },
-    onSuccess: () => client.invalidateQueries({ queryKey: saleKeys.pendingReturns }),
+    mutationFn: (id: string) => returnApi.confirm(id),
+    onSuccess: () => client.invalidateQueries({ queryKey: saleKeys.pendingReturns(locationId) }),
   })
 }

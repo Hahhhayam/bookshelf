@@ -4,9 +4,9 @@ namespace Application.Purchasing;
 public sealed class ListPurchaseOrdersUseCase(IPurchaseOrderQueries orders, ICurrentUser user, IClock clock)
 {
     public Task<IReadOnlyList<PurchaseOrderSummary>> ExecuteAsync(
-        PurchaseOrderStatus? status, bool overdueOnly, CancellationToken ct)
+        PurchaseOrderStatus? status, bool openOnly, bool overdueOnly, CancellationToken ct)
     {
         user.RequireAny(Permissions.PurchasingManage, Permissions.ReceivingConfirm);
-        return orders.ListAsync(status, overdueOnly, DateOnly.FromDateTime(clock.Now.UtcDateTime), ct);
+        return orders.ListAsync(status, openOnly, overdueOnly, DateOnly.FromDateTime(clock.Now.UtcDateTime), ct);
     }
 }

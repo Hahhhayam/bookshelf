@@ -16,6 +16,13 @@ export interface CustomerCard {
   purchases: { sale: string; location: string; at: string; total: Money; status: 'Completed' | 'Cancelled' }[]
 }
 
+/** What the shop shows a buyer about the loyalty program (FR-14); no personal data. */
+export interface BonusSummary {
+  tier: LoyaltyTier
+  balance: number
+  operations: { kind: BonusKind; points: number; at: string }[]
+}
+
 export const tierLabel: Record<LoyaltyTier, string> = { Basic: 'Базовий', Silver: 'Срібний', Gold: 'Золотий' }
 
 export const bonusKindLabel: Record<BonusKind, string> = {

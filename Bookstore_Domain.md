@@ -59,7 +59,8 @@ The root is a sellable catalog item. It is usually a book, but it can also be a 
 - **Rules**
   - The ISBN must be unique across the catalog.
   - An item is deactivated instead of deleted when it has active orders, reservations or unfulfilled deliveries ([scenario 3.4](Звіт_Книжковий%20магаз.md#34-видалення-або-деактивація-книги)).
-  - A price cannot be negative. A price change takes effect at once and raises the PriceChanged event with the old and the new value; the old value is kept in the price history ([scenario 3.3](Звіт_Книжковий%20магаз.md#33-редагування-ціни)). Scheduled (future-dated) prices are not supported.
+  - A price cannot be negative. A price change raises the PriceChanged event with the old and the new value, and the old value is kept in the price history ([scenario 3.3](Звіт_Книжковий%20магаз.md#33-редагування-ціни)). A change takes effect at once, or from a chosen future moment through a ScheduledPrice (below).
+  - A deactivated item can be put back on sale.
   - Creating an item raises the BookAdded event with its initial price.
 
 ### Aggregate: PriceEntry (price history)
@@ -70,6 +71,14 @@ One price a catalog item had from a given moment, with the user who set it. The 
   - Entries are append-only and are never changed or deleted. They stay when the item is deleted.
   - An entry refers to its item only by BookId, with no database foreign key.
   - Entries are created by a handler of BookAdded and PriceChanged, not by the Book itself, in the same transaction as the price change. The entry takes the identifier of the event that caused it.
+
+### Aggregate: ScheduledPrice
+
+A price decided now that becomes the item's price from a future moment ([scenario 3.3](Звіт_Книжковий%20магаз.md#33-редагування-ціни): «нова ціна стає активною з указаного моменту»). It is kept apart from Book so the current price stays simple to read.
+
+- **Rules**
+  - An item has at most one scheduled price; deciding again replaces it. The moment must be in the future.
+  - When the moment comes, a scheduled job applies it as an ordinary price change dated at that moment, so the price history and the audit get their entries then. Scheduling it is audited on its own.
 
 ### Aggregate: Author
 
@@ -111,7 +120,7 @@ A document that moves goods from one location to another.
 
 - **Entities**
   - **TransferLine** — an item with its shipped quantity and its received quantity.
-  - **Discrepancy** — a separate record raised when the received quantity differs from the shipped quantity, so someone can review it.
+  - **Discrepancy** — a separate record raised when the received quantity differs from the shipped quantity, so someone can review it. It is closed with a reason, the user who closed it and the time; stock does not change.
 - **Value objects**
   - **TransferStatus** — the stage of the document: created, approved (goods reserved), shipped or received.
   - **Route** — the sending and receiving locations.
@@ -129,10 +138,10 @@ One status transition of a transfer, with its time and the responsible user. The
 
 ### Aggregate: InventoryCount
 
-An inventory count at one location.
+An inventory count at one location, started at a recorded moment.
 
 - **Entities**
-  - **CountLine** — an item with its expected quantity and its counted quantity.
+  - **CountLine** — an item with its expected quantity (the stock when the count started) and its counted quantity.
 - **Value objects**
   - **CountStatus** — the stage of the count: open, counted, approved or posted.
 - **Rules**
@@ -159,7 +168,7 @@ A completed retail sale at a store, optionally linked to a customer.
 
 - **Entities**
   - **SaleLine** — one item on the receipt with its quantity, price and applied discount.
-  - **Payment** — a payment with its method and status. Card payments go through the external payment service, and the system stores no card details.
+  - **Payment** — a payment with its method and status. Card payments go through the external payment service, and the system stores no card details. A cash payment also records the change given, so the cash tendered is known.
 - **Value objects**
   - **Discount** — an allowed manual discount or one produced by a promotion.
   - **PaymentMethod** — how the customer paid.
@@ -168,6 +177,8 @@ A completed retail sale at a store, optionally linked to a customer.
   - **IdempotencyKey** — makes sure a resent sale is posted only once.
 - **Rules**
   - Confirming a sale and deducting the stock happen in one transaction.
+  - A sale needs an open shift at its store ([scenario 3.5](Звіт_Книжковий%20магаз.md#35-оформлення-продажу): «Каса відкрита»).
+  - A receipt can be priced before payment (promotions, permitted discount, allowed bonus write-off) with the same rules the sale uses, so the till knows the exact total. Payments must cover that total.
   - A cancellation is allowed only for a user with the right to cancel.
 
 ### Aggregate: Return
@@ -183,6 +194,14 @@ A return of goods based on an original sale.
   - The returned quantity cannot exceed the sold quantity minus earlier returns.
   - Stock and money change only after the return is confirmed.
   - The user's rights are checked, and every return is audited.
+  - A return carries an IdempotencyKey, so a resent return is created only once.
+
+### Aggregate: Shift
+
+A cashier shift at a store: who opened it and when, and who closed it and when. The store administrator controls shifts ([report 1.3](Звіт_Книжковий%20магаз.md#13-характеристика-користувачів)).
+
+- **Rules**
+  - A store has at most one open shift. A closed shift cannot be closed again.
 
 ### Aggregate: GiftCertificate
 
@@ -206,6 +225,8 @@ The customer's selection of items before they place the order.
 
 - **Entities**
   - **CartLine** — an item and its quantity.
+- **Rules**
+  - Lines can be added, changed and removed. The cart is cleared only when an order is placed from it, so a failed checkout can be retried without doubling it.
 
 ### Aggregate: Order
 
@@ -251,6 +272,7 @@ An order placed with one supplier.
   - **PurchaseOrderStatus** — the stage of the order, including partly and fully received.
 - **Rules**
   - A delivery that is late against its expected date raises a notification.
+  - A draft or sent order can be cancelled.
 
 ### Aggregate: PurchaseOrderStatusChange (purchase order status history)
 
@@ -258,7 +280,7 @@ One status transition of a purchase order, with its time and the responsible use
 
 - **Rules**
   - Entries are append-only and refer to their purchase order only by PurchaseOrderId, with no database foreign key.
-  - Entries are created by a handler of PurchaseOrderStatusChanged, in the same transaction as the transition, and take the identifier of that event. A receipt that leaves the status unchanged adds no entry.
+  - Entries are created by a handler of PurchaseOrderStatusChanged, in the same transaction as the transition, and take the identifier of that event. The history starts with an entry for the creation of the order. A receipt that leaves the status unchanged adds no entry.
 
 ### Aggregate: GoodsReceipt
 
@@ -268,7 +290,8 @@ Receiving a delivery against a purchase order, or an allowed unplanned delivery.
   - **ReceiptLine** — an item with its ordered quantity and its actually received quantity.
   - **Discrepancy** — a separate record of the difference between ordered and received quantities.
 - **Rules**
-  - Stock increases only after the receiving document is confirmed.
+  - Stock increases only after the receiving document is confirmed, which records who confirmed it and when.
+  - A receipt carries an IdempotencyKey, so a resent delivery is received only once.
   - Confirming the receipt updates the status of the purchase order.
 
 ### Aggregate: MissingBookRequest
@@ -308,10 +331,11 @@ A discount rule. It is created by marketing and applied automatically during a s
 
 - **Value objects**
   - **Period** — when the promotion is valid.
-  - **PromotionCondition** — when the promotion applies.
+  - **PromotionCondition** — when the promotion applies: an item or category, a minimum quantity, and optionally a segment or a single customer (a personal offer).
   - **Priority** — which rule wins when several promotions overlap.
 - **Rules**
   - A promotion applies only inside its validity period. When several apply, the one with the higher priority wins.
+  - A personal offer applies only to a sale for a customer in its segment, or for that customer.
 
 ### Aggregate: Segment
 
@@ -359,9 +383,15 @@ A store, warehouse or the central warehouse. New locations are added by configur
 
 The settings and health of one external connection: the payment service, the online shop, accounting, or e-mail/SMS. Each one is reached through an adapter. There can be several connections of the same kind (for example two payment providers), so an integration is identified by its own identifier, not by its kind, and an adapter reports failures for the integration it was configured with.
 
+- **Rules**
+  - The integration keeps its health: the last successful exchange, and the last error with its time. A failure raises IntegrationFailed.
+
 ### Aggregate: AuditRecord
 
-An immutable record of one critical action: who did it, when, the action type and the key values before and after. It is append-only.
+An immutable record of one critical action: who did it, when, the action type and the key fields that changed, each with its value before and after ([FR-17](Specification_Bookstore_IS.md#fr-17)). It is append-only.
+
+- **Value objects**
+  - **FieldChange** — one field with its value before and after. A field whose value did not change is left out.
 
 ---
 

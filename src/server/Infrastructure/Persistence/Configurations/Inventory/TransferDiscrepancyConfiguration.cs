@@ -14,5 +14,8 @@ internal sealed class TransferDiscrepancyConfiguration : IEntityTypeConfiguratio
         builder.Property(x => x.Expected);
         builder.Property(x => x.Actual);
         builder.Property(x => x.IsResolved);
+        builder.Property(x => x.Reason).HasMaxLength(500);
+        builder.Property(x => x.ResolvedBy);
+        builder.Property(x => x.ResolvedAt);
     }
 }

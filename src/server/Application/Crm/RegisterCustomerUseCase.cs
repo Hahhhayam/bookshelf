@@ -10,7 +10,7 @@ public sealed class RegisterCustomerUseCase(
     {
         if (!user.Has(Permissions.CrmManage))
             user.Require(Permissions.SalesCreate);
-        Guard.That(await customers.FindByCardAsync(command.Card, ct) is null, "This card is already registered.");
+        Guard.That(await customers.FindByCardAsync(command.Card, ct) is null, "card-taken", "This card is already registered.");
 
         var customer = Customer.Register(command.Contact, command.Card);
         customers.Add(customer);

@@ -1,3 +1,5 @@
+using Infrastructure.Persistence.Configurations.ValueObjects;
+
 namespace Infrastructure.Persistence.Configurations.Administration;
 
 internal sealed class AuditRecordConfiguration()
@@ -9,8 +11,7 @@ internal sealed class AuditRecordConfiguration()
         builder.Property(x => x.At);
         builder.Property(x => x.Action).HasMaxLength(128).IsRequired();
         builder.Property(x => x.Subject).HasMaxLength(256);
-        builder.Property(x => x.Before);
-        builder.Property(x => x.After);
+        builder.Property(x => x.Changes).HasConversion<FieldChangesConverter, FieldChangesComparer>();
         builder.HasIndex(x => new { x.Subject, x.At });
     }
 }

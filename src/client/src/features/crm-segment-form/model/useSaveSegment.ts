@@ -9,7 +9,7 @@ export interface SegmentValues {
 
 const toArgs = (values: SegmentValues) => [values.name.trim(), values.description.trim() || null] as const
 
-/** Creates a segment (id absent) or updates one; the list is remembered locally until the API lists it (GAP-12). */
+/** Creates a segment (id absent) or updates one. */
 export function useSaveSegment(id?: string) {
   const refresh = useRefreshReference()
   return useMutation({

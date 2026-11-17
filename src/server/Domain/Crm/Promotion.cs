@@ -33,17 +33,18 @@ public sealed class Promotion : AggregateRoot<PromotionId>
     public static Promotion Create(string name, Period period, PromotionCondition condition,
         decimal discountPercent, int priority)
     {
-        Guard.That(discountPercent is > 0 and <= 100, "Discount must be between 0 and 100 percent.");
+        Guard.That(discountPercent is > 0 and <= 100, "discount-out-of-range", "Discount must be between 0 and 100 percent.");
         return new(PromotionId.New(), Guard.NotBlank(name), period, condition, discountPercent, priority);
     }
 
-    public bool AppliesTo(BookId book, CategoryId category, Quantity quantity, DateTimeOffset at) =>
-        Period.Contains(at) && Condition.IsMetBy(book, category, quantity);
+    /// <param name="buyer">The customer whose card is on the sale, if any; personal offers need one.</param>
+    public bool AppliesTo(BookId book, CategoryId category, Quantity quantity, Customer? buyer, DateTimeOffset at) =>
+        Period.Contains(at) && Condition.IsMetBy(book, category, quantity, buyer);
 
     public Money DiscountFor(Money lineAmount) => lineAmount * (DiscountPercent / 100m);
 
     /// <summary>Picks the applicable promotion with the highest priority, or null.</summary>
     public static Promotion? SelectWinner(IEnumerable<Promotion> promotions, BookId book, CategoryId category,
-        Quantity quantity, DateTimeOffset at) =>
-        promotions.Where(p => p.AppliesTo(book, category, quantity, at)).MaxBy(p => p.Priority);
+        Quantity quantity, Customer? buyer, DateTimeOffset at) =>
+        promotions.Where(p => p.AppliesTo(book, category, quantity, buyer, at)).MaxBy(p => p.Priority);
 }

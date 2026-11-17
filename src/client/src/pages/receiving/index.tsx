@@ -8,6 +8,7 @@ import { PageHeader, Panel } from '@/shared/ui'
 import { DeliveryChooser, NoLocation } from './ui/DeliveryChooser'
 import { PlannedDelivery } from './ui/PlannedDelivery'
 import { ReceiptDone } from './ui/ReceiptDone'
+import { RecentReceipts } from './ui/RecentReceipts'
 import { ReceivingWorkspace } from './ui/ReceivingWorkspace'
 
 /** Receiving a delivery (Receiving artboard): against a sent purchase order, or unplanned with a supplier. */
@@ -35,7 +36,7 @@ export default function ReceivingPage() {
         actions={location && <span>{location.name}</span>}
       />
       {!location ? <NoLocation />
-        : done ? <ReceiptDone order={order} onNext={restart} />
+        : done ? <ReceiptDone receipt={done} order={order} onNext={restart} />
           : order ? <PlannedDelivery orderId={order} location={location.id} onDone={setDone} />
             : unplanned ? (
               <Stack gap={16}>
@@ -43,7 +44,12 @@ export default function ReceivingPage() {
                 <ReceivingWorkspace initialLines={[]} planned={false} location={location.id} order={null} supplier={supplier} onDone={setDone} />
               </Stack>
             )
-              : <DeliveryChooser onPickOrder={(id) => setParams({ order: id })} onUnplanned={() => setParams({ unplanned: '1' })} />}
+              : (
+                <Stack gap={16}>
+                  <DeliveryChooser onPickOrder={(id) => setParams({ order: id })} onUnplanned={() => setParams({ unplanned: '1' })} />
+                  <RecentReceipts location={location.id} />
+                </Stack>
+              )}
     </Stack>
   )
 }

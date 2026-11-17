@@ -14,8 +14,12 @@ public sealed class GenerateManagementReportUseCase(IReportQueries queries, ICur
         user.Require(Permissions.ReportsView);
         AuthorizeScope(request);
         var data = await queries.LoadAsync(request, ct);
-        return ManagementReportCalculator.Calculate(data, request.Period);
+        var previous = await queries.LoadAsync(request with { Period = PeriodBefore(request.Period) }, ct);
+        return ManagementReportCalculator.Calculate(data, previous, request.Period);
     }
+
+    /// <summary>The comparison period (table 1.1, "порівняння періодів"): equally long, ending where the report's starts.</summary>
+    private static Period PeriodBefore(Period period) => new(period.Start - (period.End - period.Start), period.Start);
 
     private void AuthorizeScope(ReportRequest request)
     {

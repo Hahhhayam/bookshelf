@@ -18,23 +18,29 @@ public sealed class GoodsReceipt : AggregateRoot<GoodsReceiptId>
     /// <summary>Null for an unplanned delivery.</summary>
     public PurchaseOrderId? PurchaseOrderId { get; }
 
+    /// <summary>The operation key of the request that recorded this receipt, so a resend is not received twice.</summary>
+    public IdempotencyKey IdempotencyKey { get; }
+
     public bool IsConfirmed { get; private set; }
+    public UserId? ConfirmedBy { get; private set; }
+    public DateTimeOffset? ConfirmedAt { get; private set; }
     public IReadOnlyList<ReceiptLine> Lines => _lines;
     public IReadOnlyList<Discrepancy> Discrepancies => _discrepancies;
 
     private GoodsReceipt(GoodsReceiptId id, SupplierId supplierId, LocationId locationId,
-        PurchaseOrderId? purchaseOrderId) : base(id)
+        PurchaseOrderId? purchaseOrderId, IdempotencyKey idempotencyKey) : base(id)
     {
         SupplierId = supplierId;
         LocationId = locationId;
         PurchaseOrderId = purchaseOrderId;
+        IdempotencyKey = idempotencyKey;
     }
 
     /// <summary>Starts a receipt against a purchase order; ordered quantities come from the order.</summary>
     public static GoodsReceipt AgainstOrder(PurchaseOrder order, LocationId locationId,
-        IReadOnlyDictionary<BookId, Quantity> received)
+        IReadOnlyDictionary<BookId, Quantity> received, IdempotencyKey key)
     {
-        var receipt = new GoodsReceipt(GoodsReceiptId.New(), order.SupplierId, locationId, order.Id);
+        var receipt = new GoodsReceipt(GoodsReceiptId.New(), order.SupplierId, locationId, order.Id, key);
         foreach (var line in order.Lines)
             receipt._lines.Add(new(line.Id, line.Ordered - Min(line.Ordered, line.Received),
                 received.GetValueOrDefault(line.Id)));
@@ -44,19 +50,22 @@ public sealed class GoodsReceipt : AggregateRoot<GoodsReceiptId>
         return receipt;
     }
 
-    public static GoodsReceipt Unplanned(SupplierId supplierId, LocationId locationId, IEnumerable<ItemQuantity> received)
+    public static GoodsReceipt Unplanned(SupplierId supplierId, LocationId locationId, IEnumerable<ItemQuantity> received,
+        IdempotencyKey key)
     {
-        var receipt = new GoodsReceipt(GoodsReceiptId.New(), supplierId, locationId, null);
+        var receipt = new GoodsReceipt(GoodsReceiptId.New(), supplierId, locationId, null, key);
         receipt._lines.AddRange(received.Select(r => new ReceiptLine(r.BookId, Quantity.Zero, r.Quantity)));
-        Guard.That(receipt._lines.Count > 0, "A receipt needs at least one line.");
+        Guard.That(receipt._lines.Count > 0, "lines-empty", "A receipt needs at least one line.");
         return receipt;
     }
 
     /// <summary>Stock increases only after this confirmation; Purchasing then updates the purchase order.</summary>
     public void Confirm(UserId by, DateTimeOffset now)
     {
-        Guard.That(!IsConfirmed, "The receipt is already confirmed.");
+        Guard.That(!IsConfirmed, "receipt-confirmed", "The receipt is already confirmed.");
         IsConfirmed = true;
+        ConfirmedBy = by;
+        ConfirmedAt = now;
         Raise(new GoodsReceived(Id, PurchaseOrderId, SupplierId, LocationId,
             _lines.Where(l => !l.Received.IsZero).Select(l => new ItemQuantity(l.Id, l.Received)).ToList(),
             _discrepancies.Count > 0, by, now));

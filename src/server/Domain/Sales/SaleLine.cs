@@ -12,9 +12,9 @@ public sealed class SaleLine : Entity<Guid>
 
     public SaleLine(BookId bookId, Quantity quantity, Money unitPrice, Discount discount) : base(Guid.CreateVersion7())
     {
-        Guard.That(!quantity.IsZero, "Sale quantity must be positive.");
-        Guard.That(!unitPrice.IsNegative && !discount.Amount.IsNegative, "Price and discount cannot be negative.");
-        Guard.That(discount.Amount <= unitPrice * quantity, "A discount cannot exceed the line amount.");
+        Guard.That(!quantity.IsZero, "quantity-not-positive", "Sale quantity must be positive.");
+        Guard.That(!unitPrice.IsNegative && !discount.Amount.IsNegative, "price-negative", "Price and discount cannot be negative.");
+        Guard.That(discount.Amount <= unitPrice * quantity, "discount-exceeds-line", "A discount cannot exceed the line amount.");
         BookId = bookId;
         Quantity = quantity;
         UnitPrice = unitPrice;

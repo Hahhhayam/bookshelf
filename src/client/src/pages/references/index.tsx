@@ -10,7 +10,6 @@ export default function ReferencesPage() {
     <Stack gap="lg">
       <PageHeader eyebrow={<Anchor component={Link} to="/staff/catalog" size="sm">Каталог</Anchor>} title="Довідники" />
       <Alert variant="light" color="gray" icon={<IconInfoCircle size={18} />}>
-        Сервер поки не віддає списки довідників, тому тут видно лише записи, створені або побачені в цьому браузері.
         Автори й видавництва не видаляються — їх можна деактивувати й повернути.
       </Alert>
       <Tabs defaultValue="authors" keepMounted={false}>
