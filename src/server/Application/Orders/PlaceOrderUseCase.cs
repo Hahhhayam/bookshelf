@@ -6,11 +6,12 @@ public sealed record PlaceOrderCommand(
 
 /// <summary>Scenario 3.8, first half: the cart becomes a New order and its quantities are reserved.</summary>
 public sealed class PlaceOrderUseCase(
-    ICartRepository carts, IOrderRepository orders, IBookRepository books, StockItemLoader stock,
-    IPickupCodeGenerator codes, IClock clock, IUnitOfWork unitOfWork)
+    ICartRepository carts, IOrderRepository orders, IBookRepository books, ILocationRepository locations,
+    StockItemLoader stock, IPickupCodeGenerator codes, IClock clock, IUnitOfWork unitOfWork)
 {
     public async Task<PlacedOrder> ExecuteAsync(PlaceOrderCommand command, CancellationToken ct)
     {
+        await EnsurePickupAtOpenStoreAsync(command.Fulfilment, ct);
         var cart = await carts.FindByCustomerAsync(command.Customer, ct).OrNotFound("Cart");
         var now = clock.Now;
 
@@ -23,6 +24,15 @@ public sealed class PlaceOrderUseCase(
         orders.Add(order);
         await unitOfWork.CommitAsync(ct);
         return new PlacedOrder(order.Id, order.PickupCode);
+    }
+
+    /// <summary>Customers collect only at stores (FR-07); the shop never offers a warehouse or a closed store.</summary>
+    private async Task EnsurePickupAtOpenStoreAsync(FulfilmentMethod fulfilment, CancellationToken ct)
+    {
+        if (fulfilment.PickupLocation is not { } id) return;
+        var location = await locations.GetAsync(id, ct).OrNotFound("Location");
+        Guard.That(location.Type == LocationType.Store && location.IsActive, "pickup-location-not-store",
+            "Orders can be collected only at an open store.");
     }
 
     private async Task<IReadOnlyList<(BookId, Quantity, Money)>> PriceLinesAsync(Cart cart, CancellationToken ct)

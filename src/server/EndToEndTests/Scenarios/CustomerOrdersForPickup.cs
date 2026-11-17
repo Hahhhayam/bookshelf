@@ -19,6 +19,7 @@ public sealed class CustomerOrdersForPickup(SqlServerFixture sql) : EndToEndTest
         await ChangesCartQuantity(customer, World.Kobzar, quantity: 2);
         await RemovesFromCart(customer, World.Dune);
         await SeesCart(customer, World.Kobzar, quantity: 2, total: 600m);
+        await CannotPickUpAtWarehouse(customer);
         var order = await PlacesPickupOrder(customer, World.StoreA);
         await SeesCartIsEmpty(customer);
         await ReadsPlacedOrder(customer, order, World.StoreA, World.Kobzar, quantity: 2, total: 600m);
@@ -39,6 +40,14 @@ public sealed class CustomerOrdersForPickup(SqlServerFixture sql) : EndToEndTest
         Assert.Equal(stores.Select(s => s.Value), listed.Items().Select(s => s.Id()));
         Assert.DoesNotContain(listed.Items(), s => s.Id() == World.Warehouse.Value);
     }
+
+    /// <summary>The shop lists only stores, but the API must refuse a warehouse sent directly too.</summary>
+    private Task CannotPickUpAtWarehouse(Api customer) =>
+        customer.Rejected("pickup-location-not-store", HttpMethod.Post, "orders", new
+        {
+            customer = World.Customer.Value, type = "Retail", stockLocation = World.Warehouse.Value,
+            fulfilment = new { kind = "Pickup", pickupLocation = World.Warehouse.Value, deliveryAddress = (string?)null },
+        });
 
     private Task ChangesCartQuantity(Api customer, BookId book, int quantity) =>
         customer.Put($"customers/{World.Customer.Value}/cart/items/{book.Value}", new { quantity });

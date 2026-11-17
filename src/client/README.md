@@ -15,5 +15,8 @@ npm test
 npm run build
 ```
 
-`VITE_SHOP_CUSTOMER_ID` (optional, in `.env.local`) sets the customer the shop acts for; customers have no login
+Whole system in Docker (database, cache, API and this client behind nginx), from `src/server` with `.env` made
+from `.env.example`: `docker compose up -d --build`, then open http://localhost:8081 (the API stays on :8080).
+
+`VITE_SHOP_CUSTOMER_ID` (optional, in `.env.local`; for Docker, in `src/server/.env`) sets the customer the shop acts for; customers have no login
 (the report gives them none), so without it the shop asks for the customer number once, on the first «У кошик».

@@ -45,6 +45,7 @@ const messages: Record<string, string> = {
   'payments-total-mismatch': 'Сума оплат не дорівнює сумі чека. Можливо, змінилися акції — перевірте суму.',
   'period-invalid': 'Кінець періоду має бути пізніше за початок.',
   'pickup-location-required': 'Оберіть магазин для самовивозу.',
+  'pickup-location-not-store': 'Забрати замовлення можна лише у відкритому магазині.',
   'price-negative': 'Ціна не може бути від’ємною.',
   'publisher-not-found': 'Такого видавництва немає в довіднику.',
   'purchase-order-status-invalid': 'Замовлення постачальнику вже в іншому статусі. Оновіть сторінку.',

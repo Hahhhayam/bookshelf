@@ -17,7 +17,7 @@ Sources: [Specification_Bookstore_IS.md](Specification_Bookstore_IS.md) (user sc
 3. `GET books/{id}/prices` → the price history.
 4. `GET stores` → the pickup stores, no warehouse.
 5. `POST customers/{customer}/cart/items` for two books, `PUT …/cart/items/{book}` to change one, `DELETE …/cart/items/{book}` to remove the other; `GET customers/{customer}/cart` → lines and total.
-6. `POST orders` with pickup at Store A → order id; the cart is empty afterwards.
+6. `POST orders` with pickup at the warehouse → 422 `pickup-location-not-store`. `POST orders` with pickup at Store A → order id; the cart is empty afterwards.
 7. `GET orders/track/{pickupCode}` → status `New`, store, lines and total, no staff or personal data in the response.
 
 **Asserts:** available quantity in Store A drops by the ordered amount (reserved); a second search within 30 s may still show the old availability (search cache), but `GET books/{id}` shows the new one (always live).

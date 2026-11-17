@@ -280,6 +280,8 @@ A book can be reserved for a customer for a defined time. The reserved quantity 
 A customer can place an order, and a store employee changes its status along the allowed route.
 *Supports:* [BC-05](#bc-05)
 
+*Implementation notes (not in the report):* a pickup order is collected only at an open store; the server refuses a warehouse or a closed store as the pickup location (`pickup-location-not-store`), even though the shop never offers one.
+
 <a id="fr-08"></a>
 #### FR-08 Order statuses
 At least the following statuses are supported: New, Confirmed, Picking, Ready, Issued, Cancelled.

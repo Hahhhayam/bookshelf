@@ -241,6 +241,7 @@ A customer order placed through the website, or a large B2B order from a school,
   - **OrderType** — retail or B2B with special terms.
 - **Rules**
   - Only allowed status transitions can happen.
+  - A pickup order is collected only at an open store, never at a warehouse.
   - Placing an order reserves the stock. When the order is Issued, the reservation becomes a write-off; when it is Cancelled, the reservation is released.
 
 ### Aggregate: OrderStatusChange (order status history)

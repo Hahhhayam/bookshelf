@@ -51,6 +51,7 @@ checked in several places.
 | `payments-total-mismatch` | 422 | Payments must add up to the receipt total (B-01) | `Sale` |
 | `period-invalid` | 422 | A period must end after it starts | `Period`, `ListSalesUseCase` |
 | `pickup-location-required` | 422 | A pickup order needs a pickup location | `OrdersController` |
+| `pickup-location-not-store` | 422 | A pickup order names a warehouse or a closed store | `PlaceOrderUseCase` |
 | `price-negative` | 422 | A price or discount is negative | `Book`, `ScheduledPrice`, `SaleLine` |
 | `publisher-not-found` | 422 | The publisher does not exist | `AddBookUseCase`, `UpdateBookDetailsUseCase` |
 | `purchase-order-status-invalid` | 422 | The purchase order is in the wrong status (send, cancel, receive) | `PurchaseOrder` |
