@@ -16,7 +16,8 @@ npm run build
 ```
 
 Whole system in Docker (database, cache, API and this client behind nginx), from `src/server` with `.env` made
-from `.env.example`: `docker compose up -d --build`, then open http://localhost:8081 (the API stays on :8080).
+from `.env.example`: `docker compose up -d --build`, then open http://localhost:8081 (the API stays on :8080) and sign in at `/staff/login` as `root` / `root`.
+Demo stores, staff, catalog and documents: [src/server/Seed](../server/Seed/README.md).
 
 `VITE_SHOP_CUSTOMER_ID` (optional, in `.env.local`; for Docker, in `src/server/.env`) sets the customer the shop acts for; customers have no login
 (the report gives them none), so without it the shop asks for the customer number once, on the first «У кошик».

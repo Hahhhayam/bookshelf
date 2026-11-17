@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Application;
+using Application.Administration;
 using Infrastructure;
 using Infrastructure.Bonuses;
 using Infrastructure.Notifications;
@@ -32,6 +33,8 @@ if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
     using var scope = app.Services.CreateScope();
     scope.ServiceProvider.GetRequiredService<BookstoreDbContext>().Database.Migrate();
 }
+using (var scope = app.Services.CreateScope())
+    await scope.ServiceProvider.GetRequiredService<PreseedRootAdminUseCase>().ExecuteAsync(CancellationToken.None);
 
 app.UseExceptionHandler();
 app.UseBookstoreSwagger();

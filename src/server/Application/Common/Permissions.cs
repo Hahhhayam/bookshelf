@@ -28,4 +28,7 @@ public static class Permissions
     public const string ReportsView = "reports.view";
     public const string ReportsChainWide = "reports.chain";
     public const string IntegrationsReport = "integrations.report";
+
+    public static IReadOnlyList<string> All { get; } = typeof(Permissions).GetFields()
+        .Where(field => field.IsLiteral).Select(field => (string)field.GetRawConstantValue()!).ToList();
 }

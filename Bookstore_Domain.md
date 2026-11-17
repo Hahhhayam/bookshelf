@@ -359,6 +359,7 @@ An employee account.
 - **Rules**
   - A blocked user cannot log in.
   - A failed login is logged without the password.
+  - A `root` user with every permission is created at startup whenever no user has that login.
 
 ### Login session (not an aggregate)
 
