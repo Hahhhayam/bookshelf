@@ -33,7 +33,7 @@ services:
       cache:
         condition: service_healthy
     environment:
-      ConnectionStrings__Bookstore: Server=db;Database=Bookstore;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True
+      ConnectionStrings__Bookstore: Server=db;Database=Bookstore;User Id=sa;Password='${MSSQL_SA_PASSWORD}';TrustServerCertificate=True
       ConnectionStrings__Redis: cache:6379
       Database__MigrateOnStartup: "true"
     ports:
