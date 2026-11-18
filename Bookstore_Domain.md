@@ -355,7 +355,7 @@ An employee account.
 - **Value objects**
   - **UserStatus** — whether the account is active or blocked.
   - **PasswordHash** — the password stored as a strong hash.
-  - **LocationAccess** — the stores and warehouses the user may work in.
+  - **LocationAccess** — the stores and warehouses the user may work in, or `Everywhere` (every location, including ones added later; kept as the JSON string `"all"` in the same column). Only the preseeded `root` has it.
 - **Rules**
   - A blocked user cannot log in.
   - A failed login is logged without the password.

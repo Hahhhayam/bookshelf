@@ -6,6 +6,7 @@ export const orderKeys = {
   all: ['orders'] as const,
   list: (location: string, status?: OrderStatus, pickupCode?: string) =>
     ['orders', 'list', location, status ?? 'open', pickupCode ?? ''] as const,
+  ofCustomer: (customer: string) => ['orders', 'customer', customer] as const,
   card: (id: string) => ['orders', 'card', id] as const,
   track: (code: string) => ['orders', 'track', code] as const,
 }
@@ -26,4 +27,12 @@ export function useOrder(id: string | undefined) {
 
 export function useTrackedOrder(code: string | undefined) {
   return useQuery({ queryKey: orderKeys.track(code ?? ''), queryFn: () => orderApi.track(code!), enabled: !!code, retry: false })
+}
+
+export function useCustomerOrders(customer: string | null) {
+  return useQuery({
+    queryKey: orderKeys.ofCustomer(customer ?? ''),
+    queryFn: () => orderApi.ofCustomer(customer!),
+    enabled: !!customer,
+  })
 }

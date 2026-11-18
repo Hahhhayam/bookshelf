@@ -24,6 +24,8 @@ As of commit `f6731a7` ("open port"), 2026-11-17. Working tree was clean apart f
 
 ## Not verified
 
+- 2026-11-17 buglist round (uncommitted): server build + e2e 10/10 + client typecheck/tests/build passed after the fixes, but e2e now covers bugs 1, 2, 3, 6, 7 (10/10 pass); bug 4 and the UI were not clicked through (O-18).
+
 - The UI has not been clicked through by hand after the gap-filling round.
 - DB port `1433:1433` is in `docker-compose.yml`, but the user's running stack (`server-db-1`, started earlier) was not
   recreated, so the port is not published until the user runs `docker compose up -d db` (see O-15).

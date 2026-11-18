@@ -1,6 +1,6 @@
 namespace Application.Reporting;
 
-/// <param name="Locations">Empty means the whole chain.</param>
+/// <param name="Locations">From the client, empty means the whole chain; the use case replaces it with the user's own locations, so the queries always filter.</param>
 /// <param name="Category">Narrows sales and stock to one category.</param>
 /// <param name="Book">Narrows sales and stock to one book.</param>
 public sealed record ReportRequest(
@@ -12,7 +12,7 @@ public sealed class GenerateManagementReportUseCase(IReportQueries queries, ICur
     public async Task<ManagementReport> ExecuteAsync(ReportRequest request, CancellationToken ct)
     {
         user.Require(Permissions.ReportsView);
-        AuthorizeScope(request);
+        request = AuthorizedScope(request);
         var data = await queries.LoadAsync(request, ct);
         var previous = await queries.LoadAsync(request with { Period = PeriodBefore(request.Period) }, ct);
         return ManagementReportCalculator.Calculate(data, previous, request.Period);
@@ -21,11 +21,16 @@ public sealed class GenerateManagementReportUseCase(IReportQueries queries, ICur
     /// <summary>The comparison period (table 1.1, "порівняння періодів"): equally long, ending where the report's starts.</summary>
     private static Period PeriodBefore(Period period) => new(period.Start - (period.End - period.Start), period.Start);
 
-    private void AuthorizeScope(ReportRequest request)
+    /// <summary>Whole chain means every location the user is assigned to; a user with none gets an empty report.</summary>
+    private ReportRequest AuthorizedScope(ReportRequest request)
     {
         if (request.Locations.Count == 0)
+        {
             user.Require(Permissions.ReportsChainWide);
+            return request with { Locations = user.AccessibleLocations.ToList() };
+        }
         foreach (var location in request.Locations)
             user.RequireAccess(location);
+        return request;
     }
 }

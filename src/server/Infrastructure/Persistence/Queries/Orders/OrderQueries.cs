@@ -10,6 +10,15 @@ internal sealed class OrderQueries(BookstoreDbContext db) : IOrderQueries
     public async Task<OrderView?> FindByPickupCodeAsync(PickupCode code, CancellationToken ct) =>
         await ViewOfAsync(await db.Set<Order>().AsNoTracking().FirstOrDefaultAsync(o => o.PickupCode == code, ct), ct);
 
+    public async Task<IReadOnlyList<OrderView>> ListForCustomerAsync(CustomerId customer, CancellationToken ct)
+    {
+        var orders = await db.Set<Order>().AsNoTracking().Where(o => o.CustomerId == customer).ToListAsync(ct);
+        var views = new List<OrderView>();
+        foreach (var order in orders)
+            views.Add((await ViewOfAsync(order, ct))!);
+        return views.OrderByDescending(v => v.Order.Id.Value).ToList();
+    }
+
     public async Task<IReadOnlyList<OrderSummary>> ListAsync(
         LocationId location, OrderStatus? status, PickupCode? pickupCode, CancellationToken ct)
     {

@@ -1,7 +1,14 @@
 import { TextInput } from '@mantine/core'
+import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
-import { FormModal } from '@/shared/ui'
+import { customerApi } from '@/entities/customer'
+import { ApiError } from '@/shared/api'
+import { errorMessage, FormModal } from '@/shared/ui'
 import { isShopperId, shopper } from '../model/shopper'
+
+function lookupError(error: unknown) {
+  return error instanceof ApiError && error.status === 404 ? 'Покупця з таким номером не знайдено.' : errorMessage(error)
+}
 
 interface Props {
   opened: boolean
@@ -17,16 +24,21 @@ export function ShopperIdModal(props: Props) {
 function ShopperIdForm({ onClose, onDone }: Props) {
   const [value, setValue] = useState(() => shopper.id() ?? '')
   const [error, setError] = useState<string | null>(null)
+  const check = useMutation({ mutationFn: (id: string) => customerApi.bonuses(id) })
 
+  /** The number is kept only when the server knows the customer; otherwise the previous shopper stays. */
   function submit() {
     if (!isShopperId(value)) return setError('Введіть номер покупця у форматі xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx, як на картці.')
-    shopper.set(value)
-    onClose()
-    onDone?.(value.trim())
+    const id = value.trim()
+    check.mutate(id, {
+      onSuccess: () => { shopper.set(id); onClose(); onDone?.(id) },
+      onError: (failure) => setError(lookupError(failure)),
+    })
   }
 
   return (
-    <FormModal opened title="Номер покупця" submitLabel="Зберегти" error={error} onSubmit={submit} onClose={onClose}>
+    <FormModal opened title="Номер покупця" submitLabel="Зберегти" error={error} loading={check.isPending}
+      onSubmit={submit} onClose={onClose}>
       <TextInput
         label="Номер покупця"
         description="Введіть номер з картки покупця — ми запам’ятаємо його в цьому браузері. Кошик зберігається за цим номером."

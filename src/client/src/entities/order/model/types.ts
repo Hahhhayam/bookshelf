@@ -39,6 +39,17 @@ export interface TrackedOrder {
   history: { to: OrderStatus; at: string }[]
 }
 
+/** A row of the customer's own order list: enough to see the state and open the tracking page by the code. */
+export interface CustomerOrder {
+  id: string
+  pickupCode: string
+  status: OrderStatus
+  kind: FulfilmentKind
+  store: string | null
+  total: Money
+  quantity: number
+}
+
 export interface PlacedOrder {
   id: string
   pickupCode: string

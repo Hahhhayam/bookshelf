@@ -12,7 +12,7 @@ checked in several places.
 | `invalid-credentials` | 401 | Wrong login or password | `AdministrationController` (login) |
 | `account-blocked` | 403 | The account is blocked | `AdministrationController` (login) |
 | `forbidden` | 403 | Missing permission or location access | `CurrentUserExtensions` |
-| `not-found` | 404 | The `subject` does not exist | `OrNotFound`, `GetPriceHistoryUseCase` |
+| `not-found` | 404 | The `subject` does not exist | `OrNotFound`, `GetPriceHistoryUseCase`, `AddToCartUseCase` |
 | `payment-declined` | 402 | The card terminal declined the payment | `SalePaymentSettler` |
 | `blank` | 422 | A required text (`field`) is empty | `Guard.NotBlank` (names, titles, codes, reasons…) |
 | `amount-not-positive` | 422 | A payment, certificate value or redemption must be above zero | `Payment`, `GiftCertificate` |

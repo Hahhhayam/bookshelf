@@ -3,9 +3,10 @@ namespace Application.Catalog;
 /// <param name="AvailableAt">When set, only books with available stock at this location are returned.</param>
 /// <param name="Ids">A batch lookup for lists that carry only book ids. Like the book card, it finds deactivated books too.</param>
 /// <param name="IncludeInactive">Deactivated books as well, for catalog staff; the shop sees books on sale only.</param>
+/// <param name="SuggestClosest">When the text matches nothing, return the nearest titles/authors (marked as suggestions).</param>
 public sealed record BookSearchQuery(
     string? Text, Isbn? Isbn, AuthorId? Author, PublisherId? Publisher, CategoryId? Category, LocationId? AvailableAt,
-    IReadOnlyList<BookId>? Ids = null, bool IncludeInactive = false);
+    IReadOnlyList<BookId>? Ids = null, bool IncludeInactive = false, bool SuggestClosest = false);
 
 /// <summary>FR-03. Also serves the public online shop, so no employee permission is required.</summary>
 public sealed class SearchBooksUseCase(ICatalogSearch search, ISearchResultCache cache, ICurrentUser user)

@@ -70,7 +70,7 @@ public sealed class AdministrationController : ControllerBase
         Ok((await useCase.ExecuteAsync(ct)).Select(u => new
         {
             id = u.Id.Value, u.Login, u.Status, roles = u.Roles.Select(r => r.Value),
-            locations = u.Access.Locations.Select(l => l.Value),
+            locations = u.Access.Locations.Select(l => l.Value), everywhere = u.Access.Everywhere,
         }));
 
     [HttpGet("users/logins")]

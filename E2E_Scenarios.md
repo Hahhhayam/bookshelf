@@ -12,13 +12,14 @@ Sources: [Specification_Bookstore_IS.md](Specification_Bookstore_IS.md) (user sc
 
 *Role:* customer (anonymous). *Covers:* FR-03, FR-07, scenario 3.8 (customer side).
 
-1. `GET books?text=…&availableAt={Store A}` → the book is listed with its availability in Store A.
+1. `GET books?text=…&availableAt={Store A}` → the book is listed with its availability in Store A. `GET books?text={author}` finds the author's books. A typo finds nothing, and with `suggestClosest=true` returns the nearest titles marked `suggested`.
 2. `GET books/{id}` → card with price and availability per location.
 3. `GET books/{id}/prices` → the price history.
 4. `GET stores` → the pickup stores, no warehouse.
-5. `POST customers/{customer}/cart/items` for two books, `PUT …/cart/items/{book}` to change one, `DELETE …/cart/items/{book}` to remove the other; `GET customers/{customer}/cart` → lines and total.
+5. `POST customers/{unknown}/cart/items` → 404. `POST customers/{customer}/cart/items` for two books, `PUT …/cart/items/{book}` to change one, `DELETE …/cart/items/{book}` to remove the other; `GET customers/{customer}/cart` → lines and total.
 6. `POST orders` with pickup at the warehouse → 422 `pickup-location-not-store`. `POST orders` with pickup at Store A → order id; the cart is empty afterwards.
 7. `GET orders/track/{pickupCode}` → status `New`, store, lines and total, no staff or personal data in the response.
+8. `GET customers/{customer}/orders` → the customer's orders, newest first, with pickup code and status.
 
 **Asserts:** available quantity in Store A drops by the ordered amount (reserved); a second search within 30 s may still show the old availability (search cache), but `GET books/{id}` shows the new one (always live).
 
@@ -111,6 +112,7 @@ Sources: [Specification_Bookstore_IS.md](Specification_Bookstore_IS.md) (user sc
 2. Chain manager: the same with `category=…`, then with `locations={Store A}`.
 3. Chain manager: `GET reports/management.csv` for the same period.
 4. Store administrator: `GET reports/management?…` without stores → `403`; with `locations={Store A}` → `200`.
+5. User with the chain-wide permission but no locations: `GET reports/management` → `200` with zero revenue and receipts.
 
 **Asserts:** revenue, receipts and average check match the sales made in the scenario's setup; the category filter changes revenue to that category only; ABC classes and per-store figures add up; the CSV contains every section.
 

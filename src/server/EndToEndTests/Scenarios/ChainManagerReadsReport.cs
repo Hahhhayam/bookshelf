@@ -25,6 +25,17 @@ public sealed class ChainManagerReadsReport(SqlServerFixture sql) : EndToEndTest
         var storeAdmin = await LogsIn(SampleUsers.StoreAdmin);
         await CannotSeeChainWideReport(storeAdmin);
         await SeesOwnStoreReport(storeAdmin, World.StoreA);
+
+        var noGeo = await LogsIn(SampleUsers.NoGeoManager);
+        await SeesEmptyChainReport(noGeo);
+    }
+
+    /// <summary>A chain-wide permission without any assigned location must not reveal the chain's figures.</summary>
+    private async Task SeesEmptyChainReport(Api noGeo)
+    {
+        var report = await noGeo.Get(Report());
+        Assert.Equal(0m, report.Amount("revenue"));
+        Assert.Equal(0, report.Number("receipts"));
     }
 
     private string Report(params (string Name, object? Value)[] filters) =>

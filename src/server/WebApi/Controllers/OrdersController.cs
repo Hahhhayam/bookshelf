@@ -73,6 +73,20 @@ public sealed class OrdersController : ControllerBase
     }
 
     [AllowAnonymous]
+    [HttpGet("customers/{customer:guid}/orders")]
+    public async Task<IActionResult> ListCustomerOrders(
+        Guid customer, [FromServices] ListCustomerOrdersUseCase useCase, CancellationToken ct)
+    {
+        var views = await useCase.ExecuteAsync(new CustomerId(customer), ct);
+        return Ok(views.Select(v => new
+        {
+            id = v.Order.Id.Value, pickupCode = v.Order.PickupCode.Value, v.Order.Status, v.Order.Fulfilment.Kind,
+            store = v.Order.Fulfilment.PickupLocation?.Value, total = MoneyDto.From(v.Order.Total),
+            quantity = v.Order.Lines.Sum(l => l.Quantity.Value),
+        }));
+    }
+
+    [AllowAnonymous]
     [HttpGet("orders/track/{code}")]
     public async Task<IActionResult> Track(string code, [FromServices] TrackOrderUseCase useCase, CancellationToken ct)
     {

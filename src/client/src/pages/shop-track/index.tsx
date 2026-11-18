@@ -1,6 +1,8 @@
 import { Stack, Text, Title } from '@mantine/core'
 import { useNavigate, useParams } from 'react-router'
+import { useShopperId } from '@/entities/shopper'
 import { tokens } from '@/shared/config/tokens'
+import { MyOrders } from './ui/MyOrders'
 import { TrackForm } from './ui/TrackForm'
 import { TrackResult } from './ui/TrackResult'
 
@@ -8,6 +10,7 @@ import { TrackResult } from './ui/TrackResult'
 export default function ShopTrackPage() {
   const { code } = useParams()
   const navigate = useNavigate()
+  const shopperId = useShopperId()
   return (
     <Stack gap="xl" maw={760} mx="auto">
       <Stack gap="sm">
@@ -16,6 +19,7 @@ export default function ShopTrackPage() {
         <Text size="md" c={tokens.color.ink2}>Код є на сторінці підтвердження.</Text>
       </Stack>
       {code && <TrackResult code={code} />}
+      {shopperId && <MyOrders customer={shopperId} />}
     </Stack>
   )
 }

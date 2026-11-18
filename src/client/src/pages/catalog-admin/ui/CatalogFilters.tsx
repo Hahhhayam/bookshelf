@@ -1,6 +1,7 @@
 import { Button, Select, SimpleGrid, TextInput } from '@mantine/core'
 import { IconSearch } from '@tabler/icons-react'
 import { useStores } from '@/entities/store'
+import { isTooShort, searchHint } from '@/shared/config/search'
 import { AuthorPicker, CategoryPicker, PublisherPicker } from '@/features/catalog-pickers'
 
 export type StatusFilter = 'active' | 'all' | 'deactivated'
@@ -36,6 +37,7 @@ export function CatalogFilters({ value, onChange }: { value: CatalogFilter; onCh
   return (
     <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="sm" style={{ alignItems: 'end' }}>
       <TextInput label="Назва або штрихкод" leftSection={<IconSearch size={16} stroke={1.75} />} value={value.text}
+        description={isTooShort(value.text) ? searchHint : undefined}
         onChange={(e) => set({ text: e.currentTarget.value })} placeholder="Наприклад, Амадока" />
       <TextInput label="ISBN" value={value.isbn} onChange={(e) => set({ isbn: e.currentTarget.value })} placeholder="978-…" />
       <CategoryPicker value={value.category} onChange={(category) => set({ category })} clearable placeholder="Будь-яка" />

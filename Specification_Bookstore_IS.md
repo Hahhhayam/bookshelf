@@ -241,7 +241,7 @@ The system must allow login with an account and determine user rights according 
 *Implementation notes (not in the report):*
 - A successful login issues a random bearer session token valid for 8 hours. Only its hash is stored. Logout revokes the caller's own session at once.
 - A token stops working when it expires, is revoked, or its user is blocked. Roles and location access are read on every request, so a change to them applies immediately.
-- At startup, when no user has the login `root`, the system creates it with password `root`, a `root` role holding every permission and no locations, so a fresh installation has someone who can add staff. The password must be changed outside development.
+- At startup, when no user has the login `root`, the system creates it with password `root`, a `root` role holding every permission and access to every location (also to locations added later), so a fresh installation has someone who can add staff. The password must be changed outside development.
 - A signed-in user can read their own profile: login, permissions and the active locations they may work in. The client builds its navigation from it.
 - Every endpoint requires a signed-in user. The exceptions are login, catalog search, viewing a single item, the author, publisher, category and pickup-store lists, and the customer-facing cart, order placement, order tracking and bonus summary (the shop acts for a customer id, since customers have no login). Each staff operation also requires its named permission, checked at the API boundary before the request is processed and again inside the use case.
 
@@ -256,7 +256,7 @@ An authorized user can add, edit and deactivate books. ISBN uniqueness must be c
 A user can find a book by title, ISBN, author, publisher or category and see availability across the chain.
 *Supports:* [BC-02](#bc-02)
 
-*Implementation notes (not in the report):* a single item can also be opened by its identifier, with its availability per location. Search results are cached for 30 seconds per filter combination, and item cards for 15 minutes with removal on price change, so prices and availability in search may lag by that time. Availability on an item card is always read live.
+*Implementation notes (not in the report):* a single item can also be opened by its identifier, with its availability per location. Search results are cached for 30 seconds per filter combination, and item cards for 15 minutes with removal on price change, so prices and availability in search may lag by that time. Availability on an item card is always read live. Free text also matches author names. The shop and the staff catalog ask for nearest matches (`suggestClosest`): when nothing matches exactly, up to five books with the closest title or author are returned and marked as suggestions; the till and pickers do not, so an unknown barcode still finds nothing. The search boxes work while typing: after a 0.5 s pause, and only from 3 characters (a hint shows below that). The shop box lists up to six suggestions under it (the nearest ones when nothing matches exactly); a click opens that book, Enter shows the full results. The staff catalog list updates as you type.
 
 <a id="fr-04"></a>
 #### FR-04 Sale
@@ -281,7 +281,7 @@ A book can be reserved for a customer for a defined time. The reserved quantity 
 A customer can place an order, and a store employee changes its status along the allowed route.
 *Supports:* [BC-05](#bc-05)
 
-*Implementation notes (not in the report):* a pickup order is collected only at an open store; the server refuses a warehouse or a closed store as the pickup location (`pickup-location-not-store`), even though the shop never offers one.
+*Implementation notes (not in the report):* a pickup order is collected only at an open store; the server refuses a warehouse or a closed store as the pickup location (`pickup-location-not-store`), even though the shop never offers one. A customer sees their own orders (newest first) by customer id, anonymously like the cart (`GET customers/{id}/orders`). Adding to a cart for a customer that does not exist is refused with `not-found`.
 
 <a id="fr-08"></a>
 #### FR-08 Order statuses
@@ -334,7 +334,7 @@ An authorized user creates a promotion with validity period, conditions and prio
 A manager can generate reports by period, store, category, book and other available dimensions.
 *Supports:* [BC-03](#bc-03), [BC-04](#bc-04), [BC-07](#bc-07)
 
-*Implementation notes (not in the report):* the management report is filtered by period, stores (none means the whole chain, which needs its own permission), category and book. It shows revenue, margin (against the average purchase price), receipts, average check, days of stock at the period's sales rate (turnover), top books, slow-moving books (surplus), current stock below minimum (shortage), ABC analysis by revenue (A up to 80%, B up to 95%, C the rest), figures per store and per category, and the same totals for the equally long previous period. The same report can be exported as a CSV file.
+*Implementation notes (not in the report):* the management report is filtered by period, stores (none means the whole chain, which needs its own permission), category and book. It shows revenue, margin (against the average purchase price), receipts, average check, days of stock at the period's sales rate (turnover), top books, slow-moving books (surplus), current stock below minimum (shortage), ABC analysis by revenue (A up to 80%, B up to 95%, C the rest), figures per store and per category, and the same totals for the equally long previous period. The same report can be exported as a CSV file. A whole-chain report (no locations chosen) covers only the locations assigned to the caller; a user with no locations gets an empty report.
 
 <a id="fr-17"></a>
 #### FR-17 Change history

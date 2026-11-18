@@ -20,17 +20,17 @@ public sealed class CatalogController : ControllerBase
     [HttpGet("books")]
     public async Task<IActionResult> Search(
         string? text, string? isbn, Guid? author, Guid? publisher, Guid? category, Guid? availableAt,
-        [FromQuery] Guid[]? ids, bool includeInactive, [FromServices] SearchBooksUseCase useCase, CancellationToken ct)
+        [FromQuery] Guid[]? ids, bool includeInactive, bool suggestClosest, [FromServices] SearchBooksUseCase useCase, CancellationToken ct)
     {
         var query = new BookSearchQuery(
             text, isbn is null ? null : new Isbn(isbn), author is { } a ? new AuthorId(a) : null,
             publisher is { } p ? new PublisherId(p) : null, category is { } c ? new CategoryId(c) : null,
             availableAt is { } l ? new LocationId(l) : null,
-            ids is { Length: > 0 } ? ids.Select(i => new BookId(i)).ToList() : null, includeInactive);
+            ids is { Length: > 0 } ? ids.Select(i => new BookId(i)).ToList() : null, includeInactive, suggestClosest);
         var results = await useCase.ExecuteAsync(query, ct);
         return Ok(results.Select(r => new
         {
-            id = r.Book.Value, r.Title, price = MoneyDto.From(r.Price), barcode = r.Barcode.Value, r.Status,
+            id = r.Book.Value, r.Title, price = MoneyDto.From(r.Price), barcode = r.Barcode.Value, r.Status, suggested = r.Suggested,
             availability = r.Availability.Select(a => new { location = a.Location.Value, available = a.Available.Value }),
         }));
     }

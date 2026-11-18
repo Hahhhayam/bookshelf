@@ -19,7 +19,10 @@ export function CatalogSearch({ text, facets, onFacetsChange, onlyMyStore, onOnl
 }) {
   const store = useMyStore()
   const availableAt = onlyMyStore && store ? store : undefined
-  const search = { text: text || undefined, category: facets.category ?? undefined, publisher: facets.publisher ?? undefined }
+  const search = {
+    text: text || undefined, category: facets.category ?? undefined, publisher: facets.publisher ?? undefined,
+    suggestClosest: true,
+  }
   const all = useBookSearch(search)
   const filtered = useBookSearch({ ...search, availableAt }, !!availableAt)
   const results = availableAt ? filtered : all
@@ -40,7 +43,14 @@ export function CatalogSearch({ text, facets, onFacetsChange, onlyMyStore, onOnl
         <div style={{ flex: 1, minWidth: 0, width: '100%' }}>
           <QueryView query={results} isEmpty={(hits) => hits.length === 0}
             empty={<NothingFound text={text} onlyMyStore={onlyMyStore} onShowAll={() => onOnlyMyStoreChange(false)} />}>
-            {(hits) => <ResultGrid hits={hits} myStore={store} />}
+            {(hits) => (
+              <Stack gap="lg">
+                {hits.some((hit) => hit.suggested) && (
+                  <Text c="dimmed">Точних збігів немає. Можливо, ви шукали:</Text>
+                )}
+                <ResultGrid hits={hits} myStore={store} />
+              </Stack>
+            )}
           </QueryView>
         </div>
       </Flex>

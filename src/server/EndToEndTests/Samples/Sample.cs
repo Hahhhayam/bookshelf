@@ -47,7 +47,7 @@ public static class Sample
         LocationId[] everywhere = [storeA, storeB, warehouse];
         var users = new Dictionary<string, UserId>();
         void Add(string login, LocationId[] access, params string[] permissions) =>
-            users[login] = AddUser(db, hasher, login, access, permissions);
+            users[login] = AddUser(db, hasher, login, new LocationAccess(access.ToHashSet()), permissions);
 
         Add(SampleUsers.Cashier, [storeA], Permissions.SalesCreate, Permissions.ReturnsCreate);
         Add(SampleUsers.StoreAdmin, [storeA], Permissions.OrdersManage, Permissions.SalesCreate,
@@ -60,16 +60,18 @@ public static class Sample
         Add(SampleUsers.Purchasing, [warehouse], Permissions.PurchasingManage);
         Add(SampleUsers.Commercial, [], Permissions.PriceChange, Permissions.CatalogEdit, Permissions.AuditView);
         Add(SampleUsers.ChainManager, everywhere, Permissions.ReportsView, Permissions.ReportsChainWide);
+        Add(SampleUsers.NoGeoManager, [], Permissions.ReportsView, Permissions.ReportsChainWide);
+        users[SampleUsers.Everywhere] = AddUser(db, hasher, SampleUsers.Everywhere, LocationAccess.All, [Permissions.SalesCreate]);
         Add(SampleUsers.Admin, everywhere, Permissions.UsersManage, Permissions.AuditView, Permissions.LocationsManage,
             Permissions.IntegrationsManage);
         return users;
     }
 
     private static UserId AddUser(
-        BookstoreDbContext db, IPasswordHasher hasher, string login, LocationId[] access, string[] permissions)
+        BookstoreDbContext db, IPasswordHasher hasher, string login, LocationAccess access, string[] permissions)
     {
         var role = Role.Create($"{login} role", permissions.Select(code => new Permission(code)));
-        var user = User.Create(login, hasher.Hash(SampleUsers.Password), new LocationAccess(access.ToHashSet()), [role.Id]);
+        var user = User.Create(login, hasher.Hash(SampleUsers.Password), access, [role.Id]);
         db.AddRange(role, user);
         return user.Id;
     }

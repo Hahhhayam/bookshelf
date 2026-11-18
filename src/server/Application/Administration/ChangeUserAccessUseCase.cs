@@ -21,5 +21,6 @@ public sealed class ChangeUserAccessUseCase(
 
     private static string RolesOf(User user) => string.Join(", ", user.Roles.Select(r => r.Value).Order());
 
-    private static string LocationsOf(User user) => string.Join(", ", user.Access.Locations.Select(l => l.Value).Order());
+    private static string LocationsOf(User user) =>
+        user.Access.Everywhere ? "all" : string.Join(", ", user.Access.Locations.Select(l => l.Value).Order());
 }

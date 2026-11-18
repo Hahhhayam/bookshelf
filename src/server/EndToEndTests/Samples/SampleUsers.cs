@@ -13,4 +13,6 @@ public static class SampleUsers
     public const string Commercial = "commercial";
     public const string ChainManager = "chain.manager";
     public const string Admin = "sysadmin";
+    public const string Everywhere = "everywhere";
+    public const string NoGeoManager = "no.geo";
 }

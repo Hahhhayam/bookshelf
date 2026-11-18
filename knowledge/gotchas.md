@@ -19,3 +19,5 @@ updated: 2026-11-17
 | G-09 | Python `hash()` gives different output per run | Hash randomisation. | Use `uuid5`/fixed values in generators. |
 | G-10 | Sub-agents return "HTTP 429 usage limit" mid-task | Account usage limit. | After the user says continue, resume each agent with SendMessage; do not restart from scratch. |
 | G-11 | Parallel agents' builds collide / EF migration conflicts | Same solution and model edited at once. | Agents do not build or add migrations; the coordinator builds once and generates one migration. |
+| G-12 | A modal form inside the checkout `<form>` also submitted the checkout (placed the order, cart went empty). | Mantine modals are portalled, but React bubbles synthetic events through the React tree. | `FormModal` calls `event.stopPropagation()` on submit. |
+| G-13 | Workflow haiku worker failed 5 times on the report schema (`filesEdited` missing). | Small model skips required fields. | Make report fields optional for haiku workers or use a bigger model; check `failures` in the result. |

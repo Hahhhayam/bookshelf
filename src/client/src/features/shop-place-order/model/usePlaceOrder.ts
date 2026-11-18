@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { bookKeys } from '@/entities/book'
 import { cartKeys } from '@/entities/cart'
-import { orderApi, type PlaceOrder } from '@/entities/order'
+import { orderApi, orderKeys, type PlaceOrder } from '@/entities/order'
 
 export type PlaceOrderInput = Omit<PlaceOrder, 'type'>
 
@@ -16,6 +16,7 @@ export function usePlaceOrder() {
     onSuccess: (_, input) => Promise.all([
       client.invalidateQueries({ queryKey: bookKeys.all }),
       client.invalidateQueries({ queryKey: cartKeys.of(input.customer) }),
+      client.invalidateQueries({ queryKey: orderKeys.ofCustomer(input.customer) }),
     ]),
   })
 }

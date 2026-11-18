@@ -8,4 +8,7 @@ public interface ICurrentUser
     bool Has(Permission permission);
 
     bool CanAccess(LocationId location);
+
+    /// <summary>The locations the user is assigned to; empty means none, never "all".</summary>
+    IReadOnlyCollection<LocationId> AccessibleLocations { get; }
 }

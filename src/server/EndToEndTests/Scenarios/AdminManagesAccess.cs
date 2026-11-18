@@ -29,6 +29,11 @@ public sealed class AdminManagesAccess(SqlServerFixture sql) : EndToEndTest(sql)
         await CannotLogIn("junior", "wrong password", HttpStatusCode.Unauthorized);
         await SeesFailedLoginWithoutPassword(admin, "junior", "wrong password");
 
+        var everywhere = await LogsIn(SampleUsers.Everywhere);
+        await SeesOwnProfile(everywhere, SampleUsers.Everywhere, [Permissions.SalesCreate],
+            World.StoreA, World.StoreB, World.Warehouse);
+        await CanSeeStock(everywhere, World.Warehouse);
+
         await BlocksUser(admin, user);
         await IsSignedOut(junior);
         await CannotLogIn("junior", "Junior#1", HttpStatusCode.Forbidden);

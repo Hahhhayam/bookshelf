@@ -36,7 +36,7 @@ internal sealed class ReportQueries(BookstoreDbContext db, ReportingOptions opti
         var sales = db.Set<Sale>().AsNoTracking()
             .Where(s => s.Status == Domain.Sales.SaleStatus.Completed)
             .Where(s => s.CompletedAt >= request.Period.Start && s.CompletedAt < request.Period.End);
-        return request.Locations.Count == 0 ? sales : sales.Where(s => request.Locations.Contains(s.LocationId));
+        return sales.Where(s => request.Locations.Contains(s.LocationId));
     }
 
     private async Task<List<SoldLineFact>> SoldLinesAsync(
@@ -60,9 +60,7 @@ internal sealed class ReportQueries(BookstoreDbContext db, ReportingOptions opti
     private async Task<List<StockFact>> StockAsync(
         ReportRequest request, Dictionary<BookId, CategoryId> categories, CancellationToken ct)
     {
-        var stock = db.Set<StockItem>().AsNoTracking();
-        if (request.Locations.Count > 0)
-            stock = stock.Where(s => request.Locations.Contains(s.LocationId));
+        var stock = db.Set<StockItem>().AsNoTracking().Where(s => request.Locations.Contains(s.LocationId));
         var rows = await stock.Select(s => new { s.LocationId, s.BookId, s.OnHand, s.MinimumStock }).ToListAsync(ct);
 
         return rows

@@ -22,8 +22,9 @@ internal sealed class UserProfileQuery(BookstoreDbContext db) : IUserProfileQuer
     private async Task<List<ProfileLocation>> LocationsAsync(User user, CancellationToken ct)
     {
         var allowed = user.Access.Locations.ToList();
+        var everywhere = user.Access.Everywhere;
         var locations = await db.Set<Location>().AsNoTracking()
-            .Where(l => allowed.Contains(l.Id) && l.IsActive)
+            .Where(l => (everywhere || allowed.Contains(l.Id)) && l.IsActive)
             .ToListAsync(ct);
         return locations.OrderBy(l => l.Name).Select(l => new ProfileLocation(l.Id, l.Name, l.Type, l.Address)).ToList();
     }

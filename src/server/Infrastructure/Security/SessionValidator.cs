@@ -23,6 +23,11 @@ internal sealed class SessionValidator(BookstoreDbContext db, IClock clock) : IS
         var roleIds = user.Roles.ToList();
         var roles = await db.Set<Role>().AsNoTracking().Where(r => roleIds.Contains(r.Id)).ToListAsync(ct);
         var permissions = roles.SelectMany(r => r.Permissions).ToHashSet();
-        return new AuthenticatedSession(session.Id, user.Id, permissions, user.Access.Locations);
+        return new AuthenticatedSession(session.Id, user.Id, permissions, await LocationsOfAsync(user, ct));
     }
+
+    private async Task<IReadOnlySet<LocationId>> LocationsOfAsync(User user, CancellationToken ct) =>
+        user.Access.Everywhere
+            ? (await db.Set<Location>().AsNoTracking().Select(l => l.Id).ToListAsync(ct)).ToHashSet()
+            : user.Access.Locations;
 }

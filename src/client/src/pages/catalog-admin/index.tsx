@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { compactIsbn, useBookSearch, type BookHit, type BookSearch } from '@/entities/book'
 import { useCan } from '@/entities/viewer'
+import { isSearchable, searchDebounceMs } from '@/shared/config/search'
 import { Perm } from '@/shared/lib'
 import { EmptyState, PageHeader, Panel, QueryView } from '@/shared/ui'
 import { BookTable } from './ui/BookTable'
@@ -19,6 +20,7 @@ function toSearch(filter: CatalogFilter): BookSearch {
     publisher: filter.publisher ?? undefined,
     availableAt: filter.availableAt ?? undefined,
     includeInactive: filter.status !== 'active' || undefined,
+    suggestClosest: true,
   }
 }
 
@@ -30,7 +32,8 @@ function byStatus(books: BookHit[], filter: CatalogFilter): BookHit[] {
 export default function CatalogAdminPage() {
   const can = useCan()
   const [filter, setFilter] = useState<CatalogFilter>(noFilter)
-  const [debounced] = useDebouncedValue(filter, 350)
+  const [typed] = useDebouncedValue(filter, searchDebounceMs)
+  const debounced = isSearchable(typed.text) ? typed : { ...typed, text: '' }
   const active = hasFilter(debounced)
   const search = useBookSearch(toSearch(debounced), active)
 
@@ -64,6 +67,7 @@ function Results({ books, status }: { books: BookHit[]; status: CatalogFilter['s
     <>
       <BookTable books={books} />
       <Text size="sm" c="dimmed" px="md" py="sm">
+        {books.some((book) => book.suggested) ? 'Точних збігів немає — показано найближчі. ' : ''}
         Знайдено: {books.length}.{status === 'active' ? ' Деактивовані книги — у фільтрі «Статус».' : ''}
       </Text>
     </>

@@ -25,3 +25,6 @@ updated: 2026-11-17
 | O-13 | `root`/`root` is created on every installation, production included. | User | Change the password or make it configurable before sharing. |
 | O-14 | UI not clicked through by hand after the gap round. | Agent | Use demo data (workflows.md). |
 | O-15 | DB port not live on the user's running stack: `server-db-1` predates the port change. | User | User declined the recreate; they run `docker compose up -d db` themselves. |
+| O-16 | `GET customers/{id}/orders` is anonymous and keyed only by a guessable id; sorted by v7 GUID (no `CreatedAt`), N+1 history reads. | User | D-14. Decide on ownership check / `CreatedAt`. |
+| O-17 | Root's whole-chain report is now empty (no locations). Bug 7 may also live in the client (location pickers for no-geo users): not checked. | User | D-15. |
+| ~~O-18~~ | ~~No e2e for bugs 1-3, 6, 7.~~ Added 2026-11-17 (scenarios 1 and 8); EF author subquery translates. Still open: nearest-match loads candidates in memory and ignores `availableAt`; bug 4 fix (FormModal stopPropagation) not clicked through. | Agent | |

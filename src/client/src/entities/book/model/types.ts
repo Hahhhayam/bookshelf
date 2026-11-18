@@ -16,6 +16,8 @@ export interface BookHit {
   barcode: string
   status: SaleStatus
   availability: Availability[]
+  /** The text matched nothing; this is one of the nearest titles or authors (only when `suggestClosest` was asked). */
+  suggested?: boolean
 }
 
 export const saleStatus: Record<SaleStatus, { label: string; tone: StatusTone }> = {
@@ -55,6 +57,8 @@ export interface BookSearch {
   ids?: string[]
   /** Deactivated books as well (catalog staff only). */
   includeInactive?: boolean
+  /** With text that matches nothing, return the nearest titles/authors flagged `suggested`. */
+  suggestClosest?: boolean
 }
 
 export interface BookDraft {

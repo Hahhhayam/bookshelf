@@ -23,3 +23,4 @@ repeated here.
 | R-09 | Answers to the user are short, with a recommendation; no option surveys. | Standing user preference. |
 | R-10 | Ask before outward-facing or hard-to-reverse actions: recreating/stopping the user's running containers, deleting large files (e.g. the 16 MB design HTML), dropping databases. Throwaway verification stacks use their own compose project (`-p bookshelf-verify`) and are torn down after. | User rejected recreating `server-db-1`, 2026-11-17. |
 | R-11 | Verify before reporting done: server build, e2e, client typecheck/tests/build as relevant; say plainly what was not verified (e.g. "not clicked through by hand"). | Session practice the user accepted. |
+| R-12 | Search boxes (shop, staff catalog) search while typing: 0.5 s debounce, at least 3 characters, hint below that. Shop box: suggestion list under it, click opens the book, Enter shows results. Constants in `shared/config/search.ts`. | User, 2026-11-17. |

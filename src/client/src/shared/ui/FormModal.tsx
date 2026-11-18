@@ -14,6 +14,8 @@ export function FormModal({ opened, title, submitLabel, error, loading, onSubmit
 }) {
   const submit = (event: FormEvent) => {
     event.preventDefault()
+    // The modal is portalled, but React still bubbles its submit to a form around the opener (e.g. checkout would place the order).
+    event.stopPropagation()
     onSubmit()
   }
   return (

@@ -11,6 +11,10 @@ public sealed class CustomerOrdersForPickup(SqlServerFixture sql) : EndToEndTest
         var customer = Anonymous();
 
         await FindsBookAvailableAt(customer, World.StoreA, World.Kobzar);
+        await FindsBooksByAuthor(customer, "Shevchenko");
+        await GetsNearestMatchesForATypo(customer, "Kobzr", World.Kobzar);
+        await GetsNoNearestMatchesUnlessAsked(customer, "Kobzr");
+        await UnknownCustomerCannotAddToCart(customer);
         await OpensBookCard(customer, World.Kobzar, at: World.StoreA, available: 10);
         await ChecksPriceHistory(customer, World.Kobzar, 300m);
         await SeesPickupStores(customer, World.StoreA, World.StoreB);
@@ -23,6 +27,7 @@ public sealed class CustomerOrdersForPickup(SqlServerFixture sql) : EndToEndTest
         var order = await PlacesPickupOrder(customer, World.StoreA);
         await SeesCartIsEmpty(customer);
         await ReadsPlacedOrder(customer, order, World.StoreA, World.Kobzar, quantity: 2, total: 600m);
+        await SeesOwnOrders(customer, order, store: World.StoreA, quantity: 2, total: 600m);
         await TracksOrder(customer, order, status: "New", changes: 0);
         await OpensBookCard(customer, World.Kobzar, at: World.StoreA, available: 8);
     }
@@ -33,6 +38,28 @@ public sealed class CustomerOrdersForPickup(SqlServerFixture sql) : EndToEndTest
         var hit = hits.Items().With("id", book.Value);
         Assert.Contains(hit.Items("availability"), a => a["location"]!.GetValue<Guid>() == store.Value);
     }
+
+    private static async Task FindsBooksByAuthor(Api customer, string author)
+    {
+        var hits = (await customer.Get(Query.Of("books", ("text", author)))).Items();
+        Assert.Equal(3, hits.Count());
+        Assert.All(hits, h => Assert.False(h["suggested"]!.GetValue<bool>()));
+    }
+
+    /// <summary>An exact search finds nothing for the typo; asking for suggestions returns the closest titles, marked as such.</summary>
+    private static async Task GetsNearestMatchesForATypo(Api customer, string typo, BookId expected)
+    {
+        var hits = (await customer.Get(Query.Of("books", ("text", typo), ("suggestClosest", true)))).Items();
+        Assert.Contains(hits, h => h.Id() == expected.Value);
+        Assert.All(hits, h => Assert.True(h["suggested"]!.GetValue<bool>()));
+    }
+
+    private static async Task GetsNoNearestMatchesUnlessAsked(Api customer, string typo) =>
+        Assert.Empty((await customer.Get(Query.Of("books", ("text", typo)))).Items());
+
+    private Task UnknownCustomerCannotAddToCart(Api customer) =>
+        customer.Refused(HttpStatusCode.NotFound, HttpMethod.Post, $"customers/{Guid.NewGuid()}/cart/items",
+            new { book = World.Kobzar.Value, quantity = 1 });
 
     private async Task SeesPickupStores(Api customer, params LocationId[] stores)
     {
@@ -81,6 +108,17 @@ public sealed class CustomerOrdersForPickup(SqlServerFixture sql) : EndToEndTest
         var line = Assert.Single(placed.Items("lines"));
         Assert.Equal(book.Value, line["book"]!.GetValue<Guid>());
         Assert.Equal(quantity, line.Number("quantity"));
+    }
+
+    /// <summary>The shop lists the customer's own orders, each with the code to follow it.</summary>
+    private async Task SeesOwnOrders(Api customer, PlacedOrderRef order, LocationId store, int quantity, decimal total)
+    {
+        var mine = Assert.Single((await customer.Get($"customers/{World.Customer.Value}/orders")).Items());
+        Assert.Equal(order.PickupCode, mine.Text("pickupCode"));
+        Assert.Equal("New", mine.Text("status"));
+        Assert.Equal(store.Value, mine["store"]!.GetValue<Guid>());
+        Assert.Equal(quantity, mine.Number("quantity"));
+        Assert.Equal(total, mine.Amount("total"));
     }
 
     private static async Task OpensBookCard(Api customer, BookId book, LocationId at, int available)
